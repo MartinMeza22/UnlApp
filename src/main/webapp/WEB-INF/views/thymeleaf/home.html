@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Inicio</title>
+  <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}"/>
+  <link rel="stylesheet" th:href="@{/css/main.css}"/>
+
+</head>
+<body>
+
+<div class="container">
+  <div class="mainbox col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1 text-center">
+
+    <h2 th:text="'¡Bienvenido, ' + ${session.NOMBRE} + '!'">¡Bienvenido, Alumno!</h2>
+    <hr class="colorgraph">
+
+    <div class="row">
+      <div class="col-md-6 col-sm-12">
+        <a th:href="@{/progreso}" class="btn btn-primary btn-lg btn-block btn-quick">Ver progreso académico</a>
+      </div>
+      <div class="col-md-6 col-sm-12">
+        <a th:href="@{/planificador}" class="btn btn-success btn-lg btn-block btn-quick">Planificador inteligente</a>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6 col-sm-12">
+        <a th:href="@{/foro}" class="btn btn-info btn-lg btn-block btn-quick">Foro de materias</a>
+      </div>
+      <div class="col-md-6 col-sm-12">
+        <a th:href="@{/calendario}" class="btn btn-warning btn-lg btn-block btn-quick">Calendario personal</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>
