@@ -1,13 +1,12 @@
-package com.tallerwebi.dominio;
+package com.tallerwebi.presentacion;
 
+import com.tallerwebi.dominio.Cuatrimestre;
+import com.tallerwebi.dominio.Estudiante;
+import com.tallerwebi.dominio.Materia;
+import com.tallerwebi.dominio.ServicioMateria;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.SessionAttribute;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes; // Sigue siendo necesario para addFlashAttribute
 

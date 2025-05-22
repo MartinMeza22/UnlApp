@@ -69,6 +69,7 @@ public class ControladorLogin {
         return new ModelAndView("nuevo-usuario", model);
     }
 
+
     @RequestMapping(path = "/progreso", method = RequestMethod.GET)
     public ModelAndView verProgreso() {
         return new ModelAndView("progreso");
