@@ -4,46 +4,69 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <title>UnlApp-LogIn</title>
+    <title>UnlApp - Login</title>
 
-    <!-- Boostrap core css -->
+    <!-- Bootstrap core CSS -->
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}"/>
 
-    <!-- custom style -->
+    <!-- Custom style -->
     <link rel="stylesheet" th:href="@{/css/main.css}"/>
 
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .mainbox {
+            background-color: #fff;
+            padding: 30px;
+            margin-top: 80px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .form-control {
+            margin-bottom: 15px;
+        }
+        #btn-login {
+            width: 100%;
+        }
+        #ir-a-registrarme {
+            display: block;
+            margin-top: 15px;
+            text-align: center;
+        }
+    </style>
 </head>
 
 <body>
 
+<!-- Navbar -->
 <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
     <a class="navbar-brand" href="#">UnlApp</a>
 </nav>
 
+<!-- Main content -->
 <main role="main" class="container">
+    <div class="mainbox col-md-6 col-sm-10 mx-auto">
 
-    <div class = "container">
-        <div id="loginbox" style="margin-top:50px;" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
-            <form action="#" th:action="@{/validar-login}" method="POST" th:object="${datosLogin}">
-                <h3 class="form-signin-heading">UnlApp</h3>
-                <hr class="colorgraph"><br>
+        <form th:action="@{/validar-login}" method="POST" th:object="${datosLogin}">
+            <h3 class="text-center">Iniciar sesión en UnlApp</h3>
+            <hr class="colorgraph"><br>
 
-                <input th:field="*{email}" id="email" type="email" class="form-control" placeholder="Email" required/>
-                <input th:field="*{password}" type="password" id="password" class="form-control" placeholder="Password" required/>
+            <input th:field="*{email}" id="email" type="email" class="form-control" placeholder="Email" required/>
+            <input th:field="*{password}" id="password" type="password" class="form-control" placeholder="Contraseña" required/>
 
-                <button id="btn-login" class="btn btn-lg btn-primary btn-block" Type="Submit">Login</button>
+            <button id="btn-login" class="btn btn-primary btn-lg" type="submit">Login</button>
 
-                <p th:if="${error != null}" class="alert alert-danger" th:text="'Error ' + ${error}">
-                </p>
-            </form>
-            <a id="ir-a-registrarme" href="nuevo-usuario">Registrarme</a>
-        </div>
+            <p th:if="${error != null}" class="alert alert-danger mt-3" th:text="'Error: ' + ${error}"></p>
+        </form>
+
+        <a id="ir-a-registrarme" th:href="@{/nuevo-usuario}">¿No tenés cuenta? Registrate</a>
     </div>
 </main>
-<!-- /.container -->
 
-<!-- Boostrap core js -->
-<script type="text/javascript" th:src="@{webjars/bootstrap/5.2.0/js/bootstrap.min.js}"></script>
-<script type="text/javascript" th:src="@{js/main.js}"></script>
+<!-- Bootstrap JS -->
+<script type="text/javascript" th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/main.js}"></script>
+
 </body>
 </html>
