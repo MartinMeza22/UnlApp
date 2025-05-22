@@ -37,7 +37,7 @@ public class ControllerMateria {
         } else {
             modelo.addAttribute("estudiante", estudianteSesion);
         }
-
+//
         List<Cuatrimestre> todosLosCuatrimestres = this.servicioMateria.obtenerMateriasPorCuatrimestre();
         List<Cuatrimestre> cuatrimestresFiltrados = new ArrayList<>();
 
