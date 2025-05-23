@@ -1,22 +1,17 @@
 package com.tallerwebi.presentacion;
 
 import com.tallerwebi.dominio.MateriaDB;
-import com.tallerwebi.dominio.Estudiante;
 import com.tallerwebi.dominio.ServicioMateria;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.support.SessionStatus;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/materias")
-@SessionAttributes("estudiante")
 public class ControllerMateria {
 
     private final ServicioMateria servicioMateria;
@@ -27,20 +22,20 @@ public class ControllerMateria {
 
     @GetMapping
     public ModelMap listarMaterias(@RequestParam(value = "dificultad", required = false) String dificultadFiltro,
-                                   ModelMap modelo,
-                                   @SessionAttribute(value = "estudiante", required = false) Estudiante estudianteSesion) {
-
-        if (estudianteSesion == null) {
-            estudianteSesion = new Estudiante(UUID.randomUUID().toString());
-            modelo.addAttribute("estudiante", estudianteSesion);
-        } else {
-            modelo.addAttribute("estudiante", estudianteSesion);
-        }
+                                   @RequestParam(value = "cuatrimestre", required = false) Integer cuatrimestreFiltro,
+                                   ModelMap modelo) {
 
         // Obtener todas las materias y agruparlas por cuatrimestre
         Map<Integer, List<MateriaDB>> materiasPorCuatrimestre = servicioMateria.obtenerMateriasAgrupadasPorCuatrimestre();
 
-        // Si hay filtro de dificultad, aplicarlo
+        // Aplicar filtro de cuatrimestre si está presente
+        if (cuatrimestreFiltro != null) {
+            materiasPorCuatrimestre = materiasPorCuatrimestre.entrySet().stream()
+                .filter(entry -> entry.getKey().equals(cuatrimestreFiltro))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        }
+
+        // Aplicar filtro de dificultad si está presente
         if (dificultadFiltro != null && !dificultadFiltro.isEmpty()) {
             materiasPorCuatrimestre = materiasPorCuatrimestre.entrySet().stream()
                 .collect(Collectors.toMap(
@@ -56,13 +51,13 @@ public class ControllerMateria {
 
         modelo.addAttribute("materiasPorCuatrimestre", materiasPorCuatrimestre);
         modelo.addAttribute("dificultadSeleccionada", dificultadFiltro);
+        modelo.addAttribute("cuatrimestreSeleccionado", cuatrimestreFiltro);
 
         return modelo;
     }
 
     /**
      * Método auxiliar para determinar dificultad basada en carga horaria
-     * (ya que el nuevo JSON no tiene campo "dificultad")
      */
     private String getDificultadFromCargaHoraria(Integer cargaHoraria) {
         if (cargaHoraria == null) return "Media";
@@ -71,46 +66,19 @@ public class ControllerMateria {
         return "Alta";
     }
 
-//     @PostMapping("/cursando")
-//     public String marcarCursando(@RequestParam("codigoMateria") Integer codigoMateria,
-//                                  @SessionAttribute("estudiante") Estudiante estudiante,
-//                                  RedirectAttributes redirectAttributes) {
-//         String resultado = servicioMateria.marcarComoCursando(estudiante, codigoMateria);
-//         redirectAttributes.addFlashAttribute("mensaje", resultado);
-//         return "redirect:/materias";
-//     }
-//
-//     @PostMapping("/aprobada")
-//     public String marcarAprobada(@RequestParam("codigoMateria") Integer codigoMateria,
-//                                  @SessionAttribute("estudiante") Estudiante estudiante,
-//                                  RedirectAttributes redirectAttributes) {
-//         String resultado = servicioMateria.marcarComoAprobada(estudiante, codigoMateria);
-//         redirectAttributes.addFlashAttribute("mensaje", resultado);
-//         return "redirect:/materias";
-//     }
-//
-//     @PostMapping("/quitarCursando")
-//     public String quitarCursando(@RequestParam("codigoMateria") Integer codigoMateria,
-//                                  @SessionAttribute("estudiante") Estudiante estudiante,
-//                                  RedirectAttributes redirectAttributes) {
-//         String resultado = servicioMateria.quitarDeCursando(estudiante, codigoMateria);
-//         redirectAttributes.addFlashAttribute("mensaje", resultado);
-//         return "redirect:/materias";
-//     }
-//
-//     @PostMapping("/quitarAprobada")
-//     public String quitarAprobada(@RequestParam("codigoMateria") Integer codigoMateria,
-//                                  @SessionAttribute("estudiante") Estudiante estudiante,
-//                                  RedirectAttributes redirectAttributes) {
-//         String resultado = servicioMateria.quitarDeAprobadas(estudiante, codigoMateria);
-//         redirectAttributes.addFlashAttribute("mensaje", resultado);
-//         return "redirect:/materias";
-//     }
-//
-//     @PostMapping("/reiniciarEstudiante")
-//     public String reiniciarEstudiante(SessionStatus sessionStatus, RedirectAttributes redirectAttributes) {
-//         sessionStatus.setComplete();
-//         redirectAttributes.addFlashAttribute("mensaje", "Estado del estudiante reiniciado.");
-//         return "redirect:/materias";
-//     }
+    /**
+     * Método auxiliar para obtener las correlativas como lista de strings
+     */
+    private List<String> getCorrelativasAsList(MateriaDB materia) {
+        return List.of(
+            materia.getCorrelativa1(),
+            materia.getCorrelativa2(),
+            materia.getCorrelativa3(),
+            materia.getCorrelativa4(),
+            materia.getCorrelativa5(),
+            materia.getCorrelativa6()
+        ).stream()
+        .filter(correlativa -> correlativa != null && !correlativa.isEmpty())
+        .collect(Collectors.toList());
+    }
 }

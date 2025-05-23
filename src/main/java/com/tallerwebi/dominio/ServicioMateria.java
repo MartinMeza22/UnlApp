@@ -27,7 +27,6 @@ public class ServicioMateria {
             InputStream inputStream = classPathResource.getInputStream();
             return objectMapper.readValue(inputStream, new TypeReference<List<MateriaDB>>() {});
         } catch (Exception e) {
-            // Es buena práctica loguear el error completo para depuración
             e.printStackTrace();
             throw new RuntimeException("Error al leer el archivo JSON de materias.", e);
         }
@@ -38,8 +37,10 @@ public class ServicioMateria {
                 .collect(Collectors.groupingBy(MateriaDB::getCuatrimestre));
     }
 
-    // Método para mantener compatibilidad con el controlador existente
-    public List<MateriaDB> obtenerMateriasPorCuatrimestre() {
-        return obtenerTodasLasMaterias();
+    public MateriaDB encontrarMateriaPorId(String idMateria) {
+        return obtenerTodasLasMaterias().stream()
+                .filter(m -> m.getId().equals(idMateria))
+                .findFirst()
+                .orElse(null);
     }
 }

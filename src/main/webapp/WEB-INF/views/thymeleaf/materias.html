@@ -10,7 +10,7 @@
             background-color: #f8f9fa;
         }
         .container {
-            max-width: 1100px; /* Aumentado para acomodar la nueva columna */
+            max-width: 1200px;
         }
         h1 {
             color: #007bff;
@@ -37,19 +37,145 @@
         .form-label {
             font-weight: bold;
         }
-        .status-badge {
-            font-size: 0.85em;
-            padding: 0.4em 0.6em;
-            border-radius: 0.25rem;
+        .badge {
+            font-size: 0.75em;
         }
-        .bg-success-subtle { background-color: #d1e7dd !important; color: #0f5132 !important; }
-        .bg-warning-subtle { background-color: #fff3cd !important; color: #664d03 !important; }
-        .bg-secondary-subtle { background-color: #e2e3e5 !important; color: #41464b !important; }
+        .correlativas-badge {
+            margin: 1px;
+            font-size: 0.7em;
+        }
+        .filters-section {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
+    <h1>Plan de Estudios por Cuatrimestre</h1>
+
+    <!-- Sección de filtros -->
+    <div class="filters-section">
+        <form th:action="@{/materias}" method="get">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-4">
+                    <label for="dificultad-select" class="form-label">Filtrar por dificultad:</label>
+                    <select id="dificultad-select" name="dificultad" class="form-select">
+                        <option value="">Todas las dificultades</option>
+                        <option value="Facil" th:selected="${dificultadSeleccionada == 'Facil'}">Fácil</option>
+                        <option value="Media" th:selected="${dificultadSeleccionada == 'Media'}">Media</option>
+                        <option value="Alta" th:selected="${dificultadSeleccionada == 'Alta'}">Alta</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="cuatrimestre-select" class="form-label">Filtrar por cuatrimestre:</label>
+                    <select id="cuatrimestre-select" name="cuatrimestre" class="form-select">
+                        <option value="">Todos los cuatrimestres</option>
+                        <option value="1" th:selected="${cuatrimestreSeleccionado == 1}">1er Cuatrimestre</option>
+                        <option value="2" th:selected="${cuatrimestreSeleccionado == 2}">2do Cuatrimestre</option>
+                        <option value="3" th:selected="${cuatrimestreSeleccionado == 3}">3er Cuatrimestre</option>
+                        <option value="4" th:selected="${cuatrimestreSeleccionado == 4}">4to Cuatrimestre</option>
+                        <option value="5" th:selected="${cuatrimestreSeleccionado == 5}">5to Cuatrimestre</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <button type="submit" class="btn btn-primary me-2">Aplicar Filtros</button>
+                    <a href="/spring/materias" class="btn btn-outline-secondary">Limpiar</a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Mensaje de información si no hay materias -->
+    <div th:if="${materiasPorCuatrimestre.empty}" class="alert alert-info" role="alert">
+        <h4 class="alert-heading">Sin resultados</h4>
+        <p class="mb-0">No hay materias disponibles para los filtros seleccionados.</p>
+    </div>
+
+    <!-- Listado de materias por cuatrimestre -->
+    <div th:unless="${materiasPorCuatrimestre.empty}">
+        <div th:each="cuatrimestreEntry : ${materiasPorCuatrimestre}" class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span>Cuatrimestre <span th:text="${cuatrimestreEntry.key}">1</span></span>
+                <span class="badge bg-light text-dark">
+                    <span th:text="${cuatrimestreEntry.value.size()}">0</span> materias
+                </span>
+            </div>
+            <div class="card-body p-0">
+                <div th:if="${cuatrimestreEntry.value.empty}" class="p-3">
+                    <p class="mb-0 text-muted">No hay materias en este cuatrimestre que coincidan con los filtros aplicados.</p>
+                </div>
+                <div th:unless="${cuatrimestreEntry.value.empty}" class="table-responsive">
+                    <table class="table table-striped table-hover mb-0">
+                        <thead class="table-dark">
+                        <tr>
+                            <th style="width: 100px;">ID</th>
+                            <th>Nombre</th>
+                            <th style="width: 80px;">Tipo</th>
+                            <th style="width: 100px;">Carga Horaria</th>
+                            <th style="width: 100px;">Dificultad</th>
+                            <th>Correlativas</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="materia : ${cuatrimestreEntry.value}">
+                            <td>
+                                <code th:text="${materia.id}" class="text-primary"></code>
+                            </td>
+                            <td>
+                                <strong th:text="${materia.nombre}"></strong>
+                                <div th:if="${materia.descripcion != null and !materia.descripcion.isEmpty()}"
+                                     class="text-muted small" th:text="${materia.descripcion}"></div>
+                            </td>
+                            <td>
+                                <span class="badge bg-secondary" th:text="${materia.tipo}"></span>
+                            </td>
+                            <td class="text-center">
+                                <span th:text="${materia.cargaHoraria}"></span>h
+                            </td>
+                            <td>
+                                <span th:switch="${T(java.lang.Integer).valueOf(materia.cargaHoraria <= 4 ? 1 : (materia.cargaHoraria <= 6 ? 2 : 3))}">
+                                    <span th:case="1" class="badge bg-success">Fácil</span>
+                                    <span th:case="2" class="badge bg-warning text-dark">Media</span>
+                                    <span th:case="3" class="badge bg-danger">Alta</span>
+                                </span>
+                            </td>
+                            <td>
+                                <div th:if="${materia.correlativa1 != null or materia.correlativa2 != null or materia.correlativa3 != null or materia.correlativa4 != null or materia.correlativa5 != null or materia.correlativa6 != null}">
+                                    <span th:if="${materia.correlativa1 != null}" class="badge bg-info correlativas-badge" th:text="${materia.correlativa1}"></span>
+                                    <span th:if="${materia.correlativa2 != null}" class="badge bg-info correlativas-badge" th:text="${materia.correlativa2}"></span>
+                                    <span th:if="${materia.correlativa3 != null}" class="badge bg-info correlativas-badge" th:text="${materia.correlativa3}"></span>
+                                    <span th:if="${materia.correlativa4 != null}" class="badge bg-info correlativas-badge" th:text="${materia.correlativa4}"></span>
+                                    <span th:if="${materia.correlativa5 != null}" class="badge bg-info correlativas-badge" th:text="${materia.correlativa5}"></span>
+                                    <span th:if="${materia.correlativa6 != null}" class="badge bg-info correlativas-badge" th:text="${materia.correlativa6}"></span>
+                                </div>
+                                <div th:if="${materia.correlativa1 == null and materia.correlativa2 == null and materia.correlativa3 == null and materia.correlativa4 == null and materia.correlativa5 == null and materia.correlativa6 == null}">
+                                    <span class="text-muted small">Sin correlativas</span>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Información adicional -->
+    <div class="mt-4 p-3 bg-light rounded">
+        <h5>Información del Sistema</h5>
+        <p class="mb-1"><strong>Total de materias:</strong> <span th:text="${materiasPorCuatrimestre.values().stream().mapToInt(list -> list.size()).sum()}">0</span></p>
+        <p class="mb-0"><strong>Cuatrimestres disponibles:</strong> <span th:text="${materiasPorCuatrimestre.keySet().size()}">0</span></p>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-RpOaZ2lYx1o4i+MhLdE8I8Z1mQo8JcW7f/tE7fV5YpZfXvK/Q8F+Y3w4YQ" crossorigin="anonymous"></script>
+</body>
+</html>
     <h1>Plan de Estudios por Cuatrimestre</h1>
 
     <div class="mb-4 d-flex justify-content-between align-items-center">
