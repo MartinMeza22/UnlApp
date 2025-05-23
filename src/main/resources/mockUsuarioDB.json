@@ -1,0 +1,26 @@
+[
+  {
+    "id": "USER001",
+    "carreraID": "CAR001",
+    "mailUniversitario": "user@uni.edu",
+    "nombre": "Juan",
+    "apellido": "Pérez",
+    "contrasenia": "contrasena123",
+    "preferencia": "presencial",
+    "situacionLaboral": "desempleado",
+    "disponibilidadHoraria": "mañana",
+    "codigoAuth": "abc123xyz"
+  },
+  {
+    "id": "USER002",
+    "carreraID": "CAR001",
+    "mailUniversitario": "user1@uni.edu",
+    "nombre": "Ana",
+    "apellido": "Gómez",
+    "contrasenia": "clave456",
+    "preferencia": "remoto",
+    "situacionLaboral": "empleado",
+    "disponibilidadHoraria": "tarde",
+    "codigoAuth": "def456uvw"
+  }
+]

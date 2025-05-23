@@ -1,17 +1,16 @@
 package com.tallerwebi.presentacion;
 
-import com.tallerwebi.dominio.Cuatrimestre;
+import com.tallerwebi.dominio.MateriaDB;
 import com.tallerwebi.dominio.Estudiante;
-import com.tallerwebi.dominio.Materia;
 import com.tallerwebi.dominio.ServicioMateria;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes; // Sigue siendo necesario para addFlashAttribute
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -28,7 +27,7 @@ public class ControllerMateria {
 
     @GetMapping
     public ModelMap listarMaterias(@RequestParam(value = "dificultad", required = false) String dificultadFiltro,
-                                   ModelMap modelo, // Quitamos @RequestParam(value = "mensaje", required = false) String mensaje
+                                   ModelMap modelo,
                                    @SessionAttribute(value = "estudiante", required = false) Estudiante estudianteSesion) {
 
         if (estudianteSesion == null) {
@@ -38,71 +37,80 @@ public class ControllerMateria {
             modelo.addAttribute("estudiante", estudianteSesion);
         }
 
-        List<Cuatrimestre> todosLosCuatrimestres = this.servicioMateria.obtenerMateriasPorCuatrimestre();
-        List<Cuatrimestre> cuatrimestresFiltrados = new ArrayList<>();
+        // Obtener todas las materias y agruparlas por cuatrimestre
+        Map<Integer, List<MateriaDB>> materiasPorCuatrimestre = servicioMateria.obtenerMateriasAgrupadasPorCuatrimestre();
 
+        // Si hay filtro de dificultad, aplicarlo
         if (dificultadFiltro != null && !dificultadFiltro.isEmpty()) {
-            for (Cuatrimestre cuatrimestre : todosLosCuatrimestres) {
-                List<Materia> materiasFiltradasPorCuatrimestre = cuatrimestre.getMaterias().stream()
-                        .filter(materia -> materia.getDificultad().equalsIgnoreCase(dificultadFiltro))
-                        .collect(Collectors.toList());
-                if (!materiasFiltradasPorCuatrimestre.isEmpty()) {
-                    Cuatrimestre nuevoCuatrimestre = new Cuatrimestre();
-                    nuevoCuatrimestre.setCuatrimestre(cuatrimestre.getCuatrimestre());
-                    nuevoCuatrimestre.setMaterias(materiasFiltradasPorCuatrimestre);
-                    cuatrimestresFiltrados.add(nuevoCuatrimestre);
-                }
-            }
-        } else {
-            cuatrimestresFiltrados = todosLosCuatrimestres;
+            materiasPorCuatrimestre = materiasPorCuatrimestre.entrySet().stream()
+                .collect(Collectors.toMap(
+                    Map.Entry::getKey,
+                    entry -> entry.getValue().stream()
+                        .filter(materia -> dificultadFiltro.equalsIgnoreCase(getDificultadFromCargaHoraria(materia.getCargaHoraria())))
+                        .collect(Collectors.toList())
+                ))
+                .entrySet().stream()
+                .filter(entry -> !entry.getValue().isEmpty())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         }
 
-        modelo.addAttribute("cuatrimestres", cuatrimestresFiltrados);
+        modelo.addAttribute("materiasPorCuatrimestre", materiasPorCuatrimestre);
         modelo.addAttribute("dificultadSeleccionada", dificultadFiltro);
-        // El mensaje ahora se leerá directamente del modelo flash de Spring si existe
+
         return modelo;
     }
 
-    @PostMapping("/cursando")
-    public String marcarCursando(@RequestParam("codigoMateria") Integer codigoMateria,
-                                 @SessionAttribute("estudiante") Estudiante estudiante,
-                                 RedirectAttributes redirectAttributes) {
-        String resultado = servicioMateria.marcarComoCursando(estudiante, codigoMateria);
-        redirectAttributes.addFlashAttribute("mensaje", resultado); // ¡Cambiado aquí!
-        return "redirect:/materias";
+    /**
+     * Método auxiliar para determinar dificultad basada en carga horaria
+     * (ya que el nuevo JSON no tiene campo "dificultad")
+     */
+    private String getDificultadFromCargaHoraria(Integer cargaHoraria) {
+        if (cargaHoraria == null) return "Media";
+        if (cargaHoraria <= 4) return "Facil";
+        if (cargaHoraria <= 6) return "Media";
+        return "Alta";
     }
 
-    @PostMapping("/aprobada")
-    public String marcarAprobada(@RequestParam("codigoMateria") Integer codigoMateria,
-                                 @SessionAttribute("estudiante") Estudiante estudiante,
-                                 RedirectAttributes redirectAttributes) {
-        String resultado = servicioMateria.marcarComoAprobada(estudiante, codigoMateria);
-        redirectAttributes.addFlashAttribute("mensaje", resultado); // ¡Cambiado aquí!
-        return "redirect:/materias";
-    }
-
-    @PostMapping("/quitarCursando")
-    public String quitarCursando(@RequestParam("codigoMateria") Integer codigoMateria,
-                                 @SessionAttribute("estudiante") Estudiante estudiante,
-                                 RedirectAttributes redirectAttributes) {
-        String resultado = servicioMateria.quitarDeCursando(estudiante, codigoMateria);
-        redirectAttributes.addFlashAttribute("mensaje", resultado); // ¡Cambiado aquí!
-        return "redirect:/materias";
-    }
-
-    @PostMapping("/quitarAprobada")
-    public String quitarAprobada(@RequestParam("codigoMateria") Integer codigoMateria,
-                                 @SessionAttribute("estudiante") Estudiante estudiante,
-                                 RedirectAttributes redirectAttributes) {
-        String resultado = servicioMateria.quitarDeAprobadas(estudiante, codigoMateria);
-        redirectAttributes.addFlashAttribute("mensaje", resultado); // ¡Cambiado aquí!
-        return "redirect:/materias";
-    }
-
-    @PostMapping("/reiniciarEstudiante")
-    public String reiniciarEstudiante(SessionStatus sessionStatus, RedirectAttributes redirectAttributes) {
-        sessionStatus.setComplete();
-        redirectAttributes.addFlashAttribute("mensaje", "Estado del estudiante reiniciado."); // ¡Cambiado aquí!
-        return "redirect:/materias";
-    }
+//     @PostMapping("/cursando")
+//     public String marcarCursando(@RequestParam("codigoMateria") Integer codigoMateria,
+//                                  @SessionAttribute("estudiante") Estudiante estudiante,
+//                                  RedirectAttributes redirectAttributes) {
+//         String resultado = servicioMateria.marcarComoCursando(estudiante, codigoMateria);
+//         redirectAttributes.addFlashAttribute("mensaje", resultado);
+//         return "redirect:/materias";
+//     }
+//
+//     @PostMapping("/aprobada")
+//     public String marcarAprobada(@RequestParam("codigoMateria") Integer codigoMateria,
+//                                  @SessionAttribute("estudiante") Estudiante estudiante,
+//                                  RedirectAttributes redirectAttributes) {
+//         String resultado = servicioMateria.marcarComoAprobada(estudiante, codigoMateria);
+//         redirectAttributes.addFlashAttribute("mensaje", resultado);
+//         return "redirect:/materias";
+//     }
+//
+//     @PostMapping("/quitarCursando")
+//     public String quitarCursando(@RequestParam("codigoMateria") Integer codigoMateria,
+//                                  @SessionAttribute("estudiante") Estudiante estudiante,
+//                                  RedirectAttributes redirectAttributes) {
+//         String resultado = servicioMateria.quitarDeCursando(estudiante, codigoMateria);
+//         redirectAttributes.addFlashAttribute("mensaje", resultado);
+//         return "redirect:/materias";
+//     }
+//
+//     @PostMapping("/quitarAprobada")
+//     public String quitarAprobada(@RequestParam("codigoMateria") Integer codigoMateria,
+//                                  @SessionAttribute("estudiante") Estudiante estudiante,
+//                                  RedirectAttributes redirectAttributes) {
+//         String resultado = servicioMateria.quitarDeAprobadas(estudiante, codigoMateria);
+//         redirectAttributes.addFlashAttribute("mensaje", resultado);
+//         return "redirect:/materias";
+//     }
+//
+//     @PostMapping("/reiniciarEstudiante")
+//     public String reiniciarEstudiante(SessionStatus sessionStatus, RedirectAttributes redirectAttributes) {
+//         sessionStatus.setComplete();
+//         redirectAttributes.addFlashAttribute("mensaje", "Estado del estudiante reiniciado.");
+//         return "redirect:/materias";
+//     }
 }
