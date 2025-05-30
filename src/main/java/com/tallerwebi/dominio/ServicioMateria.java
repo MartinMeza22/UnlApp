@@ -1,46 +1,52 @@
 package com.tallerwebi.dominio;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.io.InputStream;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
-@Service
+@Service("servicioMateria")
+@Transactional
 public class ServicioMateria {
 
-    private final ObjectMapper objectMapper;
+    private RepositorioMateria repositorioMateria;
 
     @Autowired
-    public ServicioMateria(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
+    public ServicioMateria(RepositorioMateria repositorioMateria) {
+        this.repositorioMateria = repositorioMateria;
     }
 
-    public List<MateriaDB> obtenerTodasLasMaterias() {
-        try {
-            ClassPathResource classPathResource = new ClassPathResource("mockMateriasDB.json");
-            InputStream inputStream = classPathResource.getInputStream();
-            return objectMapper.readValue(inputStream, new TypeReference<List<MateriaDB>>() {});
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException("Error al leer el archivo JSON de materias.", e);
+    // Basic CRUD operations
+    public void crearMateria(Materia materia) {
+        if (materia.getNombre() == null || materia.getNombre().trim().isEmpty()) {
+            throw new IllegalArgumentException("El nombre de la materia es obligatorio");
         }
+        repositorioMateria.guardar(materia);
     }
 
-    public Map<Integer, List<MateriaDB>> obtenerMateriasAgrupadasPorCuatrimestre() {
-        return obtenerTodasLasMaterias().stream()
-                .collect(Collectors.groupingBy(MateriaDB::getCuatrimestre));
+    public Materia buscarMateriaPorId(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("El ID no puede ser nulo");
+        }
+        return repositorioMateria.buscarPorId(id);
     }
 
-    public MateriaDB encontrarMateriaPorId(String idMateria) {
-        return obtenerTodasLasMaterias().stream()
-                .filter(m -> m.getId().equals(idMateria))
-                .findFirst()
-                .orElse(null);
+    public List<Materia> obtenerTodasLasMaterias() {
+        return repositorioMateria.buscarTodas();
+    }
+
+    public void actualizarMateria(Materia materia) {
+        if (materia == null || materia.getId() == null) {
+            throw new IllegalArgumentException("La materia y su ID son obligatorios para actualizar");
+        }
+        repositorioMateria.actualizar(materia);
+    }
+
+    public void eliminarMateria(Long id) {
+        Materia materia = buscarMateriaPorId(id);
+        if (materia != null) {
+            repositorioMateria.eliminar(materia);
+        }
     }
 }
