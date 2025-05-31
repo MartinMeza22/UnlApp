@@ -18,7 +18,12 @@ public class HibernateConfig {
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        dataSource.setUrl("jdbc:mysql://localhost:3306/tallerwebi?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true");
+
+        // Use environment variable for database host, default to localhost
+        String dbHost = System.getenv("DB_HOST") != null ? System.getenv("DB_HOST") : "localhost";
+        String dbUrl = String.format("jdbc:mysql://%s:3306/tallerwebi?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true", dbHost);
+
+        dataSource.setUrl(dbUrl);
         dataSource.setUsername("user");
         dataSource.setPassword("user");
         return dataSource;
