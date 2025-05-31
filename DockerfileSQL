@@ -1,5 +1,5 @@
 # Usa la imagen oficial de MySQL como base
-FROM mysql:5.7
+FROM mysql:8.0
 
 # Establece las variables de entorno para la configuración de MySQL
 ENV MYSQL_ROOT_PASSWORD=rootpassword
@@ -7,8 +7,14 @@ ENV MYSQL_DATABASE=tallerwebi
 ENV MYSQL_USER=user
 ENV MYSQL_PASSWORD=user
 
+# Configura MySQL para usar autenticación legacy y permitir conexiones externas
+ENV MYSQL_ROOT_HOST=%
+
 # Copia cualquier script SQL que desees ejecutar en la inicialización
 #COPY ./init.sql /docker-entrypoint-initdb.d/
 
 # Expone el puerto 3306
 EXPOSE 3306
+
+# Configura MySQL para usar autenticación legacy por defecto
+CMD ["mysqld", "--default-authentication-plugin=mysql_native_password"]
