@@ -13,7 +13,9 @@ public class ControladorProgresoAcademico {
     @RequestMapping(path = "/progreso", method = RequestMethod.GET)
     public ModelAndView verProgreso() {
         ModelMap model = new ModelMap();//key / value
-        model.put("carrera", new Carrera());
+        Carrera carrera = new Carrera();
+        carrera.setNombre("Desarrollo Web");
+        model.put("carrera", carrera);
         return new ModelAndView("progreso", model);
     }
 

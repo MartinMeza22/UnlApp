@@ -48,7 +48,8 @@
 <div class="container">
     <h1>Progreso de la carrera: </h1>
     <h2 th:text="'¡Bienvenido, ' + ${session.NOMBRE} + '!'">¡Bienvenido, Alumno!</h2>
-    <h2>Tu progreso en la carrera es: </h2>
+    <p>Nombre: <span th:text="${carrera.nombre}">[Nombre]</span></p>
+
     <!-- Mensaje si no hay materias -->
     <div th:if="${materias == null or materias.empty}" class="alert alert-info" role="alert">
         <h4 class="alert-heading">Sin materias</h4>
