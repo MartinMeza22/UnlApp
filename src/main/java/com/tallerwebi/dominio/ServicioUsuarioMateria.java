@@ -16,8 +16,8 @@ public class ServicioUsuarioMateria {
 
     @Autowired
     public ServicioUsuarioMateria(RepositorioUsuarioMateria repositorioUsuarioMateria,
-                                 RepositorioUsuario repositorioUsuario,
-                                 RepositorioMateria repositorioMateria) {
+                                  RepositorioUsuario repositorioUsuario,
+                                  RepositorioMateria repositorioMateria) {
         this.repositorioUsuarioMateria = repositorioUsuarioMateria;
         this.repositorioUsuario = repositorioUsuario;
         this.repositorioMateria = repositorioMateria;
