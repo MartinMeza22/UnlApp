@@ -10,18 +10,18 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository("repositorioUsuarioMateria")
-public class RepositorioUsuarioMateriaImpl implements RepositorioUsuarioMateria {
+public class RepositorioUsuarioMateriaImpl implements RepositorioUsuarioMateria { //Implementamos la interfaz
 
-    private SessionFactory sessionFactory;
+    private SessionFactory sessionFactory; //Declaramos la session (para conectar la BDD)
 
     @Autowired
     public RepositorioUsuarioMateriaImpl(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
+        this.sessionFactory = sessionFactory;//Asignamos la conexión de BDD (la trae Spring)
     }
 
     @Override
     public void guardar(UsuarioMateria usuarioMateria) {
-        sessionFactory.getCurrentSession().save(usuarioMateria);
+        sessionFactory.getCurrentSession().save(usuarioMateria);//Guarda el usuario en la BDD
     }
 
     @Override
@@ -30,7 +30,7 @@ public class RepositorioUsuarioMateriaImpl implements RepositorioUsuarioMateria 
     }
 
     @Override
-    public UsuarioMateria buscarPorUsuarioYMateria(Long usuarioId, Long materiaId) {
+    public UsuarioMateria buscarPorUsuarioYMateria(Long usuarioId, Long materiaId) { //Utilización de metodos para hacer consultas SQL
         return (UsuarioMateria) sessionFactory.getCurrentSession()
                 .createCriteria(UsuarioMateria.class)
                 .createAlias("usuario", "u")
@@ -53,7 +53,7 @@ public class RepositorioUsuarioMateriaImpl implements RepositorioUsuarioMateria 
     @Override
     @SuppressWarnings("unchecked")
     public List<UsuarioMateria> buscarTodas() {
-        final String hql = "FROM UsuarioMateria um " +
+        final String hql = "FROM UsuarioMateria um " + //HQL es una consulta con Hibernate
                           "JOIN FETCH um.usuario u " +
                           "JOIN FETCH um.materia m " +
                           "ORDER BY u.email, m.nombre";
@@ -66,15 +66,16 @@ public class RepositorioUsuarioMateriaImpl implements RepositorioUsuarioMateria 
     public void actualizar(UsuarioMateria usuarioMateria) {
         sessionFactory.getCurrentSession().update(usuarioMateria);
     }
+    //Actualiza una fila existente en la base con nuevos datos
 
     @Override
     public void eliminar(UsuarioMateria usuarioMateria) {
         sessionFactory.getCurrentSession().delete(usuarioMateria);
     }
-
+    //Elimina una fila existente de la tabla usuario_materia
     @Override
     public boolean existe(Long usuarioId, Long materiaId) {
-        UsuarioMateria resultado = buscarPorUsuarioYMateria(usuarioId, materiaId);
+        UsuarioMateria resultado = buscarPorUsuarioYMateria(usuarioId, materiaId); //Reutilización de otro metodo
         return resultado != null;
     }
 }

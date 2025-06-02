@@ -3,23 +3,24 @@ package com.tallerwebi.dominio;
 import javax.persistence.*;
 import java.time.LocalDate;
 
-@Entity
-@Table(name = "usuario_materia")
+@Entity //creando la entidad (se plasmará en la BDD)
+@Table(name = "usuario_materia") //Se crea la tabla con el nombre que se asigno
 public class UsuarioMateria {
 
-    @Id
+    @Id //Determina id de cada instancia de clase
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "usuario_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY) //El ManyToOne determina N a 1. En Usuario (en este caso). "LAZY" quiere decir que no se carga el usuario automáticamente, solo cuando se lo accede.
+    @JoinColumn(name = "usuario_id", nullable = false) //Determina el nombre de esa columna (donde estará usuario_id), no puede ser null
     private Usuario usuario;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "materia_id", nullable = false)
     private Materia materia;
 
-    @Column(precision = 4, scale = 2)
+    @Column(precision = 4, scale = 2) //el column se utiliza para determinar una columna.
+    // El precision es para ver cuantos números van en total. Y "scale" son los números después de la ,
     private Double nota; // null = cursando, >= 4 = aprobada, < 4 = desaprobada
 
     @Column
