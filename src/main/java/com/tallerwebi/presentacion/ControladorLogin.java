@@ -1,10 +1,12 @@
 package com.tallerwebi.presentacion;
 
+import com.tallerwebi.dominio.Carrera;
 import com.tallerwebi.dominio.ServicioLogin;
 import com.tallerwebi.dominio.Usuario;
 import com.tallerwebi.dominio.excepcion.UsuarioExistente;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -69,10 +71,11 @@ public class ControladorLogin {
         return new ModelAndView("nuevo-usuario", model);
     }
 
-
     @RequestMapping(path = "/progreso", method = RequestMethod.GET)
     public ModelAndView verProgreso() {
-        return new ModelAndView("progreso");
+        ModelMap model = new ModelMap();//key / value
+        model.put("carrera", new Carrera());
+        return new ModelAndView("progreso", model);
     }
 
     @RequestMapping(path = "/home", method = RequestMethod.GET)
