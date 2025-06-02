@@ -1,7 +1,7 @@
-package com.tallerwebi.dominio;
+package com.tallerwebi.infraestructura;
 
+import com.tallerwebi.dominio.RepositorioLogin;
 import com.tallerwebi.dominio.RepositorioUsuario;
-import com.tallerwebi.dominio.ServicioLogin;
 import com.tallerwebi.dominio.Usuario;
 import com.tallerwebi.dominio.excepcion.UsuarioExistente;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,12 +11,12 @@ import javax.transaction.Transactional;
 
 @Service("servicioLogin")
 @Transactional
-public class ServicioLoginImpl implements ServicioLogin {
+public class RepositorioLoginImplementacion implements RepositorioLogin {
 
     private RepositorioUsuario repositorioUsuario;
 
     @Autowired
-    public ServicioLoginImpl(RepositorioUsuario repositorioUsuario){
+    public RepositorioLoginImplementacion(RepositorioUsuario repositorioUsuario){
         this.repositorioUsuario = repositorioUsuario;
     }
 

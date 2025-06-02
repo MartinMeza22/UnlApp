@@ -10,21 +10,21 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/materias")
-public class ControllerMateria {
+public class ControladorPlanDeEstudios {
 
     private final ServicioMateria servicioMateria;
 
-    public ControllerMateria(ServicioMateria servicioMateria) {
+    public ControladorPlanDeEstudios(ServicioMateria servicioMateria) {
         this.servicioMateria = servicioMateria;
     }
 
     @GetMapping
     public String listarMaterias(ModelMap modelo) {
-        // Simple: just get all materias and display them
+
         List<Materia> materias = servicioMateria.obtenerTodasLasMaterias();
 
         modelo.addAttribute("materias", materias);
 
-        return "materias"; // This will look for materias.html template
+        return "materias";
     }
 }

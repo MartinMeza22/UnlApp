@@ -1,12 +1,10 @@
 package com.tallerwebi.presentacion;
 
-import com.tallerwebi.dominio.Carrera;
-import com.tallerwebi.dominio.ServicioLogin;
+import com.tallerwebi.dominio.RepositorioLogin;
 import com.tallerwebi.dominio.Usuario;
 import com.tallerwebi.dominio.excepcion.UsuarioExistente;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,11 +16,11 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 public class ControladorLogin {
 
-    private ServicioLogin servicioLogin;
+    private RepositorioLogin repositorioLogin;
 
     @Autowired
-    public ControladorLogin(ServicioLogin servicioLogin){
-        this.servicioLogin = servicioLogin;
+    public ControladorLogin(RepositorioLogin repositorioLogin){
+        this.repositorioLogin = repositorioLogin;
     }
 
     @RequestMapping("/login")
@@ -37,7 +35,7 @@ public class ControladorLogin {
     public ModelAndView validarLogin(@ModelAttribute("datosLogin") DatosLogin datosLogin, HttpServletRequest request) {
         ModelMap model = new ModelMap();
 
-        Usuario usuarioBuscado = servicioLogin.consultarUsuario(datosLogin.getEmail(), datosLogin.getPassword());
+        Usuario usuarioBuscado = repositorioLogin.consultarUsuario(datosLogin.getEmail(), datosLogin.getPassword());
         if (usuarioBuscado != null) {
             request.getSession().setAttribute("ROL", usuarioBuscado.getRol());
             request.getSession().setAttribute("NOMBRE", usuarioBuscado.getNombre()); // <-- NUEVO
@@ -53,7 +51,7 @@ public class ControladorLogin {
     public ModelAndView registrarme(@ModelAttribute("usuario") Usuario usuario) {
         ModelMap model = new ModelMap();
         try{
-            servicioLogin.registrar(usuario);
+            repositorioLogin.registrar(usuario);
         } catch (UsuarioExistente e){
             model.put("error", "El usuario ya existe");
             return new ModelAndView("nuevo-usuario", model);
@@ -71,17 +69,6 @@ public class ControladorLogin {
         return new ModelAndView("nuevo-usuario", model);
     }
 
-    @RequestMapping(path = "/progreso", method = RequestMethod.GET)
-    public ModelAndView verProgreso() {
-        ModelMap model = new ModelMap();//key / value
-        model.put("carrera", new Carrera());
-        return new ModelAndView("progreso", model);
-    }
-
-    @RequestMapping(path = "/home", method = RequestMethod.GET)
-    public ModelAndView irAHome() {
-        return new ModelAndView("home");
-    }
 
     @RequestMapping(path = "/", method = RequestMethod.GET)
     public ModelAndView inicio() {
