@@ -46,4 +46,11 @@ public class RepositorioMateriaImpl implements RepositorioMateria {
     public void eliminar(Materia materia) {
         sessionFactory.getCurrentSession().delete(materia);
     }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<Materia> obtenerTodasLasMateriasPorNombre(){
+        final String hql = "SELECT nombre FROM Materia";
+                return sessionFactory.getCurrentSession().createQuery(hql).list();
+    }
 }
