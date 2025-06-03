@@ -1,18 +1,16 @@
 package com.tallerwebi.presentacion;
 
-import com.tallerwebi.dominio.DatosLogin;
-import com.tallerwebi.dominio.RepositorioLogin;
-import com.tallerwebi.dominio.Usuario;
+import com.tallerwebi.dominio.*;
 import com.tallerwebi.dominio.excepcion.UsuarioExistente;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @Controller
 public class ControladorLogin {
@@ -20,8 +18,13 @@ public class ControladorLogin {
     private RepositorioLogin repositorioLogin;
 
     @Autowired
+    private ServicioMateria servicioMateria;
+
+
+    @Autowired
     public ControladorLogin(RepositorioLogin repositorioLogin){
         this.repositorioLogin = repositorioLogin;
+
     }
 
     @RequestMapping("/login")
@@ -48,7 +51,6 @@ public class ControladorLogin {
         return new ModelAndView("login", model);
     }
 
-
     @RequestMapping(path = "/registrarme", method = RequestMethod.POST)
     public ModelAndView registrarme(@ModelAttribute("usuario") Usuario usuario) {
         ModelMap model = new ModelMap();
@@ -71,11 +73,17 @@ public class ControladorLogin {
         return new ModelAndView("nuevo-usuario", model);
     }
 
-
     @RequestMapping(path = "/", method = RequestMethod.GET)
     public ModelAndView inicio() {
         return new ModelAndView("redirect:/login");
     }
 
+
+    @PostMapping("/registrarme/paso2")
+    public ModelAndView mostrarFormularioDeMaterias(Model model) {
+        List<Materia> materias = servicioMateria.obtenerTodasLasMateriasPorNombre();
+        model.addAttribute("materias", materias);
+        return new ModelAndView("registroMateriasUsuario");
+    }
 }
 

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Seleccionar Materias</title>
+</head>
+<body>
+<h1>Seleccioná tus materias</h1>
+
+<form th:action="@{/registrarme/paso2/procesar}" method="post">
+    <ul>
+        <li>
+            <label>
+                <input type="checkbox" name="materiasSeleccionadas" th:value="${materias}" />
+                <span th:text="${materias}">Nombre de la materia</span>
+            </label>
+        </li>
+    </ul>
+
+    <button type="submit">Guardar</button>
+</form>
+</body>
+</html>
