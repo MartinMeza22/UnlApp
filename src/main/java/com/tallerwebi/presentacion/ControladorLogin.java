@@ -79,10 +79,10 @@ public class ControladorLogin {
 
 
     @PostMapping("/registrarme/paso2")
-    public ModelAndView mostrarFormularioDeMaterias(Model model) {
+    public ModelAndView mostrarFormularioDeMaterias(ModelMap model) {
         List<Materia> materias = servicioMateria.obtenerTodasLasMateriasPorNombre();
         model.addAttribute("materias", materias);
-        return new ModelAndView("registroMateriasUsuario");
+        return new ModelAndView("registroMateriasUsuario", model);
     }
 }
 
