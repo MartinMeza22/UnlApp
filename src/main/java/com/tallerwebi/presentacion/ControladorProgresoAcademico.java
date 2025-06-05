@@ -18,6 +18,8 @@ import java.util.List;
 @Controller
 public class ControladorProgresoAcademico {
 
+    @Autowired
+    private ServicioUsuarioMateria servicioUsuarioMateria;
     private ServicioProgreso servicioProgreso;
     private ServicioMateria servicioMateria;
     private UsuarioMateria usuarioMateria;
@@ -62,20 +64,10 @@ public class ControladorProgresoAcademico {
         return new ModelAndView("progreso", model);
     }
 
-    @RequestMapping(path = "/progreso/actualizar-materia", method = RequestMethod.POST)
-    public String actualizarDatosMateria(
-            @RequestParam(name = "nota", required = false) Double nota,
-            @RequestParam(name = "dificultad", required = false) Integer dificultad,
-            @RequestParam(name = "id") Long idMateria,
-            HttpSession session,
-            RedirectAttributes redirectAttributes // Para redireccionamiento a /progreso, ModelAndView no me funciono aca
-    ) {
-        Long usuarioId = (Long) session.getAttribute("ID");
-
-        // Pude haber utilizado el servicio de UsuarioMateria, el metodo modificar, pero le falta le id del usuario al metodo modificar
-        this.servicioProgreso.actualizarDatosMateria(usuarioId, idMateria, nota, dificultad);
-
-        return "redirect:/progreso";
-    }
-
+//    @PostMapping("/progresoDesdeElRegistro")
+//    public ModelAndView cargarProgreso(@ModelAttribute) {
+//
+//        repositorioUsuarioMateria.guardar(usuarioMateria);
+//        return new ModelAndView("home");
+//    }
 }
