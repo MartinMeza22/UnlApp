@@ -15,7 +15,7 @@ import java.util.List;
 public class ControladorProgresoAcademico {
 
     @Autowired
-    private RepositorioUsuarioMateria repositorioUsuarioMateria;
+    private ServicioUsuarioMateria servicioUsuarioMateria;
 
     @RequestMapping(path = "/progreso", method = RequestMethod.GET)
     public ModelAndView verProgreso() {
@@ -25,11 +25,4 @@ public class ControladorProgresoAcademico {
         model.put("carrera", carrera);
         return new ModelAndView("progreso", model);
     }
-
-//    @PostMapping("/progresoDesdeElRegistro")
-//    public ModelAndView cargarProgreso(@ModelAttribute) {
-//
-//        repositorioUsuarioMateria.guardar(usuarioMateria);
-//        return new ModelAndView("home");
-//    }
 }
