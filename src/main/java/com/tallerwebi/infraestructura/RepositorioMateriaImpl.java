@@ -50,7 +50,7 @@ public class RepositorioMateriaImpl implements RepositorioMateria {
     @Override
     @SuppressWarnings("unchecked")
     public List<Materia> obtenerTodasLasMateriasPorNombre(){
-        final String hql = "SELECT nombre FROM Materia";
+        final String hql = "FROM Materia ORDER BY nombre";
                 return sessionFactory.getCurrentSession().createQuery(hql).list();
     }
 }
