@@ -56,6 +56,7 @@ public class ControladorLogin {
         ModelMap model = new ModelMap();
         try{
             repositorioLogin.registrar(usuario);
+            return mostrarFormularioDeMaterias(model);
         } catch (UsuarioExistente e){
             model.put("error", "El usuario ya existe");
             return new ModelAndView("nuevo-usuario", model);
@@ -63,7 +64,6 @@ public class ControladorLogin {
             model.put("error", "Error al registrar el nuevo usuario");
             return new ModelAndView("nuevo-usuario", model);
         }
-        return new ModelAndView("redirect:/login");
     }
 
     @RequestMapping(path = "/nuevo-usuario", method = RequestMethod.GET)
@@ -77,6 +77,7 @@ public class ControladorLogin {
     public ModelAndView inicio() {
         return new ModelAndView("redirect:/login");
     }
+
 
 
     @PostMapping("/registrarme/paso2")

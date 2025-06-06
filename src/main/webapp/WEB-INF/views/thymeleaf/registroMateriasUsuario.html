@@ -55,7 +55,7 @@
 
         <h3 class="text-center mb-4">Seleccioná las materias</h3>
 
-        <form th:action="@{/progresoDesdeElRegistro}" method="post">
+        <form th:action="@{/pruebaDeDatos}" method="post">
             <div th:each="materia, iter : ${materias}" class="materia-card" th:attr="data-id=${materia.id}">
                 <div class="materia-nombre" th:text="${materia.nombre}">Nombre Materia</div>
 
