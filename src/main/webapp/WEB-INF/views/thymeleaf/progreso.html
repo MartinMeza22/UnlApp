@@ -4,349 +4,329 @@
     <meta charset="UTF-8">
     <title>UnlApp - Plan de Estudios</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
         body {
-            padding-top: 20px;
-            background-color: #f8f9fa;
+            background-color: #f5f6f7;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+            color: #333;
+            padding-bottom: 50px;
         }
+
         .container {
-            max-width: 1200px;
+            max-width: 800px; /* Mantener el ancho máximo del contenedor principal */
+            margin-top: 40px;
         }
-        h1 {
+
+        .list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap; /* Permitir que los elementos se envuelvan en pantallas pequeñas */
+            gap: 15px; /* Espacio entre los elementos del header */
+        }
+
+        .list-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .filter-search-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap; /* Permitir que los filtros se envuelvan */
+        }
+
+        /* --- Estilos del nuevo select --- */
+        .form-select-filter {
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 0.95rem;
+            width: auto; /* Ancho automático para el select */
+            min-width: 150px; /* Ancho mínimo para que se vea bien */
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            appearance: none; /* Eliminar estilo nativo del navegador */
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 16px 12px;
+        }
+
+        .form-select-filter:focus {
+            outline: none;
+            border-color: #4a90e2;
+            box-shadow: 0 0 0 0.15rem rgba(74, 144, 226, 0.25);
+        }
+
+        .search-input-container {
+            position: relative;
+        }
+
+        .search-input {
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            padding: 8px 12px 8px 35px;
+            font-size: 0.95rem;
+            width: 250px;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #4a90e2;
+            box-shadow: 0 0 0 0.15rem rgba(74, 144, 226, 0.25);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #777;
+        }
+
+        /* Tarjetas de materias */
+        .materia-card {
+            background-color: #ffffff;
+            border: 1px solid #e0e6ed;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            padding: 18px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            width: 100%; /* HACER LA TARJETA ANCHA */
+        }
+
+        .materia-info {
+            flex-grow: 1;
+            flex-basis: 0; /* Permite que crezca y se encoja correctamente en flex */
+        }
+
+        .materia-name {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+            word-break: break-word; /* Rompe palabras largas para evitar desbordamiento */
+        }
+
+        .materia-details {
+            font-size: 0.85rem;
+            color: #666;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap; /* Permitir que los badges se envuelvan */
+        }
+
+        /* Badges */
+        .materia-badge {
+            font-size: 0.75rem;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .badge-aprobado {
+            background-color: #e6ffee;
+            color: #008800;
+        }
+
+        .badge-cursando {
+            background-color: #e0f2ff;
             color: #007bff;
-            margin-bottom: 30px;
-            text-align: center;
         }
-        .card {
-            margin-bottom: 30px;
-            border: none;
-            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+
+        .badge-desaprobado {
+            background-color: #ffe6e6;
+            color: #dc3545;
         }
-        .card-header {
-            background-color: #007bff;
-            color: white;
+
+        .badge-pendiente {
+            background-color: #f7f7f7;
+            color: #6c757d;
+            border: 1px solid #d1d5db;
+        }
+
+        .badge-dificultad-facil {
+            background-color: #e6ffee;
+            color: #008800;
+        }
+
+        .badge-dificultad-media {
+            background-color: #fff8e0;
+            color: #b38600;
+        }
+
+        .badge-dificultad-dificil {
+            background-color: #ffe0e0;
+            color: #cc0000;
+        }
+
+        .materia-nota {
             font-size: 1.25rem;
-            font-weight: bold;
+            font-weight: 600;
+            color: #333;
+            margin-left: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0; /* Previene que la nota se encoja demasiado */
         }
-        .table th, .table td {
-            vertical-align: middle;
+
+        .materia-nota.no-nota {
+            color: #999;
+            font-size: 0.9rem;
+            font-weight: 400;
         }
-        .table-striped tbody tr:nth-of-type(odd) {
-            background-color: rgba(0, 123, 255, 0.05);
+
+        /* Estilo para el botón de editar */
+        .edit-button {
+            background: none;
+            border: none;
+            color: #007bff;
+            padding: 0;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: color 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        .badge {
-            font-size: 0.75em;
+
+        .edit-button:hover {
+            color: #0056b3;
         }
-        .correlativas-badge {
-            margin: 1px;
-            font-size: 0.7em;
+
+        .edit-button:disabled {
+            color: #cccccc;
+            cursor: not-allowed;
         }
+
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>Progreso de la carrera: </h1>
-    <h2 th:text="'¡Bienvenido, ' + ${session.NOMBRE} + '!'">¡Bienvenido, Alumno!</h2>
-    <p>Nombre: <span th:text="${carrera.nombre}">[Nombre]</span></p>
-
-    <!-- Mensaje si no hay materias -->
-    <div th:if="${materias == null or materias.empty}" class="alert alert-info" role="alert">
-        <h4 class="alert-heading">Sin materias</h4>
-        <p class="mb-0">No hay materias disponibles en el sistema.</p>
+    <div class="list-header">
+        <h2 class="list-title">Lista de materias</h2>
+        <div class="filter-search-container">
+            <form th:action="@{/progreso}" method="GET" id="filterForm">
+                <select class="form-select form-select-filter" id="condicionFilterInput" name="condicion" onchange="this.form.submit()">
+                    <option value="" th:selected="${selectedCondicion == null or selectedCondicion == ''}">Todas las materias</option>
+                    <option value="Aprobadas" th:selected="${selectedCondicion == 'Aprobadas'}">Aprobadas</option>
+                    <option value="Desaprobadas" th:selected="${selectedCondicion == 'Desaprobadas'}">Desaprobadas</option>
+                    <option value="Cursando" th:selected="${selectedCondicion == 'Cursando'}">Cursando</option>
+                    <option value="Pendientes" th:selected="${selectedCondicion == 'Pendientes'}">Pendientes</option>
+                </select>
+            </form>
+            <div class="search-input-container">
+                <i class="bi bi-search search-icon"></i>
+                <input type="text" class="form-control search-input" placeholder="Buscar materia...">
+            </div>
+        </div>
     </div>
 
-    <!-- Listado de materias por cuatrimestre -->
-    <div th:unless="${materias == null or materias.empty}">
-
-        <!-- Cuatrimestre 1 -->
-        <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <span>1er Cuatrimestre</span>
-                <span class="badge bg-light text-dark"
-                      th:text="${#lists.size(materias.?[cuatrimestre == 1])} + ' materias'">0 materias</span>
-            </div>
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-striped table-hover mb-0">
-                        <thead class="table-dark">
-                        <tr>
-                            <th style="width: 80px;">ID</th>
-                            <th>Nombre</th>
-                            <th style="width: 100px;">Tipo</th>
-                            <th style="width: 120px;">Carga Horaria</th>
-                            <th>Correlativas</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr th:each="materia : ${materias.?[cuatrimestre == 1]}">
-                            <td>
-                                <code th:text="${materia.id}" class="text-primary"></code>
-                            </td>
-                            <td>
-                                <strong th:text="${materia.nombre}"></strong>
-                                <div th:if="${materia.descripcion != null and !materia.descripcion.isEmpty()}"
-                                     class="text-muted small" th:text="${materia.descripcion}"></div>
-                            </td>
-                            <td>
-                                <span class="badge bg-secondary" th:text="${materia.tipo}"></span>
-                            </td>
-                            <td class="text-center">
-                                <span th:text="${materia.cargaHoraria}"></span>h
-                            </td>
-                            <td>
-                                <span class="text-muted small">Sin correlativas</span>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
+    <div class="materias-list">
+        <div th:each="materia : ${materiasTotales}" class="materia-card">
+            <div class="materia-info">
+                <div class="materia-name" th:text="${materia.getNombre()}">Nombre Materia</div>
+                <div class="materia-details">
+                    <span class="materia-badge"
+                          th:classappend="${materia.getEstado() == 'Aprobado' ? 'badge-aprobado' : (materia.getEstado() == 'Cursando' ? 'badge-cursando' : (materia.getEstado() == 'Desaprobada' ? 'badge-desaprobado' : 'badge-pendiente'))}"
+                          th:text="${materia.getEstado()}">Estado</span>
+                    <span th:if="${materia.getDificultad() != null}"
+                          class="materia-badge"
+                          th:classappend="${materia.getDificultad() == 'Facil' ? 'badge-dificultad-facil' : (materia.getDificultad() == 'Medio' ? 'badge-dificultad-media' : (materia.getDificultad() == 'Dificil' ? 'badge-dificultad-dificil' : ''))}"
+                          th:text="${materia.getDificultad()}">Dificultad</span>
+                    <span class="materia-badge badge-pendiente"
+                          th:text="'Cuatrimestre ' + ${materia.getCuatrimestre()}">Cuatrimestre</span>
                 </div>
             </div>
-        </div>
+            <div th:if="${materia.getEstado() != 'PENDIENTE'}" class="materia-nota">
+                <span th:text="${materia.getNota() != null ? materia.getNota() : 'Sin nota'}"
+                      th:classappend="${materia.getNota() == null ? 'no-nota' : ''}">Nota</span>
 
-        <!-- Cuatrimestre 2 -->
-        <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <span>2do Cuatrimestre</span>
-                <span class="badge bg-light text-dark"
-                      th:text="${#lists.size(materias.?[cuatrimestre == 2])} + ' materias'">0 materias</span>
-            </div>
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-striped table-hover mb-0">
-                        <thead class="table-dark">
-                        <tr>
-                            <th style="width: 80px;">ID</th>
-                            <th>Nombre</th>
-                            <th style="width: 100px;">Tipo</th>
-                            <th style="width: 120px;">Carga Horaria</th>
-                            <th>Correlativas</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr th:each="materia : ${materias.?[cuatrimestre == 2]}">
-                            <td>
-                                <code th:text="${materia.id}" class="text-primary"></code>
-                            </td>
-                            <td>
-                                <strong th:text="${materia.nombre}"></strong>
-                                <div th:if="${materia.descripcion != null and !materia.descripcion.isEmpty()}"
-                                     class="text-muted small" th:text="${materia.descripcion}"></div>
-                            </td>
-                            <td>
-                                <span class="badge bg-secondary" th:text="${materia.tipo}"></span>
-                            </td>
-                            <td class="text-center">
-                                <span th:text="${materia.cargaHoraria}"></span>h
-                            </td>
-                            <td>
-                                <div>
-                                    <span th:if="${materia.correlativa1 != null}" class="badge bg-info correlativas-badge">
-                                        ID: <span th:text="${materia.correlativa1}"></span>
-                                    </span>
-                                    <span th:if="${materia.correlativa2 != null}" class="badge bg-info correlativas-badge">
-                                        ID: <span th:text="${materia.correlativa2}"></span>
-                                    </span>
-                                    <span th:if="${materia.correlativa3 != null}" class="badge bg-info correlativas-badge">
-                                        ID: <span th:text="${materia.correlativa3}"></span>
-                                    </span>
-                                    <span th:if="${materia.correlativa1 == null}" class="text-muted small">Sin correlativas</span>
-                                </div>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
+
+                <button type="button" class="edit-button"
+                        data-bs-toggle="modal"
+                        data-bs-target="#materiaEditModal"
+                        th:data-id="${materia.getId()}"
+                        th:data-nombre="${materia.getNombre()}"
+                        th:data-nota="${materia.getNota() != null ? materia.getNota() : ''}"
+                        th:data-dificultad="${materia.getDificultad() != null ? materia.getDificultad() : ''}"
+                        th:disabled="${materia.getEstado() == 'Pendiente'}"
+                        onclick="populateMateriaModal(this)"><i class="bi bi-pencil"></i></button>
             </div>
         </div>
-
-        <!-- Cuatrimestre 3 -->
-        <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <span>3er Cuatrimestre</span>
-                <span class="badge bg-light text-dark"
-                      th:text="${#lists.size(materias.?[cuatrimestre == 3])} + ' materias'">0 materias</span>
-            </div>
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-striped table-hover mb-0">
-                        <thead class="table-dark">
-                        <tr>
-                            <th style="width: 80px;">ID</th>
-                            <th>Nombre</th>
-                            <th style="width: 100px;">Tipo</th>
-                            <th style="width: 120px;">Carga Horaria</th>
-                            <th>Correlativas</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr th:each="materia : ${materias.?[cuatrimestre == 3]}">
-                            <td>
-                                <code th:text="${materia.id}" class="text-primary"></code>
-                            </td>
-                            <td>
-                                <strong th:text="${materia.nombre}"></strong>
-                                <div th:if="${materia.descripcion != null and !materia.descripcion.isEmpty()}"
-                                     class="text-muted small" th:text="${materia.descripcion}"></div>
-                            </td>
-                            <td>
-                                <span class="badge bg-secondary" th:text="${materia.tipo}"></span>
-                            </td>
-                            <td class="text-center">
-                                <span th:text="${materia.cargaHoraria}"></span>h
-                            </td>
-                            <td>
-                                <div>
-                                    <span th:if="${materia.correlativa1 != null}" class="badge bg-info correlativas-badge">
-                                        ID: <span th:text="${materia.correlativa1}"></span>
-                                    </span>
-                                    <span th:if="${materia.correlativa2 != null}" class="badge bg-info correlativas-badge">
-                                        ID: <span th:text="${materia.correlativa2}"></span>
-                                    </span>
-                                    <span th:if="${materia.correlativa3 != null}" class="badge bg-info correlativas-badge">
-                                        ID: <span th:text="${materia.correlativa3}"></span>
-                                    </span>
-                                </div>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- Cuatrimestre 4 -->
-        <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <span>4to Cuatrimestre</span>
-                <span class="badge bg-light text-dark"
-                      th:text="${#lists.size(materias.?[cuatrimestre == 4])} + ' materias'">0 materias</span>
-            </div>
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-striped table-hover mb-0">
-                        <thead class="table-dark">
-                        <tr>
-                            <th style="width: 80px;">ID</th>
-                            <th>Nombre</th>
-                            <th style="width: 100px;">Tipo</th>
-                            <th style="width: 120px;">Carga Horaria</th>
-                            <th>Correlativas</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr th:each="materia : ${materias.?[cuatrimestre == 4]}">
-                            <td>
-                                <code th:text="${materia.id}" class="text-primary"></code>
-                            </td>
-                            <td>
-                                <strong th:text="${materia.nombre}"></strong>
-                                <div th:if="${materia.descripcion != null and !materia.descripcion.isEmpty()}"
-                                     class="text-muted small" th:text="${materia.descripcion}"></div>
-                            </td>
-                            <td>
-                                <span class="badge bg-secondary" th:text="${materia.tipo}"></span>
-                            </td>
-                            <td class="text-center">
-                                <span th:text="${materia.cargaHoraria}"></span>h
-                            </td>
-                            <td>
-                                <div>
-                                    <span th:if="${materia.correlativa1 != null}" class="badge bg-info correlativas-badge">
-                                        ID: <span th:text="${materia.correlativa1}"></span>
-                                    </span>
-                                    <span th:if="${materia.correlativa2 != null}" class="badge bg-info correlativas-badge">
-                                        ID: <span th:text="${materia.correlativa2}"></span>
-                                    </span>
-                                    <span th:if="${materia.correlativa3 != null}" class="badge bg-info correlativas-badge">
-                                        ID: <span th:text="${materia.correlativa3}"></span>
-                                    </span>
-                                    <span th:if="${materia.correlativa4 != null}" class="badge bg-info correlativas-badge">
-                                        ID: <span th:text="${materia.correlativa4}"></span>
-                                    </span>
-                                    <span th:if="${materia.correlativa5 != null}" class="badge bg-info correlativas-badge">
-                                        ID: <span th:text="${materia.correlativa5}"></span>
-                                    </span>
-                                </div>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- Cuatrimestre 5 -->
-        <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <span>5to Cuatrimestre</span>
-                <span class="badge bg-light text-dark"
-                      th:text="${#lists.size(materias.?[cuatrimestre == 5])} + ' materias'">0 materias</span>
-            </div>
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-striped table-hover mb-0">
-                        <thead class="table-dark">
-                        <tr>
-                            <th style="width: 80px;">ID</th>
-                            <th>Nombre</th>
-                            <th style="width: 100px;">Tipo</th>
-                            <th style="width: 120px;">Carga Horaria</th>
-                            <th>Correlativas</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr th:each="materia : ${materias.?[cuatrimestre == 5]}">
-                            <td>
-                                <code th:text="${materia.id}" class="text-primary"></code>
-                            </td>
-                            <td>
-                                <strong th:text="${materia.nombre}"></strong>
-                                <div th:if="${materia.descripcion != null and !materia.descripcion.isEmpty()}"
-                                     class="text-muted small" th:text="${materia.descripcion}"></div>
-                            </td>
-                            <td>
-                                <span class="badge bg-secondary" th:text="${materia.tipo}"></span>
-                            </td>
-                            <td class="text-center">
-                                <span th:text="${materia.cargaHoraria}"></span>h
-                            </td>
-                            <td>
-                                <div>
-                                    <span th:if="${materia.correlativa1 != null}" class="badge bg-info correlativas-badge">
-                                        ID: <span th:text="${materia.correlativa1}"></span>
-                                    </span>
-                                    <span th:if="${materia.correlativa2 != null}" class="badge bg-info correlativas-badge">
-                                        ID: <span th:text="${materia.correlativa2}"></span>
-                                    </span>
-                                    <span th:if="${materia.correlativa3 != null}" class="badge bg-info correlativas-badge">
-                                        ID: <span th:text="${materia.correlativa3}"></span>
-                                    </span>
-                                    <span th:if="${materia.correlativa4 != null}" class="badge bg-info correlativas-badge">
-                                        ID: <span th:text="${materia.correlativa4}"></span>
-                                    </span>
-                                    <span th:if="${materia.correlativa5 != null}" class="badge bg-info correlativas-badge">
-                                        ID: <span th:text="${materia.correlativa5}"></span>
-                                    </span>
-                                </div>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
     </div>
 
-    <!-- Información adicional -->
-    <div class="mt-4 p-3 bg-light rounded">
-        <h5>Información del Sistema</h5>
-<!--        <p class="mb-1"><strong>Total de materias:</strong> <span th:text="${#lists.size(materias)}">0</span></p>-->
-        <p class="mb-0"><strong>Cuatrimestres disponibles:</strong> 5</p>
+    <div class="modal fade" id="materiaEditModal" tabindex="-1" aria-labelledby="materiaEditModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="materiaEditModalLabel">Editar Materia: <span
+                            id="modalMateriaNombre"></span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form th:action="@{/progreso/actualizar-materia}" th:method="POST">
+                    <div class="modal-body">
+                        <input type="hidden" id="modalMateriaId" name="id">
+
+                        <div class="mb-3">
+                            <label for="modalMateriaNota" class="form-label">Nota</label>
+                            <input type="number" class="form-control" id="modalMateriaNota" name="nota" min="0" max="10"
+                                   required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="modalMateriaDificultad" class="form-label">Dificultad</label>
+                            <select class="form-select" id="modalMateriaDificultad" name="dificultad" required>
+                                <option value="">Seleccione una dificultad</option>
+                                <option value="Facil">Fácil</option>
+                                <option value="Medio">Medio</option>
+                                <option value="Dificil">Difícil</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
+
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    const materiaEditModalInstance = new bootstrap.Modal(document.getElementById('materiaEditModal'));
+    const modalMateriaNombre = document.getElementById('modalMateriaNombre');
+    const modalMateriaId = document.getElementById('modalMateriaId');
+    const modalMateriaNota = document.getElementById('modalMateriaNota');
+    const modalMateriaDificultad = document.getElementById('modalMateriaDificultad');
+
+    function populateMateriaModal(buttonElement) {
+        const id = buttonElement.dataset.id;
+        const nombre = buttonElement.dataset.nombre;
+        const nota = buttonElement.dataset.nota;
+        const dificultad = buttonElement.dataset.dificultad;
+
+        modalMateriaNombre.textContent = nombre;
+        modalMateriaId.value = id;
+        modalMateriaNota.value = nota;
+        modalMateriaDificultad.value = dificultad;
+    }
+</script>
 </body>
 </html>
