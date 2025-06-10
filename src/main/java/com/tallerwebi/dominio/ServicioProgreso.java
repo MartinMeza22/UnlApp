@@ -41,17 +41,15 @@ public class ServicioProgreso {
 
             MateriaDTO materiaDTO;
             if (matCurso != null) {
-                // Asegúrate de que la dificultad se maneje correctamente, incluso si es null en la base de datos
                 String dificultad = verificarDificultad(matCurso.getDificultad());
                 materiaDTO = new MateriaDTO(mat.getId(), mat.getNombre(), dificultad, matCurso.getEstado(), matCurso.getNota(), mat.getCuatrimestre());
             } else {
                 String estado;
                 if (verificarCorrelativasAprobadas(mat, materiasCursadasMap)) {
-                    estado = "CURSANDO"; // Si puede cursar pero no la cursó, es pendiente.
+                    estado = "CURSANDO";
                 } else {
-                    estado = "PENDIENTE"; // No cumple las correlativas, sigue pendiente.
+                    estado = "PENDIENTE";
                 }
-                // Si la materia no fue cursada, la nota y dificultad son null
                 materiaDTO = new MateriaDTO(mat.getId(), mat.getNombre(), null, estado, null, mat.getCuatrimestre());
             }
             materiasDTO.add(materiaDTO);
@@ -91,7 +89,7 @@ public class ServicioProgreso {
 
     private String verificarDificultad(Integer dificultad) {
         String dificultadMat = "";
-        if (dificultad != null) { // Asegúrate de que dificultad no sea null
+        if (dificultad != null) {
             if (dificultad == 1) {
                 dificultadMat = "Facil";
             } else if (dificultad == 5) {
