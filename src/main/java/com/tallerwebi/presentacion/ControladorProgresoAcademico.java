@@ -1,15 +1,17 @@
 package com.tallerwebi.presentacion;
 
 import com.tallerwebi.dominio.*;
+import com.tallerwebi.dto.MateriasDTO;
+import com.tallerwebi.dto.MateriasWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.tallerwebi.dominio.DTO.MateriaDTO;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
@@ -84,14 +86,14 @@ public class ControladorProgresoAcademico {
     }
 
     @PostMapping("/pruebaDeDatos")
-    public ModelAndView pruebaDeDatosLoca(@RequestParam Long usuarioID,
-                                          @RequestParam Long materiaID,
-                                          @RequestParam Integer dificultad,
-                                          @RequestParam Double nota,
-                                          @RequestParam String observaciones) {
-        servicioUsuarioMateria.asignarMateria(usuarioID,materiaID,dificultad);
+    public ModelAndView guardarMateria(@ModelAttribute MateriasWrapper listadoMaterias,
+                                       @ModelAttribute("datosLogin") DatosLogin datosLogin) {
+        MateriasWrapper materia = listadoMaterias;
+        MateriasDTO materiaDTO = listadoMaterias.getMaterias().get(1);
+        //Falta la asignación
+        servicioUsuarioMateria.asignarMateria(3L, materiaDTO.getId(), materiaDTO.getDificultad());
 
-        return new ModelAndView("home");
+        return new ModelAndView("login");
     }
 
     @RequestMapping(path = "/progreso/actualizar-materia", method = RequestMethod.POST)

@@ -1,22 +1,22 @@
 package com.tallerwebi.dominio;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.tallerwebi.dto.MateriasDTO;
 
 import java.util.List;
 
 public class MateriasWrapper {
 
-    @JsonProperty("materias")
-    private List<Materia> materias;
+    private List<MateriasDTO> materias;
 
     public MateriasWrapper() {
     }
 
-    public List<Materia> getMaterias() {
+    public List<MateriasDTO> getMaterias() {
         return materias;
     }
 
-    public void setMaterias(List<Materia> materias) {
+    public void setMaterias(List<MateriasDTO> materias) {
         this.materias = materias;
     }
 }
