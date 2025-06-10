@@ -46,101 +46,166 @@
 
 <main role="main" class="container">
     <div class="mainbox col-md-8 col-sm-10 mx-auto">
+
         <!-- Barra de progreso -->
         <div class="progress mb-4">
-            <div class="progress-bar progress-bar-striped bg-success" role="progressbar" style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
+            <div class="progress-bar progress-bar-striped bg-success" role="progressbar"
+                 style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
                 Paso 2 de 2
             </div>
         </div>
 
         <h3 class="text-center mb-4">Seleccioná las materias</h3>
 
-        <form th:action="@{/pruebaDeDatos}" method="post">
-            <div th:each="materia, iter : ${materias}" class="materia-card" th:attr="data-id=${materia.id}">
-                <div class="materia-nombre" th:text="${materia.nombre}">Nombre Materia</div>
+        <form id="formMaterias" th:action="@{/pruebaDeDatos}" method="post" accept-charset="UTF-8">
 
-                <input type="hidden" th:name="'materias[' + ${iter.index} + '].id'" th:value="${materia.id}" />
+            <div th:each="materia, iterStat : ${materias}" class="mb-4 border rounded p-3" th:attr="data-index=${iterStat.index}">
 
-                <div class="mt-3 d-flex gap-2 flex-wrap align-items-center">
-                    <button type="button" class="btn btn-primary btn-sm cursar-btn" onclick="toggleCursado(this)">Cursar</button>
-                    <input type="hidden" th:name="'materias[' + ${iter.index} + '].cursando'" value="false" />
-                    <button type="button" class="btn btn-success btn-sm" onclick="mostrarFormularioNota(this)">Ingresar nota</button>
+                <!-- ID -->
+                <input type="hidden" th:name="materias[__${iterStat.index}__].id" th:value="${materia.id}" />
+
+                <!-- Nombre -->
+                <div id="nombre-materia">
+                    <p th:text="${materia.nombre}" class="fw-bold mb-2"></p>
+                    <button type="button"
+                            th:attr="id='btn-cursar-' + ${materia.id}"
+                            class="btn btn-outline-primary"
+                            onclick="toggleCursar(this)">
+                        Cursar
+                    </button>
+                    <input type="hidden" th:name="materias[__${iterStat.index}__].cursando" value="false" />
                 </div>
 
-                <div class="formulario-nota mt-3" style="display: none;">
-                    <div class="mb-2">
-                        <label>Dificultad:</label>
-                        <select class="form-select form-select-sm" th:name="'materias[' + ${iter.index} + '].dificultad'">
-                            <option value="Facil">Fácil</option>
-                            <option value="Intermedia">Intermedia</option>
-                            <option value="Compleja">Compleja</option>
-                        </select>
-                    </div>
-
-                    <div class="mb-2">
-                        <label>Nota:</label>
-                        <select class="form-select form-select-sm nota-select" th:name="'materias[' + ${iter.index} + '].nota'">
-                            <option th:each="n : ${#numbers.sequence(1,10)}" th:value="${n}" th:text="${n}">1</option>
-                        </select>
-                    </div>
-
-                    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="confirmarNota(this)">Confirmar</button>
+                <!-- Dificultad -->
+                <div id="dificultad" class="mt-3">
+                    <label>Seleccionar dificultad</label>
+                    <select th:name="materias[__${iterStat.index}__].dificultad" class="form-control">
+                        <option value="1">Fácil</option>
+                        <option value="2">Intermedia</option>
+                        <option value="3">Compleja</option>
+                    </select>
                 </div>
 
-                <!-- NUEVO: Observaciones -->
-                <div class="mt-3">
-                    <label for="observaciones" class="form-label">Observaciones:</label>
-                    <textarea class="form-control" rows="2" th:name="'materias[' + ${iter.index} + '].observaciones'" placeholder="Observaciones sobre esta materia..."></textarea>
+                <!-- Nota -->
+                <div id="nota" class="mt-3">
+                    <label>Seleccionar nota</label>
+                    <select th:name="materias[__${iterStat.index}__].nota" class="form-control">
+                        <option value="">Sin nota</option>
+                        <option th:each="n : ${#numbers.sequence(1, 10)}"
+                                th:value="${n}" th:text="${n}"></option>
+                    </select>
                 </div>
 
-                <div class="resultado mt-3"></div>
+                <!-- Confirmar -->
+                <button type="button" class="btn btn-success mt-3 btn-confirmar" onclick="confirmarMateria(this)">
+                    Confirmar
+                </button>
+
+                <!-- Resultado (se muestra luego de confirmar) -->
+                <div class="mt-3 resultado-confirmacion d-none">
+                    <p><strong>Estado:</strong> <span class="estado-texto"></span></p>
+                    <p><strong>Nota:</strong> <span class="nota-texto"></span></p>
+                    <p><strong>Dificultad:</strong> <span class="dificultad-texto"></span></p>
+                    <button type="button" class="btn btn-warning btn-editar" onclick="editarMateria(this)">
+                        Editar
+                    </button>
+                </div>
+
             </div>
 
-            <div class="text-end">
-                <button type="submit" class="btn btn-primary mt-3">Finalizar Registro</button>
-            </div>
+            <button type="submit" class="btn btn-primary mt-4 w-100">Confirmar progreso</button>
         </form>
-
     </div>
 </main>
 
 <script>
-    function toggleCursado(btn) {
-        const card = btn.closest('.materia-card');
-        const hiddenInput = card.querySelector('input[type="hidden"][name$=".cursando"]');
+    function toggleCursar(btn) {
+        const container = btn.closest("div[id='nombre-materia']");
+        const input = container.querySelector("input[type='hidden']");
         if (btn.innerText === "Cursar") {
             btn.innerText = "Dejar de cursar";
-            btn.classList.remove("btn-primary");
-            btn.classList.add("btn-danger");
-            if (hiddenInput) hiddenInput.value = "true";
+            btn.classList.remove("btn-outline-primary");
+            btn.classList.add("btn-outline-danger");
+            input.value = true;
         } else {
             btn.innerText = "Cursar";
-            btn.classList.remove("btn-danger");
-            btn.classList.add("btn-primary");
-            if (hiddenInput) hiddenInput.value = "false";
+            btn.classList.remove("btn-outline-danger");
+            btn.classList.add("btn-outline-primary");
+            input.value = false;
         }
     }
 
-    function mostrarFormularioNota(btn) {
-        const card = btn.closest('.materia-card');
-        card.querySelector('.formulario-nota').style.display = 'block';
+    function confirmarMateria(btn) {
+        const contenedor = btn.closest("div[data-index]");
+        const notaSelect = contenedor.querySelector("select[name*='nota']");
+        const dificultadSelect = contenedor.querySelector("select[name*='dificultad']");
+        const cursarBtn = contenedor.querySelector("button[onclick*='toggleCursar']");
+        const cursandoInput = contenedor.querySelector("input[type='hidden'][name*='cursando']");
+
+        const nota = parseInt(notaSelect.value);
+        const dificultadTexto = dificultadSelect.options[dificultadSelect.selectedIndex].text;
+
+        if (isNaN(nota)) {
+            alert("Por favor, seleccioná una nota para confirmar.");
+            return;
+        }
+
+        const estaAprobada = nota >= 4;
+        const nuevoEstado = estaAprobada ? "Cursada" : "Desaprobada";
+
+        // Actualizar texto y desactivar botón "Cursar/Dejar de cursar"
+        cursarBtn.innerText = nuevoEstado;
+        cursarBtn.classList.remove("btn-outline-primary", "btn-outline-danger");
+        cursarBtn.classList.add(estaAprobada ? "btn-success" : "btn-secondary");
+        cursarBtn.disabled = true;
+
+        // Mostrar valores
+        contenedor.querySelector(".estado-texto").innerText = nuevoEstado;
+        contenedor.querySelector(".nota-texto").innerText = nota;
+        contenedor.querySelector(".dificultad-texto").innerText = dificultadTexto;
+
+        // Mostrar resultado
+        contenedor.querySelector(".resultado-confirmacion").classList.remove("d-none");
+
+        // Ocultar botón confirmar
+        btn.classList.add("d-none");
+
+        // Deshabilitar selects
+        notaSelect.disabled = true;
+        dificultadSelect.disabled = true;
     }
 
-    function confirmarNota(btn) {
-        const card = btn.closest('.materia-card');
-        const nota = parseInt(card.querySelector('.nota-select').value);
-        const resultadoDiv = card.querySelector('.resultado');
-        const botonCursar = card.querySelector('.cursar-btn');
-        if (nota >= 4) {
-            resultadoDiv.innerHTML = `<span class="aprobada-text">Aprobada</span>`;
-            if (botonCursar) botonCursar.remove();
-        } else {
-            resultadoDiv.innerHTML = `<span class="desaprobada-text">Desaprobada</span>`;
-        }
-        card.querySelector('.formulario-nota').style.display = 'none';
+    function editarMateria(btn) {
+        const contenedor = btn.closest("div[data-index]");
+        const notaSelect = contenedor.querySelector("select[name*='nota']");
+        const dificultadSelect = contenedor.querySelector("select[name*='dificultad']");
+        const cursarBtn = contenedor.querySelector("button[onclick*='toggleCursar']");
+
+        // Restaurar botón "Cursar/Dejar de cursar"
+        const cursandoInput = contenedor.querySelector("input[type='hidden'][name*='cursando']");
+        const estaCursando = cursandoInput.value === "true";
+
+        cursarBtn.disabled = false;
+        cursarBtn.innerText = estaCursando ? "Dejar de cursar" : "Cursar";
+        cursarBtn.classList.remove("btn-success", "btn-secondary");
+        cursarBtn.classList.add(estaCursando ? "btn-outline-danger" : "btn-outline-primary");
+
+        // Ocultar resultado
+        contenedor.querySelector(".resultado-confirmacion").classList.add("d-none");
+
+        // Mostrar botón confirmar
+        contenedor.querySelector(".btn-confirmar").classList.remove("d-none");
+
+        // Habilitar selects
+        notaSelect.disabled = false;
+        dificultadSelect.disabled = false;
     }
 </script>
 
-<script th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.min.js}"></script>
+
+
+
+
+
 </body>
 </html>
