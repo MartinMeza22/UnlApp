@@ -14,14 +14,16 @@ public class ServicioProgreso {
 
     private RepositorioUsuarioMateria repositorioUsuarioMateria;
     private RepositorioMateria repositorioMateria;
+    private RepositorioUsuario repositorioUsuario;
 
     public ServicioProgreso() {
     }
 
     @Autowired
-    public ServicioProgreso(RepositorioUsuarioMateria repositorioUsuarioMateria, RepositorioMateria repositorioMateria) {
+    public ServicioProgreso(RepositorioUsuarioMateria repositorioUsuarioMateria, RepositorioMateria repositorioMateria, RepositorioUsuario repositorioUsuario) {
         this.repositorioUsuarioMateria = repositorioUsuarioMateria;
         this.repositorioMateria = repositorioMateria;
+        this.repositorioUsuario = repositorioUsuario;
     }
 
     public List<MateriaDTO> materias(Long idUsuario) {
@@ -133,10 +135,26 @@ public class ServicioProgreso {
         Boolean pudoActualizar = false;
 
         try {
-            UsuarioMateria um = this.repositorioUsuarioMateria.buscarPorUsuarioYMateria(usuarioId, idMateria);
-            um.setNota(nota);
-            um.setDificultad(dificultad);
-            this.repositorioUsuarioMateria.actualizar(um);
+
+            // Verifico si existe primero los datos en UsuarioMateria
+            Boolean existe = this.repositorioUsuarioMateria.existe(usuarioId, idMateria);
+
+            UsuarioMateria um = null;
+
+            if (existe) {
+                um = this.repositorioUsuarioMateria.buscarPorUsuarioYMateria(usuarioId, idMateria);
+                um.setNota(nota);
+                um.setDificultad(dificultad);
+                this.repositorioUsuarioMateria.actualizar(um);
+            } else {
+                // Traigo usuario y materia (porque lo require UsuarioMateria)
+                Usuario usuario = this.repositorioUsuario.buscarPorId(usuarioId);
+                Materia materia = this.repositorioMateria.buscarPorId(idMateria);
+
+                um = new UsuarioMateria(usuario, materia, nota);
+                um.setDificultad(dificultad);
+                this.repositorioUsuarioMateria.guardar(um);
+            }
 
             pudoActualizar = true;
         } catch (Exception e) {
