@@ -157,18 +157,26 @@
         }
 
         .badge-dificultad-facil {
-            background-color: #e6ffee;
-            color: #008800;
+        <!-- background-color: #e6ffee;
+        --> color: green;
+        <!-- #008800 --> border-radius: 100px;
+            border: 1px solid #008800;
         }
 
         .badge-dificultad-media {
-            background-color: #fff8e0;
-            color: #b38600;
+        <!-- background-color: #fff8e0;
+        --> color: orange;
+        <!-- #b38600;
+        --> border-radius: 100px;
+            border: 1px solid #b38600;
         }
 
         .badge-dificultad-dificil {
-            background-color: #ffe0e0;
-            color: #cc0000;
+        <!-- background-color: #ffe0e0;
+        --> color: red;
+        <!-- #cc0000;
+        --> border-radius: 100px;
+            border: 1px solid #cc0000;
         }
 
         .materia-nota {
@@ -220,18 +228,30 @@
         <h2 class="list-title">Lista de materias</h2>
         <div class="filter-search-container">
             <form th:action="@{/progreso}" method="GET" id="filterForm">
-                <select class="form-select form-select-filter" id="condicionFilterInput" name="condicion" onchange="this.form.submit()">
-                    <option value="" th:selected="${selectedCondicion == null or selectedCondicion == ''}">Todas las materias</option>
-                    <option value="Aprobadas" th:selected="${selectedCondicion == 'Aprobadas'}">Aprobadas</option>
-                    <option value="Desaprobadas" th:selected="${selectedCondicion == 'Desaprobadas'}">Desaprobadas</option>
-                    <option value="Cursando" th:selected="${selectedCondicion == 'Cursando'}">Cursando</option>
-                    <option value="Pendientes" th:selected="${selectedCondicion == 'Pendientes'}">Pendientes</option>
+                <select class="form-select form-select-filter" id="condicionFilterInput" name="condicion"
+                        onchange="this.form.submit()">
+                    <option value="" th:selected="${selectedCondicion == null or selectedCondicion == ''}">Todas las
+                        materias
+                    </option>
+                    <option value="Aprobadas" th:selected="${'Aprobadas'.equalsIgnoreCase(selectedCondicion)}">
+                        Aprobadas
+                    </option>
+                    <option value="Desaprobadas" th:selected="${'Desaprobadas'.equalsIgnoreCase(selectedCondicion)}">
+                        Desaprobadas
+                    </option>
+                    <option value="Cursando" th:selected="${'Cursando'.equalsIgnoreCase(selectedCondicion)}">Cursando
+                    </option>
+                    <option value="Pendientes" th:selected="${'Pendientes'.equalsIgnoreCase(selectedCondicion)}">
+                        Pendientes
+                    </option>
                 </select>
             </form>
+            <!-- Por el momento no implementar la busqueda de materias
             <div class="search-input-container">
                 <i class="bi bi-search search-icon"></i>
                 <input type="text" class="form-control search-input" placeholder="Buscar materia...">
             </div>
+            -->
         </div>
     </div>
 
@@ -241,7 +261,7 @@
                 <div class="materia-name" th:text="${materia.getNombre()}">Nombre Materia</div>
                 <div class="materia-details">
                     <span class="materia-badge"
-                          th:classappend="${materia.getEstado() == 'Aprobado' ? 'badge-aprobado' : (materia.getEstado() == 'Cursando' ? 'badge-cursando' : (materia.getEstado() == 'Desaprobada' ? 'badge-desaprobado' : 'badge-pendiente'))}"
+                          th:classappend="${materia.getEstado() == 'APROBADA' ? 'badge-aprobado' : (materia.getEstado() == 'CURSANDO' ? 'badge-cursando' : (materia.getEstado() == 'DESAPROBADA' ? 'badge-desaprobado' : 'badge-pendiente'))}"
                           th:text="${materia.getEstado()}">Estado</span>
                     <span th:if="${materia.getDificultad() != null}"
                           class="materia-badge"
@@ -269,6 +289,8 @@
         </div>
     </div>
 
+
+    <!-- VENATNA MODAL -->
     <div class="modal fade" id="materiaEditModal" tabindex="-1" aria-labelledby="materiaEditModalLabel"
          aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -284,16 +306,15 @@
 
                         <div class="mb-3">
                             <label for="modalMateriaNota" class="form-label">Nota</label>
-                            <input type="number" class="form-control" id="modalMateriaNota" name="nota" min="0" max="10"
-                                   required>
+                            <input type="number" class="form-control" id="modalMateriaNota" name="nota" min="0" max="10">
                         </div>
                         <div class="mb-3">
                             <label for="modalMateriaDificultad" class="form-label">Dificultad</label>
                             <select class="form-select" id="modalMateriaDificultad" name="dificultad" required>
-                                <option value="">Seleccione una dificultad</option>
-                                <option value="Facil">Fácil</option>
-                                <option value="Medio">Medio</option>
-                                <option value="Dificil">Difícil</option>
+                                <option value="" th:text="Seleccione una dificultad">Seleccione una dificultad</option>
+                                <option value="1" th:text="Facil">Fácil</option>
+                                <option value="5" th:text="Medio">Medio</option>
+                                <option value="10" th:text="Dificil">Difícil</option>
                             </select>
                         </div>
                     </div>
@@ -310,6 +331,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+    // Este script NO tiene logica, es solo para frontend, muestra el modal con la informacion de la materia
     const materiaEditModalInstance = new bootstrap.Modal(document.getElementById('materiaEditModal'));
     const modalMateriaNombre = document.getElementById('modalMateriaNombre');
     const modalMateriaId = document.getElementById('modalMateriaId');

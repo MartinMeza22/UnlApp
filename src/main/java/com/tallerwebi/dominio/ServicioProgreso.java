@@ -47,7 +47,7 @@ public class ServicioProgreso {
             } else {
                 String estado;
                 if (verificarCorrelativasAprobadas(mat, materiasCursadasMap)) {
-                    estado = "PENDIENTE"; // Si puede cursar pero no la cursó, es pendiente.
+                    estado = "CURSANDO"; // Si puede cursar pero no la cursó, es pendiente.
                 } else {
                     estado = "PENDIENTE"; // No cumple las correlativas, sigue pendiente.
                 }
@@ -62,7 +62,6 @@ public class ServicioProgreso {
 
     private boolean verificarCorrelativasAprobadas(Materia materia, Map<Long, UsuarioMateria> materiasCursadasMap) {
         List<Long> idsCorrelativas = new ArrayList<>();
-        // Recolectar todos los IDs de las correlativas de la materia
         if (materia.getCorrelativa1() != null && !materia.getCorrelativa1().isEmpty())
             idsCorrelativas.add(Long.valueOf(materia.getCorrelativa1()));
         if (materia.getCorrelativa2() != null && !materia.getCorrelativa2().isEmpty())
@@ -76,22 +75,18 @@ public class ServicioProgreso {
         if (materia.getCorrelativa6() != null && !materia.getCorrelativa6().isEmpty())
             idsCorrelativas.add(Long.valueOf(materia.getCorrelativa6()));
 
-        // Si la materia no tiene correlativas, se puede cursar directamente
         if (idsCorrelativas.isEmpty()) {
             return true;
         }
 
-        // Verificar cada correlativa
         for (Long idCorrelativa : idsCorrelativas) {
             UsuarioMateria correlativaUsuarioMateria = materiasCursadasMap.get(idCorrelativa);
 
-            // Si la correlativa no está en el mapa (el usuario nunca la cursó)
-            // O si la cursó y NO está aprobada, entonces la condición no se cumple.
             if (correlativaUsuarioMateria == null || !correlativaUsuarioMateria.estaAprobada()) {
-                return false; // Al menos una correlativa no está aprobada
+                return false;
             }
         }
-        return true; // Todas las correlativas están aprobadas
+        return true;
     }
 
     private String verificarDificultad(Integer dificultad) {
@@ -112,7 +107,7 @@ public class ServicioProgreso {
         List<MateriaDTO> materias = this.materias(usuarioId);
 
         if (condicion == null || condicion.isEmpty() || condicion.equalsIgnoreCase("todas")) {
-            return materias; // No filtrar si no hay condición o es "todas"
+            return materias;
         }
 
         if (condicion.equalsIgnoreCase("aprobadas")) {
@@ -133,5 +128,23 @@ public class ServicioProgreso {
                     .collect(Collectors.toList());
         }
         return materias;
+    }
+
+    public Boolean actualizarDatosMateria(Long usuarioId, Long idMateria, Double nota, Integer dificultad) {
+
+        Boolean pudoActualizar = false;
+
+        try {
+            UsuarioMateria um = this.repositorioUsuarioMateria.buscarPorUsuarioYMateria(usuarioId, idMateria);
+            um.setNota(nota);
+            um.setDificultad(dificultad);
+            this.repositorioUsuarioMateria.actualizar(um);
+
+            pudoActualizar = true;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        return pudoActualizar;
     }
 }

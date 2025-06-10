@@ -49,7 +49,23 @@ public class ControladorProgresoAcademico {
 //      model.put("materias", materias);
         model.put("usuarioId", usuarioId);
         model.put("materiasTotales", materias);
+        model.put("selectedCondicion", condicion);
         return new ModelAndView("progreso", model);
+    }
+
+    @RequestMapping(path = "/progreso/actualizar-materia", method = RequestMethod.POST)
+    public String actualizarDatosMateria(
+            @RequestParam(name = "nota", required = false) Double nota,
+            @RequestParam(name = "dificultad", required = false) Integer dificultad,
+            @RequestParam(name = "id") Long idMateria,
+            HttpSession session,
+            RedirectAttributes redirectAttributes
+    ) {
+        Long usuarioId = (Long) session.getAttribute("ID");
+
+        this.servicioProgreso.actualizarDatosMateria(usuarioId, idMateria, nota, dificultad);
+
+        return "redirect:/progreso";
     }
 
 }
