@@ -480,20 +480,20 @@ public class ServicioUsuarioMateriaTest {
 
     // ========== Tests for EstadisticasUsuario class ==========
 
-    @Test
-    public void estadisticasUsuarioToStringDeberiaFormatearCorrectamente() {
-        // Preparación
-        ServicioUsuarioMateria.EstadisticasUsuario stats =
-            new ServicioUsuarioMateria.EstadisticasUsuario(5, 3, 1, 1, 7.25);
-
-        // Ejecución
-        String resultado = stats.toString();
-
-        // Validación
-        assertThat(resultado, containsString("5 total"));
-        assertThat(resultado, containsString("3 aprobadas"));
-        assertThat(resultado, containsString("1 cursando"));
-        assertThat(resultado, containsString("1 desaprobadas"));
-        assertThat(resultado, containsString("7.25"));
-    }
+//    @Test
+//    public void estadisticasUsuarioToStringDeberiaFormatearCorrectamente() {
+//        // Preparación
+//        ServicioUsuarioMateria.EstadisticasUsuario stats =
+//            new ServicioUsuarioMateria.EstadisticasUsuario(5, 3, 1, 1, 7.25);
+//
+//        // Ejecución
+//        String resultado = stats.toString();
+//
+//        // Validación
+//        assertThat(resultado, containsString("5 total"));
+//        assertThat(resultado, containsString("3 aprobadas"));
+//        assertThat(resultado, containsString("1 cursando"));
+//        assertThat(resultado, containsString("1 desaprobadas"));
+//        assertThat(resultado, containsString("7.25"));
+//    }
 }

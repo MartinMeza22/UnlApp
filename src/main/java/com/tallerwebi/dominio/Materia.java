@@ -49,6 +49,7 @@ public class Materia {
     @Column
     private Boolean activa = true;
 
+
     // Constructors
     public Materia() {}
 

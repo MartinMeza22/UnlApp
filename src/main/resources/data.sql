@@ -6,8 +6,8 @@ VALUES
 -- Luego insertar los usuarios (ahora la carreraID = 1 existe)
 INSERT INTO Usuario(id, email, password, rol, carreraID, nombre, apellido, telefono, situacionLaboral, disponibilidadHoraria, activo)
 VALUES
-    (1, 'user', '123', 'ALUMNO', 1, 'Juan', 'Pérez', NULL, 'desempleado', 1, false),
-    (2, 'user2', '123', 'ALUMNO', 1, 'Ana', 'Gómez', NULL, 'empleado', 2, false);
+    (1, 'user@user.com', '123', 'ALUMNO', 1, 'Juan', 'Pérez', NULL, 'desempleado', 1, false),
+    (2, 'user2@user.com', '123', 'ALUMNO', 1, 'Ana', 'Gómez', NULL, 'empleado', 2, false);
 
 -- Insertar las materias del cuatrimestre 1 (sin correlativas)
 INSERT INTO Materia(id, nombre, descripcion, tipo, carga_horaria, cuatrimestre, activa, carrera_id, correlativa_1, correlativa_2, correlativa_3, correlativa_4, correlativa_5, correlativa_6)
@@ -53,20 +53,20 @@ VALUES
 INSERT INTO usuario_materia(dificultad, fecha_asignacion, fecha_modificacion, nota, observaciones, materia_id, usuario_id)
 VALUES
     -- Cuatrimestre 1
-    (6, '2022-03-01', '2024-07-15', 8, 'Excelente comprensión de conceptos básicos', 1, 1),
-    (3, '2022-03-01', '2024-07-15', 9, 'Muy buen manejo de herramientas informáticas', 2, 1),
-    (8, '2022-03-01', '2024-07-15', 6, 'Dificultades con algunos conceptos matemáticos', 3, 1),
-    (4, '2022-03-01', '2024-07-15', 7, 'Buen nivel de inglés técnico', 4, 1),
+    (1, '2022-03-01', '2024-07-15', 8, 'Excelente comprensión de conceptos básicos', 1, 1),
+    (5, '2022-03-01', '2024-07-15', 9, 'Muy buen manejo de herramientas informáticas', 2, 1),
+    (10, '2022-03-01', '2024-07-15', 6, 'Dificultades con algunos conceptos matemáticos', 3, 1),
+    (1, '2022-03-01', '2024-07-15', 7, 'Buen nivel de inglés técnico', 4, 1),
 
     -- Cuatrimestre 2
-    (7, '2023-08-01', '2024-12-15', 8, 'Buena evolución en programación', 5, 1),
-    (5, '2023-08-01', '2024-12-15', 9, 'Excelente trabajo con tecnologías web', 6, 1),
-    (9, '2023-08-01', '2024-12-15', 7, 'Conceptos de base de datos requieren refuerzo', 7, 1),
-    (4, '2023-08-01', '2024-12-15', 8, 'Creatividad destacada en diseño', 8, 1),
-    (3, '2023-08-01', '2024-12-15', 8, 'Continuidad en el aprendizaje del inglés', 9, 1),
+  --  (5, '2023-08-01', '2024-12-15', 8, 'Buena evolución en programación', 5, 1),
+   -- (5, '2023-08-01', '2024-12-15', 9, 'Excelente trabajo con tecnologías web', 6, 1),
+    (10, '2023-08-01', '2024-12-15', 7, 'Conceptos de base de datos requieren refuerzo', 7, 1),
+    (10, '2023-08-01', '2024-12-15', 8, 'Creatividad destacada en diseño', 8, 1),
+    (1, '2023-08-01', '2024-12-15', 8, 'Continuidad en el aprendizaje del inglés', 9, 1),
 
     -- Cuatrimestre 3
-    (8, '2024-03-01', '2025-07-15', 7, 'Integración compleja de tecnologías', 10, 1),
-    (7, '2024-03-01', '2025-07-15', 8, 'Buen análisis y diseño de aplicaciones', 11, 1),
+    (10, '2024-03-01', '2025-07-15', 2, 'Malisima', 10, 1),
+    (1, '2024-03-01', '2025-07-15', 8, 'Buen análisis y diseño de aplicaciones', 11, 1),
     (5, '2024-05-01', '2025-07-15', 9, 'Excelente trabajo en interfaces de usuario', 12, 1),
-    (6, '2025-03-01', '2025-07-15', 8, 'Trabajo práctico bien ejecutado', 13, 1);
+    (10, '2025-03-01', '2025-07-15', 8, 'Trabajo práctico bien ejecutado', 13, 1);
