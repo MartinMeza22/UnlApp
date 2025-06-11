@@ -17,4 +17,11 @@ public class MateriasWrapper {
     public void setMaterias(List<MateriasDTO> materias) {
         this.materias = materias;
     }
+
+    @Override
+    public String toString() {
+        return "MateriasWrapper{" +
+                "materias=" + materias +
+                '}';
+    }
 }

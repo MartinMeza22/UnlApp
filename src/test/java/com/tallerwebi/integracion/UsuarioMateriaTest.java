@@ -50,7 +50,7 @@ public class UsuarioMateriaTest {
     @Test
     public void constructorConNotaDeberiaInicializarCorrectamente() {
         // Ejecución
-        Double nota = 8.5;
+        Integer nota = 8;
         UsuarioMateria nueva = new UsuarioMateria(usuarioMock, materiaMock, nota);
 
         // Validación
@@ -77,17 +77,17 @@ public class UsuarioMateriaTest {
     @Test
     public void estaAprobadaConNotaMayorOIgualA4DeberiaRetornarTrue() {
         // Preparación y Ejecución - Nota exactamente 4
-        usuarioMateria.setNota(4.0);
+        usuarioMateria.setNota(4);
         assertThat(usuarioMateria.estaAprobada(), is(true));
         assertThat(usuarioMateria.getEstado(), equalTo("APROBADA"));
 
         // Preparación y Ejecución - Nota mayor a 4
-        usuarioMateria.setNota(7.5);
+        usuarioMateria.setNota(7);
         assertThat(usuarioMateria.estaAprobada(), is(true));
         assertThat(usuarioMateria.getEstado(), equalTo("APROBADA"));
 
         // Preparación y Ejecución - Nota 10
-        usuarioMateria.setNota(10.0);
+        usuarioMateria.setNota(10);
         assertThat(usuarioMateria.estaAprobada(), is(true));
         assertThat(usuarioMateria.getEstado(), equalTo("APROBADA"));
     }
@@ -95,17 +95,17 @@ public class UsuarioMateriaTest {
     @Test
     public void estaDesaprobadaConNotaMenorA4DeberiaRetornarTrue() {
         // Preparación y Ejecución - Nota 3.9
-        usuarioMateria.setNota(3.9);
+        usuarioMateria.setNota(3);
         assertThat(usuarioMateria.estaDesaprobada(), is(true));
         assertThat(usuarioMateria.getEstado(), equalTo("DESAPROBADA"));
 
         // Preparación y Ejecución - Nota 0
-        usuarioMateria.setNota(0.0);
+        usuarioMateria.setNota(0);
         assertThat(usuarioMateria.estaDesaprobada(), is(true));
         assertThat(usuarioMateria.getEstado(), equalTo("DESAPROBADA"));
 
         // Preparación y Ejecución - Nota 2.5
-        usuarioMateria.setNota(2.5);
+        usuarioMateria.setNota(2);
         assertThat(usuarioMateria.estaDesaprobada(), is(true));
         assertThat(usuarioMateria.getEstado(), equalTo("DESAPROBADA"));
     }
@@ -115,7 +115,7 @@ public class UsuarioMateriaTest {
     @Test
     public void aprobarConNotaValidaDeberiaEstablecerNotaYFecha() {
         // Preparación
-        Double notaAprobacion = 8.5;
+        Integer notaAprobacion = 8;
 
         // Ejecución
         usuarioMateria.aprobar(notaAprobacion);
@@ -132,7 +132,7 @@ public class UsuarioMateriaTest {
         // Ejecución y Validación
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class,
-            () -> usuarioMateria.aprobar(3.9)
+            () -> usuarioMateria.aprobar(4)
         );
 
         assertThat(exception.getMessage(), containsString("Para aprobar, la nota debe ser mayor o igual a 4.0"));
@@ -147,7 +147,7 @@ public class UsuarioMateriaTest {
     @Test
     public void desaprobarConNotaValidaDeberiaEstablecerNotaYFecha() {
         // Preparación
-        Double notaDesaprobacion = 2.5;
+        Integer notaDesaprobacion = 3;
 
         // Ejecución
         usuarioMateria.desaprobar(notaDesaprobacion);
@@ -162,10 +162,10 @@ public class UsuarioMateriaTest {
     @Test
     public void desaprobarConNotaMayorOIgualA4DeberiaLanzarExcepcion() {
         // Ejecución y Validación - Nota 4.0
-        assertThrows(IllegalArgumentException.class, () -> usuarioMateria.desaprobar(4.0));
+        assertThrows(IllegalArgumentException.class, () -> usuarioMateria.desaprobar(4));
 
         // Ejecución y Validación - Nota mayor a 4
-        assertThrows(IllegalArgumentException.class, () -> usuarioMateria.desaprobar(7.0));
+        assertThrows(IllegalArgumentException.class, () -> usuarioMateria.desaprobar(7));
     }
 
     @Test
@@ -177,7 +177,7 @@ public class UsuarioMateriaTest {
     @Test
     public void reiniciarCursadaDeberiaPonerNotaNulaYActualizarFecha() {
         // Preparación - Materia con nota
-        usuarioMateria.setNota(8.5);
+        usuarioMateria.setNota(8);
         assertThat(usuarioMateria.estaAprobada(), is(true));
 
         // Ejecución
@@ -257,14 +257,14 @@ public class UsuarioMateriaTest {
     @Test
     public void setNotaDeberiaActualizarFechaModificacion() throws InterruptedException {
         // Preparación
-        usuarioMateria.setNota(5.0);
+        usuarioMateria.setNota(5);
         Thread.sleep(1); // Asegurar diferencia de tiempo
 
         // Ejecución
-        usuarioMateria.setNota(7.5);
+        usuarioMateria.setNota(7);
 
         // Validación
-        assertThat(usuarioMateria.getNota(), equalTo(7.5));
+        assertThat(usuarioMateria.getNota(), equalTo(7));
         assertThat(usuarioMateria.getFechaModificacion(), is(notNullValue()));
     }
 
@@ -278,17 +278,6 @@ public class UsuarioMateriaTest {
         assertThat(usuarioMateria.getFechaModificacion(), is(notNullValue()));
     }
 
-    @Test
-    public void setObservacionesDeberiaActualizarFechaModificacion() {
-        // Ejecución
-        String observaciones = "Excelente rendimiento en el parcial";
-        usuarioMateria.setObservaciones(observaciones);
-
-        // Validación
-        assertThat(usuarioMateria.getObservaciones(), equalTo(observaciones));
-        assertThat(usuarioMateria.getFechaModificacion(), is(notNullValue()));
-    }
-
     // ========== Tests para toString ==========
 
     @Test
@@ -299,7 +288,7 @@ public class UsuarioMateriaTest {
 
         usuarioMateria.setUsuario(usuarioMock);
         usuarioMateria.setMateria(materiaMock);
-        usuarioMateria.setNota(8.5);
+        usuarioMateria.setNota(8);
         usuarioMateria.setDificultad(7);
 
         // Ejecución
@@ -309,7 +298,7 @@ public class UsuarioMateriaTest {
         assertThat(resultado, containsString("test@unlam.com"));
         assertThat(resultado, containsString("Algoritmos"));
         assertThat(resultado, containsString("APROBADA"));
-        assertThat(resultado, containsString("8.5"));
+        assertThat(resultado, containsString("8"));
         assertThat(resultado, containsString("7"));
     }
 

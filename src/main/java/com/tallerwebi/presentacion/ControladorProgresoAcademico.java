@@ -67,32 +67,30 @@ public class ControladorProgresoAcademico {
         return new ModelAndView("progreso", model);
     }
 
-    @PostMapping("/progresoDesdeElRegistro") //metodo util
-    public ModelAndView cargarMaterias(@RequestParam Map<String, String> datos) {
-        String id = datos.get("id");
-        String nota = datos.get("nota");
-        String dificultad = datos.get("dificultad");
-        String materia = datos.get("materia");
-        String usuario = datos.get("usuario");
-
-        Double idNota = Double.parseDouble(nota);
-        Integer dificultadParse = Integer.parseInt(dificultad);
-        Long idMateria = Long.parseLong(materia);
-        Long idUsuario = Long.parseLong(usuario);
-
-        String observaciones = datos.get("observaciones");
-        servicioUsuarioMateria.asignarMateria(idUsuario, idMateria,dificultadParse);
-        return new ModelAndView("home");
-    }
+//    @PostMapping("/progresoDesdeElRegistro") //metodo util
+//    public ModelAndView cargarMaterias(@RequestParam Map<String, String> datos) {
+//        String id = datos.get("id");
+//        String nota = datos.get("nota");
+//        String dificultad = datos.get("dificultad");
+//        String materia = datos.get("materia");
+//        String usuario = datos.get("usuario");
+//
+//        Double idNota = Double.parseDouble(nota);
+//        Integer dificultadParse = Integer.parseInt(dificultad);
+//        Long idMateria = Long.parseLong(materia);
+//        Long idUsuario = Long.parseLong(usuario);
+//
+//        String observaciones = datos.get("observaciones");
+//        servicioUsuarioMateria.asignarMateria(idUsuario, idMateria,dificultadParse);
+//        return new ModelAndView("home");
+//    }
 
     @PostMapping("/pruebaDeDatos")
     public ModelAndView guardarMateria(@ModelAttribute MateriasWrapper listadoMaterias,
                                        @ModelAttribute("datosLogin") DatosLogin datosLogin) {
-        MateriasWrapper materia = listadoMaterias;
-        MateriasDTO materiaDTO = listadoMaterias.getMaterias().get(1);
-        //Falta la asignación
-        servicioUsuarioMateria.asignarMateria(3L, materiaDTO.getId(), materiaDTO.getDificultad());
-
+            for( MateriasDTO materias : listadoMaterias.getMaterias()) {
+                servicioUsuarioMateria.asignarMateria(3L, materias.getId(), materias.getNota(), materias.getDificultad());
+            }
         return new ModelAndView("login");
     }
 

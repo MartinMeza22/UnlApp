@@ -80,9 +80,10 @@
                 <div id="dificultad" class="mt-3">
                     <label>Seleccionar dificultad</label>
                     <select th:name="materias[__${iterStat.index}__].dificultad" class="form-control">
-                        <option value="1">Fácil</option>
-                        <option value="2">Intermedia</option>
-                        <option value="3">Compleja</option>
+                        <option value="">Sin dificultad</option>
+                        <option th:value="1">Fácil</option>
+                        <option th:value="2">Intermedia</option>
+                        <option th:value="3">Compleja</option>
                     </select>
                 </div>
 
@@ -101,7 +102,7 @@
                     Confirmar
                 </button>
 
-                <!-- Resultado (se muestra luego de confirmar) -->
+                <!-- Resultado -->
                 <div class="mt-3 resultado-confirmacion d-none">
                     <p><strong>Estado:</strong> <span class="estado-texto"></span></p>
                     <p><strong>Nota:</strong> <span class="nota-texto"></span></p>
@@ -122,16 +123,21 @@
     function toggleCursar(btn) {
         const container = btn.closest("div[id='nombre-materia']");
         const input = container.querySelector("input[type='hidden']");
+        const wrapper = btn.closest("div[data-index]");
+        const selects = wrapper.querySelectorAll("select");
+
         if (btn.innerText === "Cursar") {
             btn.innerText = "Dejar de cursar";
             btn.classList.remove("btn-outline-primary");
             btn.classList.add("btn-outline-danger");
             input.value = true;
+            selects.forEach(s => s.disabled = false);
         } else {
             btn.innerText = "Cursar";
             btn.classList.remove("btn-outline-danger");
             btn.classList.add("btn-outline-primary");
             input.value = false;
+            selects.forEach(s => s.disabled = true);
         }
     }
 
@@ -140,7 +146,9 @@
         const notaSelect = contenedor.querySelector("select[name*='nota']");
         const dificultadSelect = contenedor.querySelector("select[name*='dificultad']");
         const cursarBtn = contenedor.querySelector("button[onclick*='toggleCursar']");
-        const cursandoInput = contenedor.querySelector("input[type='hidden'][name*='cursando']");
+
+        notaSelect.disabled = false;
+        dificultadSelect.disabled = false;
 
         const nota = parseInt(notaSelect.value);
         const dificultadTexto = dificultadSelect.options[dificultadSelect.selectedIndex].text;
@@ -153,26 +161,17 @@
         const estaAprobada = nota >= 4;
         const nuevoEstado = estaAprobada ? "Cursada" : "Desaprobada";
 
-        // Actualizar texto y desactivar botón "Cursar/Dejar de cursar"
         cursarBtn.innerText = nuevoEstado;
         cursarBtn.classList.remove("btn-outline-primary", "btn-outline-danger");
         cursarBtn.classList.add(estaAprobada ? "btn-success" : "btn-secondary");
         cursarBtn.disabled = true;
 
-        // Mostrar valores
         contenedor.querySelector(".estado-texto").innerText = nuevoEstado;
         contenedor.querySelector(".nota-texto").innerText = nota;
         contenedor.querySelector(".dificultad-texto").innerText = dificultadTexto;
-
-        // Mostrar resultado
         contenedor.querySelector(".resultado-confirmacion").classList.remove("d-none");
 
-        // Ocultar botón confirmar
         btn.classList.add("d-none");
-
-        // Deshabilitar selects
-        notaSelect.disabled = true;
-        dificultadSelect.disabled = true;
     }
 
     function editarMateria(btn) {
@@ -180,8 +179,6 @@
         const notaSelect = contenedor.querySelector("select[name*='nota']");
         const dificultadSelect = contenedor.querySelector("select[name*='dificultad']");
         const cursarBtn = contenedor.querySelector("button[onclick*='toggleCursar']");
-
-        // Restaurar botón "Cursar/Dejar de cursar"
         const cursandoInput = contenedor.querySelector("input[type='hidden'][name*='cursando']");
         const estaCursando = cursandoInput.value === "true";
 
@@ -190,22 +187,34 @@
         cursarBtn.classList.remove("btn-success", "btn-secondary");
         cursarBtn.classList.add(estaCursando ? "btn-outline-danger" : "btn-outline-primary");
 
-        // Ocultar resultado
         contenedor.querySelector(".resultado-confirmacion").classList.add("d-none");
-
-        // Mostrar botón confirmar
         contenedor.querySelector(".btn-confirmar").classList.remove("d-none");
 
-        // Habilitar selects
         notaSelect.disabled = false;
         dificultadSelect.disabled = false;
     }
+
+    document.getElementById("formMaterias").addEventListener("submit", function(event) {
+        const materias = document.querySelectorAll("div[data-index]");
+        materias.forEach(materia => {
+            const index = materia.getAttribute("data-index");
+            const cursandoInput = materia.querySelector(`input[name="materias[${index}].cursando"]`);
+            const notaSelect = materia.querySelector(`select[name="materias[${index}].nota"]`);
+            const dificultadSelect = materia.querySelector(`select[name="materias[${index}].dificultad"]`);
+
+            const cursando = cursandoInput?.value === "true";
+            const nota = notaSelect?.value;
+            const dificultad = dificultadSelect?.value;
+
+            if (!nota && !dificultad && !cursando) {
+                // dejar como está, se enviarán vacíos
+            } else {
+                notaSelect.disabled = false;
+                dificultadSelect.disabled = false;
+            }
+        });
+    });
 </script>
-
-
-
-
-
 
 </body>
 </html>
