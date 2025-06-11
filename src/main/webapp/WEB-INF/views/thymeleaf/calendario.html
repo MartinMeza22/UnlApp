@@ -110,6 +110,8 @@
             width: auto;
             min-width: 150px;
             transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            background-position: right 8px center;
+            background-size: 16px 12px;
         }
 
         .form-select-filter:focus {
@@ -308,6 +310,7 @@
             border: 1px solid #d1d5db;
             border-radius: 6px;
             padding: 10px;
+            padding-right: 2rem;
             transition: border-color 0.2s ease, box-shadow 0.2s ease;
         }
 
@@ -524,7 +527,7 @@
                     Descripción del evento
                 </div>
 
-                <div class="evento-materia" th:if="${evento.materia != null}" th:text="'📚 ' + ${evento.nombreMateria}">
+                <div class="evento-materia" th:if="${evento.materia != null}" th:text="${evento.nombreMateria}">
                     Materia
                 </div>
 
@@ -587,7 +590,7 @@
                 <h5 class="modal-title" id="eventModalLabel">Agregar Nuevo Evento</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form th:action="@{/evento/crear}" method="POST">
+            <form th:action="@{/evento/crear}" method="POST" accept-charset="UTF-8" enctype="application/x-www-form-urlencoded">
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-8 mb-3">
@@ -729,7 +732,7 @@
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form id="editarEventoForm" method="POST">
+            <form id="editarEventoForm" method="POST" accept-charset="UTF-8" enctype="application/x-www-form-urlencoded">
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-8 mb-3">
