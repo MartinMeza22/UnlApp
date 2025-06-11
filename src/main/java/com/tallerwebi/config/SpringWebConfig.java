@@ -23,13 +23,13 @@ import java.util.List;
 
 @EnableWebMvc
 @Configuration
-@ComponentScan({"com.tallerwebi.presentacion", "com.tallerwebi.dominio", "com.tallerwebi.infraestructura", "com.tallerwebi.config"})
+@ComponentScan("com.tallerwebi")
 public class SpringWebConfig implements WebMvcConfigurer {
 
     // Spring + Thymeleaf need this
     @Autowired
     private ApplicationContext applicationContext;
-    
+
     @Autowired
     private AuthenticationInterceptor authenticationInterceptor;
 
