@@ -6,13 +6,13 @@ public class MateriaDTO {
     private String nombre;
     private String dificultad;
     private String estado;
-    private Double nota;
+    private Integer nota;
     private Integer cuatrimestre;
 
     public MateriaDTO() {
     }
 
-    public MateriaDTO(Long id, String nombre, String dificultad, String estado, Double nota, Integer cuatrimestre) {
+    public MateriaDTO(Long id, String nombre, String dificultad, String estado, Integer nota, Integer cuatrimestre) {
         this.id = id;
         this.nombre = nombre;
         this.dificultad = dificultad;
@@ -54,11 +54,11 @@ public class MateriaDTO {
         this.estado = estado;
     }
 
-    public Double getNota() {
+    public Integer getNota() {
         return nota;
     }
 
-    public void setNota(Double nota) {
+    public void setNota(Integer nota) {
         this.nota = nota;
     }
 

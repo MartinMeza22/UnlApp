@@ -96,7 +96,7 @@ public class ControladorProgresoAcademico {
 
     @RequestMapping(path = "/progreso/actualizar-materia", method = RequestMethod.POST)
     public String actualizarDatosMateria(
-            @RequestParam(name = "nota", required = false) Double nota,
+            @RequestParam(name = "nota", required = false) Integer nota,
             @RequestParam(name = "dificultad", required = false) Integer dificultad,
             @RequestParam(name = "id") Long idMateria,
             HttpSession session,
