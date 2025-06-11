@@ -70,3 +70,11 @@ VALUES
     (1, '2024-03-01', '2025-07-15', 8,  11, 1),
     (5, '2024-05-01', '2025-07-15', 9,  12, 1),
     (10, '2025-03-01', '2025-07-15', 8,  13, 1);
+
+
+INSERT INTO evento(activo, completado, descripcion, es_recurrente,intervalo_recurrencia, fecha_inicio, tipo, titulo, materia_id, usuario_id)
+VALUES
+    (true, false, 'Examen de Programación Web I',false, 1,'2025-06-11 20:02:00.000000', 'TAREA', 'Seguridad', 6,1),
+    (true, false, 'Examen de Programación Web I',false, 1,'2025-06-11 20:02:00.000000', 'EXAMEN', 'Informática examen', 2,1),
+    (true, false, 'Examen de Programación Web I',false, 1,'2025-06-11 20:02:00.000000', 'CLASE', 'estudiar', 5,1),
+    (true, false, 'Examen de Programación Web I',false, 1,'2025-06-11 20:02:00.000000', 'PERSONAL', 'recordatorio', null,1);
