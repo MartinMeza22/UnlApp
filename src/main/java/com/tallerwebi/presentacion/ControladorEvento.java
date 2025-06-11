@@ -64,7 +64,7 @@ public class ControladorEvento {
                                    @RequestParam(value = "materiaId", required = false) Long materiaId,
                                    @RequestParam(value = "ubicacion", required = false) String ubicacion,
                                    @RequestParam(value = "descripcion", required = false) String descripcion,
-                                   @RequestParam(value = "esRecurrente", defaultValue = "false") Boolean esRecurrente,
+
                                    HttpServletRequest request) {
         ModelMap modelo = new ModelMap();
         

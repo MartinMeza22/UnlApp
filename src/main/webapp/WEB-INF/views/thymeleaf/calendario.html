@@ -642,15 +642,7 @@
                                   placeholder="Describe los detalles del evento..."></textarea>
                     </div>
 
-                    <!-- Recurring Events Section (for future use) -->
-                    <div class="mb-3">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="esRecurrente" name="esRecurrente" value="true">
-                            <label class="form-check-label" for="esRecurrente">
-                                Evento recurrente
-                            </label>
-                        </div>
-                    </div>
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -837,49 +829,113 @@
 
     // Function to prepare the edit modal
     function prepararEditar(button) {
-        const eventoId = button.getAttribute('data-evento-id');
-        const titulo = button.getAttribute('data-evento-titulo');
-        const descripcion = button.getAttribute('data-evento-descripcion') || '';
-        const tipo = button.getAttribute('data-evento-tipo');
-        const fechaInicio = button.getAttribute('data-evento-fecha-inicio');
-        const fechaFin = button.getAttribute('data-evento-fecha-fin');
-        const ubicacion = button.getAttribute('data-evento-ubicacion') || '';
-        const materiaId = button.getAttribute('data-evento-materia-id') || '';
+        console.log('🔧 EDIT BUTTON CLICKED'); // Debug log
         
-        // Populate form fields
-        document.getElementById('editTitulo').value = titulo;
-        document.getElementById('editTipo').value = tipo;
-        document.getElementById('editDescripcion').value = descripcion;
-        document.getElementById('editUbicacion').value = ubicacion;
-        
-        // Handle datetime formatting (convert from server format to datetime-local format)
-        if (fechaInicio) {
-            const fechaInicioFormatted = formatDateTimeForInput(fechaInicio);
-            document.getElementById('editFechaInicio').value = fechaInicioFormatted;
+        // Helper function for safe attribute access
+        function getAttributeValue(element, attributeName) {
+            const value = element.getAttribute(attributeName);
+            if (!value || value === 'null' || value === 'undefined') {
+                return '';
+            }
+            return value;
         }
         
-        if (fechaFin) {
-            const fechaFinFormatted = formatDateTimeForInput(fechaFin);
-            document.getElementById('editFechaFin').value = fechaFinFormatted;
+        try {
+            // Extract data safely
+            const eventoId = getAttributeValue(button, 'data-evento-id');
+            const titulo = getAttributeValue(button, 'data-evento-titulo');
+            const descripcion = getAttributeValue(button, 'data-evento-descripcion');
+            const tipo = getAttributeValue(button, 'data-evento-tipo');
+            const fechaInicio = getAttributeValue(button, 'data-evento-fecha-inicio');
+            const fechaFin = getAttributeValue(button, 'data-evento-fecha-fin');
+            const ubicacion = getAttributeValue(button, 'data-evento-ubicacion');
+            const materiaId = getAttributeValue(button, 'data-evento-materia-id');
+            
+            // Debug logging
+            console.log('📝 Editing event data:', { 
+                eventoId, 
+                titulo, 
+                tipo, 
+                fechaInicio, 
+                fechaFin, 
+                materiaId 
+            });
+            
+            // Populate form fields
+            document.getElementById('editTitulo').value = titulo;
+            document.getElementById('editTipo').value = tipo;
+            document.getElementById('editDescripcion').value = descripcion;
+            document.getElementById('editUbicacion').value = ubicacion;
+            
+            // Handle datetime formatting
+            if (fechaInicio) {
+                const fechaInicioFormatted = formatDateTimeForInput(fechaInicio);
+                document.getElementById('editFechaInicio').value = fechaInicioFormatted;
+                console.log('📅 Fecha inicio formatted:', fechaInicio, '->', fechaInicioFormatted);
+            } else {
+                document.getElementById('editFechaInicio').value = '';
+            }
+            
+            if (fechaFin) {
+                const fechaFinFormatted = formatDateTimeForInput(fechaFin);
+                document.getElementById('editFechaFin').value = fechaFinFormatted;
+                console.log('📅 Fecha fin formatted:', fechaFin, '->', fechaFinFormatted);
+            } else {
+                document.getElementById('editFechaFin').value = '';
+            }
+            
+            // Select the materia with validation
+            const materiaSelect = document.getElementById('editMateria');
+            materiaSelect.value = materiaId;
+            console.log('📚 Materia selected:', materiaId);
+            
+            // Set form action - use the URL that Thymeleaf generated correctly
+            const form = document.getElementById('editarEventoForm');
+            const updateUrl = button.getAttribute('data-update-url');
+            
+            if (updateUrl) {
+                form.action = updateUrl;
+                console.log('🔗 Form action set to:', updateUrl);
+            } else {
+                // Fallback: construct URL manually
+                const pathParts = window.location.pathname.split('/');
+                const contextPath = pathParts[1];
+                form.action = '/' + contextPath + '/evento/' + eventoId + '/actualizar';
+                console.log('🔗 Form action fallback set to:', form.action);
+            }
+            
+        } catch (error) {
+            console.error('❌ Error in prepararEditar:', error);
+            alert('Error preparing edit form: ' + error.message);
         }
-        
-        // Select the materia
-        if (materiaId) {
-            document.getElementById('editMateria').value = materiaId;
-        } else {
-            document.getElementById('editMateria').value = '';
-        }
-        
-        // Set form action for update
-        const form = document.getElementById('editarEventoForm');
-        form.action = /*[[${#request.contextPath}]]*/ '' + '/evento/' + eventoId + '/actualizar';
     }
     
-    // Helper function to format datetime for input field
+    // Improved helper function to format datetime for input field
     function formatDateTimeForInput(dateTimeString) {
+        if (!dateTimeString || dateTimeString === 'null' || dateTimeString === 'undefined') {
+            return '';
+        }
+        
         try {
-            // Handle the format from server (e.g., "2024-03-15T10:30:00")
+            // Handle LocalDateTime format from Java: "2024-03-15T10:30:00" or "2024-03-15T10:30"
+            let formatted = dateTimeString.toString().trim();
+            
+            // If it already looks like the right format, just remove seconds if present
+            if (formatted.match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/)) {
+                // Remove seconds if present: "2024-03-15T10:30:00" -> "2024-03-15T10:30"
+                if (formatted.includes(':') && formatted.split(':').length === 3) {
+                    formatted = formatted.substring(0, formatted.lastIndexOf(':'));
+                }
+                return formatted;
+            }
+            
+            // Fallback: try to parse as Date and reformat
             const date = new Date(dateTimeString);
+            if (isNaN(date.getTime())) {
+                console.error('Invalid date:', dateTimeString);
+                return '';
+            }
+            
             const year = date.getFullYear();
             const month = String(date.getMonth() + 1).padStart(2, '0');
             const day = String(date.getDate()).padStart(2, '0');
@@ -888,7 +944,7 @@
             
             return `${year}-${month}-${day}T${hours}:${minutes}`;
         } catch (e) {
-            console.log('Error formatting date:', e);
+            console.error('Error formatting date:', dateTimeString, e);
             return '';
         }
     }
@@ -967,10 +1023,68 @@
 
     // Set minimum date/time to now
     document.addEventListener('DOMContentLoaded', function() {
+        console.log('🚀 Calendar page loaded');
+        
         const now = new Date();
         const isoString = now.toISOString().slice(0, 16);
         document.getElementById('fechaInicio').min = isoString;
         document.getElementById('fechaFin').min = isoString;
+        
+        // Add form validation for edit form
+        const editForm = document.getElementById('editarEventoForm');
+        if (editForm) {
+            console.log('✅ Edit form found');
+            
+            editForm.addEventListener('submit', function(e) {
+                console.log('📤 Edit form submitted');
+                console.log('📤 Form action:', editForm.action);
+                
+                const titulo = document.getElementById('editTitulo').value.trim();
+                const fechaInicio = document.getElementById('editFechaInicio').value;
+                
+                console.log('📝 Form data:', { titulo, fechaInicio });
+                
+                if (!titulo) {
+                    e.preventDefault();
+                    alert('El título del evento es obligatorio');
+                    document.getElementById('editTitulo').focus();
+                    return false;
+                }
+                
+                if (!fechaInicio) {
+                    e.preventDefault();
+                    alert('La fecha de inicio es obligatoria');
+                    document.getElementById('editFechaInicio').focus();
+                    return false;
+                }
+                
+                // Show that form is being submitted
+                console.log('✅ Form validation passed, submitting...');
+                
+                // Show loading state
+                const submitBtn = editForm.querySelector('button[type="submit"]');
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<i class="bi bi-clock"></i> Actualizando...';
+                }
+                
+                return true;
+            });
+        } else {
+            console.log('❌ Edit form NOT found');
+        }
+        
+        // Debug: Show what edit buttons are available
+        const editButtons = document.querySelectorAll('.btn-edit');
+        console.log('📝 Found', editButtons.length, 'edit buttons');
+        
+        editButtons.forEach((btn, index) => {
+            console.log(`Button ${index}:`, {
+                id: btn.getAttribute('data-evento-id'),
+                titulo: btn.getAttribute('data-evento-titulo'),
+                updateUrl: btn.getAttribute('data-update-url')
+            });
+        });
     });
 </script>
 

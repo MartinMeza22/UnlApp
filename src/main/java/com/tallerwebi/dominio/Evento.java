@@ -2,7 +2,6 @@ package com.tallerwebi.dominio;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.time.LocalDate;
 
 @Entity
 @Table(name = "evento")
@@ -41,22 +40,6 @@ public class Evento {
 
     @Column(name = "fecha_modificacion")
     private LocalDateTime fechaModificacion;
-
-    // Recurring event fields
-    @Column(name = "es_recurrente")
-    private Boolean esRecurrente = false;
-
-    @Column(name = "tipo_recurrencia")
-    private String tipoRecurrencia; // "DIARIO", "SEMANAL", "MENSUAL", "ANUAL"
-
-    @Column(name = "intervalo_recurrencia")
-    private Integer intervaloRecurrencia = 1; // cada X días/semanas/meses
-
-    @Column(name = "fecha_fin_recurrencia")
-    private LocalDate fechaFinRecurrencia;
-
-    @Column(name = "dias_semana")
-    private String diasSemana; // "1,2,3,4,5" para lunes a viernes
 
     // MANDATORY relationship with Usuario
     @ManyToOne(fetch = FetchType.LAZY)
@@ -152,36 +135,6 @@ public class Evento {
     public Materia getMateria() { return materia; }
     public void setMateria(Materia materia) { this.materia = materia; }
 
-    public Boolean getEsRecurrente() { return esRecurrente; }
-    public void setEsRecurrente(Boolean esRecurrente) { 
-        this.esRecurrente = esRecurrente;
-        updateModificationDate();
-    }
-
-    public String getTipoRecurrencia() { return tipoRecurrencia; }
-    public void setTipoRecurrencia(String tipoRecurrencia) { 
-        this.tipoRecurrencia = tipoRecurrencia;
-        updateModificationDate();
-    }
-
-    public Integer getIntervaloRecurrencia() { return intervaloRecurrencia; }
-    public void setIntervaloRecurrencia(Integer intervaloRecurrencia) { 
-        this.intervaloRecurrencia = intervaloRecurrencia;
-        updateModificationDate();
-    }
-
-    public LocalDate getFechaFinRecurrencia() { return fechaFinRecurrencia; }
-    public void setFechaFinRecurrencia(LocalDate fechaFinRecurrencia) { 
-        this.fechaFinRecurrencia = fechaFinRecurrencia;
-        updateModificationDate();
-    }
-
-    public String getDiasSemana() { return diasSemana; }
-    public void setDiasSemana(String diasSemana) { 
-        this.diasSemana = diasSemana;
-        updateModificationDate();
-    }
-
     // Utility Methods
     private void updateModificationDate() {
         this.fechaModificacion = LocalDateTime.now();
@@ -247,67 +200,6 @@ public class Evento {
             // Handle lazy loading exceptions gracefully
             return "Sin materia";
         }
-    }
-
-    // Recurring event utilities
-    public void configurarRecurrencia(String tipoRecurrencia, Integer intervalo, LocalDate fechaFin) {
-        this.esRecurrente = true;
-        this.tipoRecurrencia = tipoRecurrencia;
-        this.intervaloRecurrencia = intervalo;
-        this.fechaFinRecurrencia = fechaFin;
-        updateModificationDate();
-    }
-
-    public void configurarRecurrenciaSemanal(String diasSemana, LocalDate fechaFin) {
-        configurarRecurrencia("SEMANAL", 1, fechaFin);
-        this.diasSemana = diasSemana;
-    }
-
-    public void deshabilitarRecurrencia() {
-        this.esRecurrente = false;
-        this.tipoRecurrencia = null;
-        this.intervaloRecurrencia = 1;
-        this.fechaFinRecurrencia = null;
-        this.diasSemana = null;
-        updateModificationDate();
-    }
-
-    public boolean esRecurrenteActivo() {
-        if (!Boolean.TRUE.equals(esRecurrente)) return false;
-        if (fechaFinRecurrencia == null) return true;
-        return !LocalDate.now().isAfter(fechaFinRecurrencia);
-    }
-
-    public LocalDateTime calcularProximaOcurrencia() {
-        if (!esRecurrenteActivo()) return null;
-        
-        LocalDateTime proxima = fechaInicio;
-        LocalDateTime ahora = LocalDateTime.now();
-        
-        while (proxima.isBefore(ahora)) {
-            switch (tipoRecurrencia != null ? tipoRecurrencia : "") {
-                case "DIARIO":
-                    proxima = proxima.plusDays(intervaloRecurrencia != null ? intervaloRecurrencia : 1);
-                    break;
-                case "SEMANAL":
-                    proxima = proxima.plusWeeks(intervaloRecurrencia != null ? intervaloRecurrencia : 1);
-                    break;
-                case "MENSUAL":
-                    proxima = proxima.plusMonths(intervaloRecurrencia != null ? intervaloRecurrencia : 1);
-                    break;
-                case "ANUAL":
-                    proxima = proxima.plusYears(intervaloRecurrencia != null ? intervaloRecurrencia : 1);
-                    break;
-                default:
-                    return null;
-            }
-        }
-        
-        if (fechaFinRecurrencia != null && proxima.toLocalDate().isAfter(fechaFinRecurrencia)) {
-            return null;
-        }
-        
-        return proxima;
     }
 
     @Override

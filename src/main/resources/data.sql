@@ -74,7 +74,33 @@ VALUES
 
 INSERT INTO evento(activo, completado, descripcion, es_recurrente,intervalo_recurrencia, fecha_inicio, tipo, titulo, materia_id, usuario_id)
 VALUES
-    (true, false, 'Examen de Programación Web I',false, 1,'2025-06-11 20:02:00.000000', 'TAREA', 'Seguridad', 6,1),
-    (true, false, 'Examen de Programación Web I',false, 1,'2025-06-11 20:02:00.000000', 'EXAMEN', 'Informática examen', 2,1),
-    (true, false, 'Examen de Programación Web I',false, 1,'2025-06-11 20:02:00.000000', 'CLASE', 'estudiar', 5,1),
-    (true, false, 'Examen de Programación Web I',false, 1,'2025-06-11 20:02:00.000000', 'PERSONAL', 'recordatorio', null,1);
+-- ============================================================================
+-- EVENTOS PARA USUARIO 1 (Juan Pérez) - 10 eventos
+-- ============================================================================
+-- Academic Events
+(true, false, 'Primer parcial de Programación Básica I. Temas: variables, estructuras de control, funciones básicas.', NOW(), NOW(), '2025-06-15 09:00:00', '2025-06-15 11:00:00', 'EXAMEN', 'Parcial Programación Básica I', 'Aula 101, Sede Central', 1, 1),
+(true, false, 'Entrega del trabajo práctico sobre consultas SQL básicas. Incluir documentación y código.', NOW(), NOW(), '2025-06-18 23:59:00', NULL, 'TAREA', 'TP Consultas SQL - Base de Datos I', 'Campus Virtual', 7, 1),
+(true, false, 'Sesión grupal de repaso para el final de Matemática General. Resolver ejercicios de límites y derivadas.', NOW(), NOW(), '2025-06-20 14:00:00', '2025-06-20 17:00:00', 'ESTUDIO', 'Estudio Grupal - Matemática Final', 'Biblioteca Central - Sala 3', 3, 1),
+(true, true, 'Segunda clase de Programación Web II. Tema: React Hooks y manejo de estado.', NOW(), NOW(), '2025-06-12 10:00:00', '2025-06-12 13:00:00', 'CLASE', 'Clase React Hooks - Prog Web II', 'Laboratorio 2', 10, 1),
+(true, false, 'Presentación oral del proyecto final de Diseño de Aplicaciones Web. 15 minutos por grupo.', NOW(), NOW(), '2025-06-25 16:00:00', '2025-06-25 18:00:00', 'EXAMEN', 'Presentación Proyecto Final', 'Aula Magna', 11, 1),
+-- Personal Events
+(true, false, 'Consulta médica anual de rutina. Llevar estudios previos y carnet de vacunación.', NOW(), NOW(), '2025-06-16 15:30:00', '2025-06-16 16:30:00', 'PERSONAL', 'Control Médico Anual', 'Hospital Italiano - Consultorio 205', NULL, 1),
+(true, false, 'Entrevista laboral para puesto de desarrollador junior en startup tecnológica.', NOW(), NOW(), '2025-06-19 11:00:00', '2025-06-19 12:00:00', 'PERSONAL', 'Entrevista TechStart Solutions', 'Oficina Puerto Madero - Piso 12', NULL, 1),
+(true, true, 'Sesión de ejercicios en el gimnasio. Rutina de fuerza: pecho, tríceps y hombros.', NOW(), NOW(), '2025-06-13 19:00:00', '2025-06-13 20:30:00', 'PERSONAL', 'Gimnasio - Rutina Fuerza', 'SportClub Caballito', NULL, 1),
+(true, false, 'Reunión familiar para organizar cumpleaños de la abuela. Coordinar lugar, comida y regalos.', NOW(), NOW(), '2025-06-22 18:00:00', '2025-06-22 19:30:00', 'PERSONAL', 'Organizar Cumple Abuela', 'Casa de mamá', NULL, 1),
+(true, false, 'Taller de programación avanzada en JavaScript. Temas: async/await, promises, APIs REST.', NOW(), NOW(), '2025-06-28 14:00:00', '2025-06-28 18:00:00', 'ESTUDIO', 'Workshop JavaScript Avanzado', 'CoderHouse - Sede Palermo', 6, 1),
+-- ============================================================================
+-- EVENTOS PARA USUARIO 2 (Ana Gómez) - 10 eventos
+-- ============================================================================
+-- Academic Events
+(true, false, 'Examen final de Programación Básica I. Repaso completo de POO, herencia y polimorfismo.', NOW(), NOW(), '2025-06-17 14:00:00', '2025-06-17 17:00:00', 'EXAMEN', 'Final Programación Básica I', 'Aula 205, Sede Central', 1, 2),
+(true, true, 'Clase práctica de Informática General: instalación de sistemas operativos y configuración de redes.', NOW(), NOW(), '2025-06-14 08:00:00', '2025-06-14 12:00:00', 'CLASE', 'Práctica SO y Redes', 'Laboratorio 1', 2, 2),
+(true, false, 'Entrega individual del ensayo sobre "Impacto de la IA en el desarrollo web". Mínimo 2000 palabras.', NOW(), NOW(), '2025-06-21 20:00:00', NULL, 'TAREA', 'Ensayo IA en Desarrollo Web', 'Plataforma Moodle', 2, 2),
+(true, false, 'Recuperatorio del primer parcial de Matemática General. Temas: funciones y límites.', NOW(), NOW(), '2025-06-24 10:00:00', '2025-06-24 12:00:00', 'EXAMEN', 'Recuperatorio Matemática', 'Aula 103', 3, 2),
+(true, false, 'Sesión de estudio intensiva para Inglés Técnico I. Practicar vocabulario de programación.', NOW(), NOW(), '2025-06-26 16:00:00', '2025-06-26 18:00:00', 'ESTUDIO', 'Repaso Inglés Técnico', 'Biblioteca - Sala Idiomas', 4, 2),
+-- Personal Events
+(true, false, 'Reunión trimestral de trabajo. Revisión de objetivos y planificación del próximo período.', NOW(), NOW(), '2025-06-16 09:00:00', '2025-06-16 11:00:00', 'PERSONAL', 'Reunión Trabajo - Q2 Review', 'Oficina Microcentro - Sala Juntas', NULL, 2),
+(true, true, 'Cita con el dentista para limpieza dental y control de rutina. Recordar llevar radiografías.', NOW(), NOW(), '2025-06-13 14:00:00', '2025-06-13 15:00:00', 'PERSONAL', 'Dentista - Control Rutina', 'Clínica Odontológica San Martín', NULL, 2),
+(true, false, 'Clase de yoga nivel intermedio. Enfocar en posturas de equilibrio y respiración consciente.', NOW(), NOW(), '2025-06-18 19:30:00', '2025-06-18 21:00:00', 'PERSONAL', 'Clase de Yoga', 'Centro Holístico Belgrano', NULL, 2),
+(true, false, 'Cena con amigas de la facultad para ponernos al día y celebrar fin de parciales.', NOW(), NOW(), '2025-06-27 20:30:00', '2025-06-27 23:00:00', 'PERSONAL', 'Cena Amigas Facultad', 'Restaurante Las Violetas - Almagro', NULL, 2),
+(true, false, 'Curso online de diseño UX/UI. Primera clase: fundamentos de experiencia de usuario.', NOW(), NOW(), '2025-06-29 10:00:00', '2025-06-29 13:00:00', 'ESTUDIO', 'Curso UX/UI - Clase 1', 'Online - Zoom', NULL, 2);
