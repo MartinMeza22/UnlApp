@@ -197,15 +197,14 @@ public class ServicioUsuarioMateriaTest {
     public void modificarMateriaCursadaConParametrosValidosDeberiaActualizar() {
         // Preparación
         Long usuarioMateriaId = 1L;
-        Double nota = 8.5;
+        Integer nota = 8;
         Integer dificultad = 7;
-        String observaciones = "Excelente rendimiento";
 
         when(repositorioUsuarioMateriaMock.buscarPorId(usuarioMateriaId)).thenReturn(usuarioMateriaMock);
 
         // Ejecución
         UsuarioMateria resultado = servicioUsuarioMateria.modificarMateriaCursada(
-            usuarioMateriaId, nota, dificultad, observaciones);
+            usuarioMateriaId, nota, dificultad);
 
         // Validación
         assertThat(resultado, equalTo(usuarioMateriaMock));
@@ -213,7 +212,6 @@ public class ServicioUsuarioMateriaTest {
         verify(repositorioUsuarioMateriaMock, times(1)).actualizar(usuarioMateriaMock);
         verify(usuarioMateriaMock, times(1)).setNota(nota);
         verify(usuarioMateriaMock, times(1)).setDificultad(dificultad);
-        verify(usuarioMateriaMock, times(1)).setObservaciones(observaciones);
     }
 
     @Test
@@ -223,7 +221,7 @@ public class ServicioUsuarioMateriaTest {
         when(repositorioUsuarioMateriaMock.buscarPorId(usuarioMateriaId)).thenReturn(usuarioMateriaMock);
 
         // Ejecución - Poner nota null explícitamente
-        servicioUsuarioMateria.modificarMateriaCursada(usuarioMateriaId, null, null, null);
+        servicioUsuarioMateria.modificarMateriaCursada(usuarioMateriaId, null, null);
 
         // Validación
         verify(usuarioMateriaMock, times(1)).setNota(null);
@@ -235,7 +233,7 @@ public class ServicioUsuarioMateriaTest {
         // Ejecución y Validación
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class,
-            () -> servicioUsuarioMateria.modificarMateriaCursada(null, 8.0, 5, "test")
+            () -> servicioUsuarioMateria.modificarMateriaCursada(null, 8, 5)
         );
 
         assertThat(exception.getMessage(), equalTo("El ID de la relación usuario-materia es obligatorio"));
@@ -250,7 +248,7 @@ public class ServicioUsuarioMateriaTest {
         // Ejecución y Validación
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class,
-            () -> servicioUsuarioMateria.modificarMateriaCursada(usuarioMateriaId, 8.0, 5, "test")
+            () -> servicioUsuarioMateria.modificarMateriaCursada(usuarioMateriaId, 8, 5)
         );
 
         assertThat(exception.getMessage(), containsString("no existe"));
@@ -265,11 +263,11 @@ public class ServicioUsuarioMateriaTest {
 
         // Ejecución y Validación - Nota negativa
         assertThrows(IllegalArgumentException.class,
-            () -> servicioUsuarioMateria.modificarMateriaCursada(usuarioMateriaId, -1.0, null, null));
+            () -> servicioUsuarioMateria.modificarMateriaCursada(usuarioMateriaId, -1, null));
 
         // Ejecución y Validación - Nota mayor a 10
         assertThrows(IllegalArgumentException.class,
-            () -> servicioUsuarioMateria.modificarMateriaCursada(usuarioMateriaId, 11.0, null, null));
+            () -> servicioUsuarioMateria.modificarMateriaCursada(usuarioMateriaId, 11, null));
     }
 
     @Test
@@ -280,11 +278,11 @@ public class ServicioUsuarioMateriaTest {
 
         // Ejecución y Validación - Dificultad menor a 1
         assertThrows(IllegalArgumentException.class,
-            () -> servicioUsuarioMateria.modificarMateriaCursada(usuarioMateriaId, null, 0, null));
+            () -> servicioUsuarioMateria.modificarMateriaCursada(usuarioMateriaId, null, 0));
 
         // Ejecución y Validación - Dificultad mayor a 10
         assertThrows(IllegalArgumentException.class,
-            () -> servicioUsuarioMateria.modificarMateriaCursada(usuarioMateriaId, null, 11, null));
+            () -> servicioUsuarioMateria.modificarMateriaCursada(usuarioMateriaId, null, 11));
     }
 
     // ========== Tests for eliminarMateria() ==========
@@ -403,13 +401,13 @@ public class ServicioUsuarioMateriaTest {
         cursando.setNota(null); // Cursando
 
         UsuarioMateria aprobada1 = new UsuarioMateria();
-        aprobada1.setNota(8.5); // Aprobada
+        aprobada1.setNota(8); // Aprobada
 
         UsuarioMateria aprobada2 = new UsuarioMateria();
-        aprobada2.setNota(6.0); // Aprobada
+        aprobada2.setNota(6); // Aprobada
 
         UsuarioMateria desaprobada = new UsuarioMateria();
-        desaprobada.setNota(2.5); // Desaprobada
+        desaprobada.setNota(2); // Desaprobada
 
         List<UsuarioMateria> materias = Arrays.asList(cursando, aprobada1, aprobada2, desaprobada);
         when(repositorioUsuarioMateriaMock.buscarPorUsuario(usuarioId)).thenReturn(materias);

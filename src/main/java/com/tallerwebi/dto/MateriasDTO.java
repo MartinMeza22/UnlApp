@@ -31,4 +31,14 @@ public class MateriasDTO {
     public void setDificultad(Integer dificultad) {
         this.dificultad = dificultad;
     }
+
+    @Override
+    public String toString() {
+        return "MateriasDTO{" +
+                "id=" + id +
+                ", cursando=" + cursando +
+                ", dificultad=" + dificultad +
+                ", nota=" + nota +
+                '}';
+    }
 }

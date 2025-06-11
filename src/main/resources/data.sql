@@ -50,23 +50,23 @@ VALUES
     (20, 'Taller Práctico Integrador', '', 'Obligatoria', 8, 5, true, 1, 14, 15, 16, 17, 18, NULL);
 
 -- Insertar relaciones usuario_materia para el primer usuario (Juan Pérez) - Primeros 3 cuatrimestres
-INSERT INTO usuario_materia(dificultad, fecha_asignacion, fecha_modificacion, nota, observaciones, materia_id, usuario_id)
+INSERT INTO usuario_materia(dificultad, fecha_asignacion, fecha_modificacion, nota, materia_id, usuario_id)
 VALUES
     -- Cuatrimestre 1
-    (6, '2022-03-01', '2024-07-15', 8, 'Excelente comprensión de conceptos básicos', 1, 1),
-    (3, '2022-03-01', '2024-07-15', 9, 'Muy buen manejo de herramientas informáticas', 2, 1),
-    (8, '2022-03-01', '2024-07-15', 6, 'Dificultades con algunos conceptos matemáticos', 3, 1),
-    (4, '2022-03-01', '2024-07-15', 7, 'Buen nivel de inglés técnico', 4, 1),
+    (6, '2022-03-01', '2024-07-15', 8, 1, 1),
+    (3, '2022-03-01', '2024-07-15', 9,  2, 1),
+    (8, '2022-03-01', '2024-07-15', 6,  3, 1),
+    (4, '2022-03-01', '2024-07-15', 7,  4, 1),
 
     -- Cuatrimestre 2
-    (7, '2023-08-01', '2024-12-15', 8, 'Buena evolución en programación', 5, 1),
-    (5, '2023-08-01', '2024-12-15', 9, 'Excelente trabajo con tecnologías web', 6, 1),
-    (9, '2023-08-01', '2024-12-15', 7, 'Conceptos de base de datos requieren refuerzo', 7, 1),
-    (4, '2023-08-01', '2024-12-15', 8, 'Creatividad destacada en diseño', 8, 1),
-    (3, '2023-08-01', '2024-12-15', 8, 'Continuidad en el aprendizaje del inglés', 9, 1),
+    (7, '2023-08-01', '2024-12-15', 8,  5, 1),
+    (5, '2023-08-01', '2024-12-15', 9,  6, 1),
+    (9, '2023-08-01', '2024-12-15', 7,  7, 1),
+    (4, '2023-08-01', '2024-12-15', 8,  8, 1),
+    (3, '2023-08-01', '2024-12-15', 8,  9, 1),
 
     -- Cuatrimestre 3
-    (8, '2024-03-01', '2025-07-15', 7, 'Integración compleja de tecnologías', 10, 1),
-    (7, '2024-03-01', '2025-07-15', 8, 'Buen análisis y diseño de aplicaciones', 11, 1),
-    (5, '2024-05-01', '2025-07-15', 9, 'Excelente trabajo en interfaces de usuario', 12, 1),
-    (6, '2025-03-01', '2025-07-15', 8, 'Trabajo práctico bien ejecutado', 13, 1);
+    (8, '2024-03-01', '2025-07-15', 7,  10, 1),
+    (7, '2024-03-01', '2025-07-15', 8,  11, 1),
+    (5, '2024-05-01', '2025-07-15', 9,  12, 1),
+    (6, '2025-03-01', '2025-07-15', 8,  13, 1);
