@@ -40,6 +40,11 @@ public class ControladorProgresoAcademico {
             materias = this.servicioProgreso.materias(usuarioId);
         }
 
+        Double porcentajeProgreso = this.servicioProgreso.obtenerProgresoDeCarrera(usuarioId);
+        Integer cantidadDeMateriasAprobadas = this.servicioProgreso.filtrarPor("aprobadas", usuarioId).size();
+        Integer cantidadMateriasTotal = this.servicioProgreso.materias(usuarioId).size();
+        Integer materiasEnCurso = this.servicioProgreso.filtrarPor("cursando", usuarioId).size();
+
         Carrera carrera = new Carrera();
         carrera.setNombre("Desarrollo Web");
 
@@ -50,6 +55,10 @@ public class ControladorProgresoAcademico {
         model.put("usuarioId", usuarioId);
         model.put("materiasTotales", materias);
         model.put("selectedCondicion", condicion);
+        model.put("porcentajeCarrera", porcentajeProgreso);
+        model.put("materiasEnCurso", materiasEnCurso);
+        model.put("cantidadMateriasTotales", cantidadMateriasTotal);
+        model.put("cantidadMateriasAprobadas", cantidadDeMateriasAprobadas);
         return new ModelAndView("progreso", model);
     }
 
