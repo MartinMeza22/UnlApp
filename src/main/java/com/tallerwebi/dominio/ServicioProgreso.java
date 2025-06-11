@@ -163,4 +163,13 @@ public class ServicioProgreso {
 
         return pudoActualizar;
     }
+
+    public Double obtenerProgresoDeCarrera(Long usuarioId) {
+
+        List<MateriaDTO> todasLasMaterias = this.materias(usuarioId);
+        List<MateriaDTO> materiasAprobadas = this.filtrarPor("aprobadas", usuarioId);
+
+        return (double)((materiasAprobadas.size() * 100) / todasLasMaterias.size());
+
+    }
 }
