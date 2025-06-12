@@ -31,7 +31,7 @@
 
 <!-- Navbar -->
 <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-  <a class="navbar-brand" href="#">UnlApp</a>
+  <a class="navbar-brand" th:href="@{/home}">UnlApp</a>
 </nav>
 
 <!-- Main content -->
@@ -52,10 +52,10 @@
 
     <div class="row">
       <div class="col-md-6 col-sm-12">
-        <a th:href="@{/foro}" class="btn btn-quick btn-lg w-100 btn-quick">Foro de materias</a>
+        <a th:href="@{/foro}" class="btn btn-warning btn-lg w-100 btn-quick">Foro de materias</a>
       </div>
       <div class="col-md-6 col-sm-12">
-        <a th:href="@{/calendario}" class="btn btn-quick btn-lg w-100 btn-quick">Calendario personal</a>
+        <a th:href="@{/calendario}" class="btn btn-info btn-lg w-100 btn-quick">Calendario personal</a>
       </div>
       <div class="col-md-6 col-sm-12">
         <a th:href="@{/materias}" class="btn btn-success btn-lg w-100 btn-quick">Ver mi Plan de Estudio</a>

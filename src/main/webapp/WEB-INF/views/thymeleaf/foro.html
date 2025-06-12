@@ -12,7 +12,9 @@
 <body>
 
 <div class="container mt-4">
-
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+        <a class="navbar-brand" th:href="@{/home}">UnlApp</a>
+    </nav>
     <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
 
     <div th:if="${usuario != null and usuario.carrera != null}">
