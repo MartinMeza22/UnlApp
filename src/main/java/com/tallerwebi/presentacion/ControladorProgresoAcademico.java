@@ -104,14 +104,19 @@ public class ControladorProgresoAcademico {
     public String actualizarDatosMateria(
             @RequestParam(name = "nota", required = false) Integer nota,
             @RequestParam(name = "dificultad", required = false) Integer dificultad,
+            @RequestParam(name = "action") String action,
             @RequestParam(name = "id") Long idMateria,
             HttpSession session,
             RedirectAttributes redirectAttributes // Para redireccionamiento a /progreso, ModelAndView no me funciono aca
     ) {
         Long usuarioId = (Long) session.getAttribute("ID");
 
-        // Pude haber utilizado el servicio de UsuarioMateria, el metodo modificar, pero le falta le id del usuario al metodo modificar
-        this.servicioProgreso.actualizarDatosMateria(usuarioId, idMateria, nota, dificultad);
+        if("guardarCambios".equalsIgnoreCase(action)) {
+            // Pude haber utilizado el servicio de UsuarioMateria, el metodo modificar, pero le falta le id del usuario al metodo modificar
+            this.servicioProgreso.actualizarDatosMateria(usuarioId, idMateria, nota, dificultad);
+        } else if("dejarDeCursar".equalsIgnoreCase(action)) {
+            this.servicioProgreso.marcarMateriaComoPendiente(idMateria, usuarioId);
+        }
 
         return "redirect:/progreso";
     }

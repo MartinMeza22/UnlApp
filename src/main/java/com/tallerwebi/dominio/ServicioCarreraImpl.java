@@ -10,7 +10,9 @@ import java.util.List;
 @Transactional
 public class ServicioCarreraImpl implements ServicioCarrera {
 
-    private final RepositorioCarrera repositorioCarrera;
+    private RepositorioCarrera repositorioCarrera;
+
+    //public ServicioCarreraImpl() {}
 
     @Autowired
     public ServicioCarreraImpl(RepositorioCarrera repositorioCarrera) {
@@ -18,7 +20,32 @@ public class ServicioCarreraImpl implements ServicioCarrera {
     }
 
     @Override
+    public void crearCarrera(Carrera carrera) {
+        this.repositorioCarrera.guardar(carrera);
+    }
+
+    @Override
+    public Carrera buscarCarreraPorId(Long id) {
+        return this.repositorioCarrera.buscarCarreraPorIds(id);
+    }
+
+    @Override
+    public List<Carrera> obtenerTodasLasCarreras() {
+        return this.repositorioCarrera.obtenerTodasLasCarreras();
+    }
+
+    @Override
+    public void actualizarCarrera(Carrera carrera) {
+        this.repositorioCarrera.actualizarCarrera(carrera);
+    }
+
+    @Override
     public List<Carrera> getCarreras() {
         return repositorioCarrera.getCarreras();
+    }
+
+    @Override
+    public void eliminarUnaCarrera(Long id) {
+        this.repositorioCarrera.eliminarUnaCarrera(id);
     }
 }

@@ -57,6 +57,10 @@ public class ServicioMateria {
         return repositorioMateria.obtenerTodasLasMateriasPorNombre();
     }
 
+    public List<Materia> obtenerMateriasPorCarrera(String idCarrera){
+        return this.repositorioMateria.obtenerMateriasDeUnaCarrera(idCarrera);
+    }
+
     public List<Integer> obtenerCantidadDeCuatrimestres(){
         return repositorioMateria.obtenerCantidadDeCuatrimestres();
     }
