@@ -49,4 +49,9 @@ public class ServicioMateria {
             repositorioMateria.eliminar(materia);
         }
     }
+
+    public List<Materia> obtenerMateriasPorCarrera(Carrera carrera) {
+        return repositorioMateria.buscarPorCarrera(carrera);
+    }
+
 }

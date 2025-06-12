@@ -14,4 +14,6 @@ public interface RepositorioMateria {
     void actualizar(Materia materia);
 
     void eliminar(Materia materia);
+
+    List<Materia> buscarPorCarrera(Carrera carrera);
 }

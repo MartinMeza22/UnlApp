@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Nueva Publicación</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-4">
+    <h2>Crear Nueva Publicación</h2>
+    <div class="card">
+        <div class="card-body">
+            <form th:action="@{/foro/publicacion/crear}" method="post">
+                <div class="form-group">
+                    <label for="titulo">Título</label>
+                    <input type="text" id="titulo" name="titulo" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="idMateria">Materia</label>
+                    <select id="idMateria" name="idMateria" class="form-control" required>
+                        <option value="">Selecciona una materia</option>
+                        <option th:each="materia : ${materias}"
+                                th:value="${materia.id}"
+                                th:text="${materia.nombre}">
+                        </option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="descripcion">Descripción</label>
+                    <textarea id="descripcion" name="descripcion" class="form-control" rows="8" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Publicar</button>
+                <a th:href="@{/foro}" class="btn btn-secondary">Cancelar</a>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

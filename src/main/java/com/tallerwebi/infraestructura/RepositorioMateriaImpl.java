@@ -1,8 +1,12 @@
 package com.tallerwebi.infraestructura;
 
+import com.tallerwebi.dominio.Carrera;
 import com.tallerwebi.dominio.Materia;
 import com.tallerwebi.dominio.RepositorioMateria;
+import org.hibernate.Criteria;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -45,5 +49,13 @@ public class RepositorioMateriaImpl implements RepositorioMateria {
     @Override
     public void eliminar(Materia materia) {
         sessionFactory.getCurrentSession().delete(materia);
+    }
+
+    @Override
+    public List<Materia> buscarPorCarrera(Carrera carrera) {
+        Session session = sessionFactory.getCurrentSession();
+        Criteria criteria = session.createCriteria(Materia.class);
+        criteria.add(Restrictions.eq("carrera", carrera));
+        return criteria.list();
     }
 }

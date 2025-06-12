@@ -10,8 +10,14 @@ public class Materia {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "carrera_id")
-    private String carreraId;
+   /* @Column(name = "carrera_id")
+    private String carreraId;*/
+
+
+    // TODO CAMBIAR CARRERAID POR UNA CLASE CARRERA DIRECTAMENTE
+    @ManyToOne
+    @JoinColumn(name = "carrera_id")
+    private Carrera carrera;
 
     @Column(nullable = false, length = 200)
     private String nombre;
@@ -53,9 +59,9 @@ public class Materia {
     // Constructors
     public Materia() {}
 
-    public Materia(String nombre, String carreraId, Integer cuatrimestre) {
+    public Materia(String nombre, Carrera carrera, Integer cuatrimestre) {
         this.nombre = nombre;
-        this.carreraId = carreraId;
+        this.carrera = carrera;
         this.cuatrimestre = cuatrimestre;
         this.activa = true;
     }
@@ -64,8 +70,13 @@ public class Materia {
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
-    public String getCarreraId() { return carreraId; }
-    public void setCarreraId(String carreraId) { this.carreraId = carreraId; }
+    public Long getCarreraId() { return carrera.getId(); }
+    public void setCarreraId(Long carrera) { this.carrera.setId(Long.valueOf(carrera)); }
+
+
+       public Carrera getCarrera() {return carrera;}
+        public void setCarrera(Carrera carrera) {this.carrera = carrera;}
+
 
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }
@@ -121,7 +132,7 @@ public class Materia {
         return "Materia{" +
                 "id=" + id +
                 ", nombre='" + nombre + '\'' +
-                ", carreraId='" + carreraId + '\'' +
+                ", carreraId='" + carrera.getNombre() + '\'' +
                 ", cuatrimestre=" + cuatrimestre +
                 ", activa=" + activa +
                 '}';
