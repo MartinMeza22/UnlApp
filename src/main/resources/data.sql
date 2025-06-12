@@ -7,7 +7,7 @@ VALUES
 INSERT INTO Usuario(id, email, password, rol, carreraID, nombre, apellido, telefono, situacionLaboral, disponibilidadHoraria, activo)
 VALUES
     (1, 'user@user.com', '123', 'ALUMNO', 1, 'Juan', 'Pérez', NULL, 'desempleado', 1, false),
-    (2, 'user2@user.com', '123', 'ALUMNO', 1, 'Ana', 'Gómez', NULL, 'empleado', 2, false);
+    (2, 'user2@user.com', '123', 'ALUMNO', 1, 'Ana', 'Gómez', NULL, 'empleado', 2, false);<<<
 
 -- Insertar las materias del cuatrimestre 1 (sin correlativas)
 INSERT INTO Materia(id, nombre, descripcion, tipo, carga_horaria, cuatrimestre, activa, carrera_id, correlativa_1, correlativa_2, correlativa_3, correlativa_4, correlativa_5, correlativa_6)
@@ -71,6 +71,22 @@ VALUES
     (5, '2024-05-01', '2025-07-15', 9,  12, 1),
     (10, '2025-03-01', '2025-07-15', 8,  13, 1);
 
+
+
+INSERT INTO Publicacion(usuario_id, materia_id, titulo, descripcion, fechaCreacion, likes)
+VALUES
+    (1, 1, 'Ayuda con estructuras condicionales', 'No me queda claro cuándo conviene usar if o switch. ¿Alguna recomendación o ejemplo claro?', '2025-06-01 14:30:00', 2);
+
+-- Publicación 2: sobre Visualización e Interfaces (materia_id = 12)
+INSERT INTO Publicacion(usuario_id, materia_id, titulo, descripcion, fechaCreacion, likes)
+VALUES
+    (1, 12, '¿Recomendaciones de herramientas para prototipado UI?', 'Estoy buscando herramientas para prototipar interfaces más rápido. ¿Qué usan ustedes? ¿Figma, Adobe XD, otra?', '2025-06-05 10:15:00', 5);
+
+-- Asegurate de que PublicacionPublicacionpublicacion_id = 2 exista
+INSERT INTO Comentario(usuario_id, descripcion, fechaCreacion, publicacion_id)
+VALUES
+    (2, 'Yo uso Figma y me resulta súper intuitivo, además tiene muchas plantillas. ¡Recomendado!', '2025-06-06 09:45:00', 2);
+
 -- ============================================================================
 -- EVENTOS - FIXED VERSION
 -- ============================================================================
@@ -107,3 +123,4 @@ VALUES
 (true, false, 'Clase de yoga nivel intermedio. Enfocar en posturas de equilibrio y respiración consciente.', NOW(), NOW(), '2025-06-18 19:30:00', '2025-06-18 21:00:00', 'PERSONAL', 'Clase de Yoga', 'Centro Holístico Belgrano', NULL, 2),
 (true, false, 'Cena con amigas de la facultad para ponernos al día y celebrar fin de parciales.', NOW(), NOW(), '2025-06-27 20:30:00', '2025-06-27 23:00:00', 'PERSONAL', 'Cena Amigas Facultad', 'Restaurante Las Violetas - Almagro', NULL, 2),
 (true, false, 'Curso online de diseño UX/UI. Primera clase: fundamentos de experiencia de usuario.', NOW(), NOW(), '2025-06-29 10:00:00', '2025-06-29 13:00:00', 'ESTUDIO', 'Curso UX/UI - Clase 1', 'Online - Zoom', NULL, 2);
+

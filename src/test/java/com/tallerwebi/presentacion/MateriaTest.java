@@ -31,11 +31,14 @@ public class MateriaTest {
     @Test
     public void constructorConParametrosDeberiaInicializarCorrectamente() {
         // Ejecución
-        Materia nuevaMateria = new Materia("Algoritmos", "SISTEMAS", 2);
-        
+        Carrera carreraDePrueba = new Carrera();
+        carreraDePrueba.setNombre("SISTEMAS");
+
+        Materia nuevaMateria = new Materia("Algoritmos", carreraDePrueba, 2);
+
         // Validación
         assertThat(nuevaMateria.getNombre(), equalTo("Algoritmos"));
-        assertThat(nuevaMateria.getCarreraId(), equalTo("SISTEMAS"));
+        assertThat(nuevaMateria.getCarrera().getNombre(), equalTo("SISTEMAS"));
         assertThat(nuevaMateria.getCuatrimestre(), equalTo(2));
         assertThat(nuevaMateria.getActiva(), is(true));
         assertThat(nuevaMateria.estaActiva(), is(true));
@@ -133,6 +136,8 @@ public class MateriaTest {
         // Preparación
         Long id = 1L;
         String nombre = "Base de Datos I";
+        Carrera carreraDePrueba = new Carrera();
+        materia.setCarrera(carreraDePrueba);
         String carreraId = "SISTEMAS";
         String descripcion = "Introducción a bases de datos relacionales";
         String tipo = "OBLIGATORIA";
@@ -144,7 +149,7 @@ public class MateriaTest {
         // Ejecución
         materia.setId(id);
         materia.setNombre(nombre);
-        materia.setCarreraId(carreraId);
+        carreraDePrueba.setNombre(carreraId);
         materia.setDescripcion(descripcion);
         materia.setTipo(tipo);
         materia.setCargaHoraria(cargaHoraria);
@@ -155,7 +160,7 @@ public class MateriaTest {
         // Validación
         assertThat(materia.getId(), equalTo(id));
         assertThat(materia.getNombre(), equalTo(nombre));
-        assertThat(materia.getCarreraId(), equalTo(carreraId));
+        assertThat(materia.getCarrera().getNombre(), equalTo(carreraId));
         assertThat(materia.getDescripcion(), equalTo(descripcion));
         assertThat(materia.getTipo(), equalTo(tipo));
         assertThat(materia.getCargaHoraria(), equalTo(cargaHoraria));
@@ -192,9 +197,11 @@ public class MateriaTest {
     @Test
     public void toStringDeberiaIncluirCamposImportantes() {
         // Preparación
+        Carrera carreraDePrueba = new Carrera();
+        materia.setCarrera(carreraDePrueba);
         materia.setId(1L);
         materia.setNombre("Test Materia");
-        materia.setCarreraId("TEST");
+        carreraDePrueba.setNombre("TEST");
         materia.setCuatrimestre(1);
         materia.setActiva(true);
         
