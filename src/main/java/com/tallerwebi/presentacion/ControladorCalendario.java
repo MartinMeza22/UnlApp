@@ -181,48 +181,6 @@ public class ControladorCalendario {
         return new ModelAndView("redirect:/calendario");
     }
 
-    // Formulario para crear evento
-    @RequestMapping(path = "/evento/nuevo", method = RequestMethod.GET)
-    public ModelAndView formularioNuevoEvento(HttpServletRequest request) {
-        Long usuarioId = (Long) request.getSession().getAttribute("ID");
-        if (usuarioId == null) {
-            return new ModelAndView("redirect:/login");
-        }
-
-        ModelMap modelo = new ModelMap();
-        modelo.put("evento", new Evento());
-        
-        // Obtener materias del usuario para el dropdown
-        try {
-            List<Materia> materias = servicioMateria.obtenerTodasLasMaterias();
-            modelo.put("materias", materias);
-        } catch (Exception e) {
-            modelo.put("materias", List.of());
-        }
-        
-        return new ModelAndView("nuevo-evento", modelo);
-    }
-
-    // Ver detalle de evento
-    @RequestMapping(path = "/evento/{id}", method = RequestMethod.GET)
-    public ModelAndView verEvento(@PathVariable Long id, HttpServletRequest request) {
-        Long usuarioId = (Long) request.getSession().getAttribute("ID");
-        if (usuarioId == null) {
-            return new ModelAndView("redirect:/login");
-        }
-
-        ModelMap modelo = new ModelMap();
-        Evento evento = servicioEvento.obtenerEventoPorId(id);
-        
-        if (evento == null || !evento.getUsuario().getId().equals(usuarioId)) {
-            modelo.put("error", "Evento no encontrado");
-            return new ModelAndView("redirect:/calendario");
-        }
-        
-        modelo.put("evento", evento);
-        return new ModelAndView("detalle-evento", modelo);
-    }
-
     // Marcar evento como completado
     @RequestMapping(path = "/evento/{id}/completar", method = RequestMethod.POST)
     public ModelAndView completarEvento(@PathVariable Long id, HttpServletRequest request) {
@@ -239,7 +197,7 @@ public class ControladorCalendario {
         } catch (Exception e) {
             // Log error
         }
-        
+
         return new ModelAndView("redirect:/calendario");
     }
 
@@ -259,137 +217,8 @@ public class ControladorCalendario {
         } catch (Exception e) {
             // Log error
         }
-        
+
         return new ModelAndView("redirect:/calendario");
     }
 
-    // API endpoint para obtener eventos en formato JSON (para el calendario JavaScript)
-    @RequestMapping(path = "/api/eventos", method = RequestMethod.GET)
-    @ResponseBody
-    public ResponseEntity<List<Evento>> obtenerEventosJson(HttpServletRequest request,
-                                                           @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fecha,
-                                                           @RequestParam(required = false) Integer mes,
-                                                           @RequestParam(required = false) Integer año) {
-        Long usuarioId = (Long) request.getSession().getAttribute("ID");
-        if (usuarioId == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
-        }
-
-        List<Evento> eventos;
-        
-        if (fecha != null) {
-            eventos = servicioEvento.obtenerEventosPorFecha(usuarioId, fecha);
-        } else if (mes != null && año != null) {
-            eventos = servicioEvento.obtenerEventosMes(usuarioId, mes, año);
-        } else {
-            eventos = servicioEvento.obtenerEventosDeUsuario(usuarioId);
-        }
-        
-        return ResponseEntity.ok(eventos);
-    }
-
-    // API endpoint para crear evento via AJAX
-    @RequestMapping(path = "/api/evento", method = RequestMethod.POST)
-    @ResponseBody
-    public ResponseEntity<String> crearEventoAjax(@RequestBody EventoRequest eventoRequest, 
-                                                  HttpServletRequest request) {
-        Long usuarioId = (Long) request.getSession().getAttribute("ID");
-        if (usuarioId == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario no autenticado");
-        }
-
-        try {
-            if (eventoRequest.getMateriaId() != null) {
-                // Evento académico
-                if ("EXAMEN".equals(eventoRequest.getTipo())) {
-                    servicioEvento.crearExamen(eventoRequest.getTitulo(), 
-                                             eventoRequest.getFechaInicio(), 
-                                             usuarioId, 
-                                             eventoRequest.getMateriaId());
-                } else if ("TAREA".equals(eventoRequest.getTipo())) {
-                    servicioEvento.crearTarea(eventoRequest.getTitulo(), 
-                                            eventoRequest.getFechaInicio(), 
-                                            usuarioId, 
-                                            eventoRequest.getMateriaId(), 
-                                            eventoRequest.getDescripcion());
-                } else {
-                    servicioEvento.crearSesionEstudio(eventoRequest.getTitulo(), 
-                                                    eventoRequest.getFechaInicio(), 
-                                                    eventoRequest.getFechaFin(), 
-                                                    usuarioId, 
-                                                    eventoRequest.getMateriaId());
-                }
-            } else {
-                // Evento personal
-                servicioEvento.crearEventoPersonal(eventoRequest.getTitulo(), 
-                                                 eventoRequest.getFechaInicio(), 
-                                                 usuarioId, 
-                                                 eventoRequest.getTipo());
-            }
-            
-            return ResponseEntity.ok("Evento creado exitosamente");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
-        }
-    }
-
-    // Filtros
-    @RequestMapping(path = "/eventos/academicos", method = RequestMethod.GET)
-    public ModelAndView eventosAcademicos(HttpServletRequest request) {
-        Long usuarioId = (Long) request.getSession().getAttribute("ID");
-        if (usuarioId == null) {
-            return new ModelAndView("redirect:/login");
-        }
-
-        ModelMap modelo = new ModelMap();
-        List<Evento> eventos = servicioEvento.obtenerEventosAcademicos(usuarioId);
-        modelo.put("eventos", eventos);
-        modelo.put("tipoFiltro", "Académicos");
-        
-        return new ModelAndView("lista-eventos", modelo);
-    }
-
-    @RequestMapping(path = "/eventos/personales", method = RequestMethod.GET)
-    public ModelAndView eventosPersonales(HttpServletRequest request) {
-        Long usuarioId = (Long) request.getSession().getAttribute("ID");
-        if (usuarioId == null) {
-            return new ModelAndView("redirect:/login");
-        }
-
-        ModelMap modelo = new ModelMap();
-        List<Evento> eventos = servicioEvento.obtenerEventosPersonales(usuarioId);
-        modelo.put("eventos", eventos);
-        modelo.put("tipoFiltro", "Personales");
-        
-        return new ModelAndView("lista-eventos", modelo);
-    }
-
-    // Clase para recibir datos JSON
-    public static class EventoRequest {
-        private String titulo;
-        private String descripcion;
-        private LocalDateTime fechaInicio;
-        private LocalDateTime fechaFin;
-        private String tipo;
-        private Long materiaId;
-
-        // Getters and setters
-        public String getTitulo() { return titulo; }
-        public void setTitulo(String titulo) { this.titulo = titulo; }
-
-        public String getDescripcion() { return descripcion; }
-        public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
-
-        public LocalDateTime getFechaInicio() { return fechaInicio; }
-        public void setFechaInicio(LocalDateTime fechaInicio) { this.fechaInicio = fechaInicio; }
-
-        public LocalDateTime getFechaFin() { return fechaFin; }
-        public void setFechaFin(LocalDateTime fechaFin) { this.fechaFin = fechaFin; }
-
-        public String getTipo() { return tipo; }
-        public void setTipo(String tipo) { this.tipo = tipo; }
-
-        public Long getMateriaId() { return materiaId; }
-        public void setMateriaId(Long materiaId) { this.materiaId = materiaId; }
-    }
 }
