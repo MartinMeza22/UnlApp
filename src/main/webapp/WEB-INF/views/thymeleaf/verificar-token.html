@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>UnlApp - Verificación de Código</title>
+
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}" />
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .mainbox {
+            background-color: #fff;
+            padding: 30px;
+            margin-top: 80px; /* Ajuste para dejar espacio para la navbar */
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .form-control {
+            margin-bottom: 15px;
+        }
+        #btn-verificar {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+    <a class="navbar-brand" href="#">UnlApp</a>
+</nav>
+
+<main role="main" class="container">
+    <div class="mainbox col-md-6 col-sm-10 mx-auto">
+        <form th:action="@{/verificar-token}" method="POST" accept-charset="UTF-8" novalidate>
+
+            <div class="progress mb-4">
+                <div class="progress-bar progress-bar-striped bg-success" role="progressbar"
+                     style="width: 66%;" aria-valuenow="66" aria-valuemin="0" aria-valuemax="100">
+                    Paso 2 de 3
+                </div>
+            </div>
+
+            <h3 class="text-center">Ingresa tu código</h3>
+            <hr class="colorgraph"><br>
+
+            <div class="mb-3">
+                <label for="code" class="form-label">Código de 4 dígitos</label>
+                <input
+                        type="text"
+                        class="form-control"
+                        id="code"
+                        name="codigo"
+                        pattern="\d{4}"
+                        maxlength="4"
+                        inputmode="numeric"
+                        autocomplete="one-time-code"
+                        required
+                        placeholder="1234"
+                        aria-describedby="codeHelp"
+                />
+                <div id="codeHelp" class="form-text">Solo números, exactamente 4 dígitos.</div>
+            </div>
+
+            <input type="hidden" name="idUser" th:value="${usuario.getId()}" />
+            <button id="btn-verificar" class="btn btn-primary btn-lg mt-2" type="submit">Verificar</button>
+
+            <p th:if="${error != null}" class="alert alert-danger mt-3" th:text="${error}"></p>
+        </form>
+    </div>
+</main>
+
+<script type="text/javascript" th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

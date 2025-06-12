@@ -65,4 +65,13 @@ public class RepositorioMateriaImpl implements RepositorioMateria {
                 return sessionFactory.getCurrentSession().createQuery(hql).list();
 
     }
+
+    @Override
+    public List<Materia> obtenerMateriasDeUnaCarrera(String idCarrera) {
+        final String hql = "FROM Materia WHERE carreraId = :idCarrera ORDER BY cuatrimestre, nombre";
+        return sessionFactory.getCurrentSession()
+                .createQuery(hql)
+                .setParameter("idCarrera", idCarrera)
+                .list();
+    }
 }

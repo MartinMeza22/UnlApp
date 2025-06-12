@@ -28,8 +28,9 @@ public class ServicioProgreso {
 
     public List<MateriaDTO> materias(Long idUsuario) {
 
-        List<Materia> todasLasMaterias = this.repositorioMateria.buscarTodas();
+        String idCarrera = this.repositorioUsuario.buscarPorId(idUsuario).getCarreraID().toString();
         List<UsuarioMateria> materiasQueCursoElUsuario = this.repositorioUsuarioMateria.buscarPorUsuario(idUsuario);
+        List<Materia> todasLasMaterias = this.repositorioMateria.obtenerMateriasDeUnaCarrera(idCarrera);
 
         Map<Long, UsuarioMateria> materiasCursadasMap = new HashMap<>();
         for (UsuarioMateria um : materiasQueCursoElUsuario) {
@@ -169,7 +170,18 @@ public class ServicioProgreso {
         List<MateriaDTO> todasLasMaterias = this.materias(usuarioId);
         List<MateriaDTO> materiasAprobadas = this.filtrarPor("aprobadas", usuarioId);
 
-        return (double)((materiasAprobadas.size() * 100) / todasLasMaterias.size());
+        return (double) ((materiasAprobadas.size() * 100) / todasLasMaterias.size());
+
+    }
+
+    public void marcarMateriaComoPendiente(Long idMateria, Long usuarioId) {
+        UsuarioMateria um = this.repositorioUsuarioMateria.buscarPorUsuarioYMateria(usuarioId, idMateria);
+
+//        if (um != null && um.getEstado().equalsIgnoreCase("CURSANDO")) {
+//            um.setEstado("PENDIENTE");
+//        }
+
+        this.repositorioUsuarioMateria.actualizar(um);
 
     }
 }
