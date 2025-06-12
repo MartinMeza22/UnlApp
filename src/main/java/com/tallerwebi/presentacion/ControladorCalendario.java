@@ -16,14 +16,14 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
-public class ControladorEvento {
+public class ControladorCalendario {
 
     private ServicioEvento servicioEvento;
     private ServicioMateria servicioMateria;
     private RepositorioUsuario repositorioUsuario;
 
     @Autowired
-    public ControladorEvento(ServicioEvento servicioEvento, ServicioMateria servicioMateria, RepositorioUsuario repositorioUsuario) {
+    public ControladorCalendario(ServicioEvento servicioEvento, ServicioMateria servicioMateria, RepositorioUsuario repositorioUsuario) {
         this.servicioEvento = servicioEvento;
         this.servicioMateria = servicioMateria;
         this.repositorioUsuario = repositorioUsuario;
