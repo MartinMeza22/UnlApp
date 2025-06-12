@@ -21,7 +21,7 @@ public class UsuarioMateria {
 
     @Column(precision = 4, scale = 2) //el column se utiliza para determinar una columna.
     // El precision es para ver cuantos números van en total. Y "scale" son los números después de la ,
-    private Double nota; // null = cursando, >= 4 = aprobada, < 4 = desaprobada
+    private Integer nota; // null = cursando, >= 4 = aprobada, < 4 = desaprobada
 
     @Column
     private Integer dificultad; // Nivel de dificultad 1-10
@@ -31,9 +31,6 @@ public class UsuarioMateria {
 
     @Column(name = "fecha_modificacion")
     private LocalDate fechaModificacion;
-
-    @Column(length = 500)
-    private String observaciones;
 
     // Constructors
     public UsuarioMateria() {
@@ -48,7 +45,7 @@ public class UsuarioMateria {
         this.materia = materia;
     }
 
-    public UsuarioMateria(Usuario usuario, Materia materia, Double nota) {
+    public UsuarioMateria(Usuario usuario, Materia materia, Integer nota) {
         this(usuario, materia);
         this.nota = nota;
     }
@@ -63,8 +60,8 @@ public class UsuarioMateria {
     public Materia getMateria() { return materia; }
     public void setMateria(Materia materia) { this.materia = materia; }
 
-    public Double getNota() { return nota; }
-    public void setNota(Double nota) {
+    public Integer getNota() { return nota; }
+    public void setNota(Integer nota) {
         this.nota = nota;
         this.fechaModificacion = LocalDate.now();
     }
@@ -80,12 +77,6 @@ public class UsuarioMateria {
 
     public LocalDate getFechaModificacion() { return fechaModificacion; }
     public void setFechaModificacion(LocalDate fechaModificacion) { this.fechaModificacion = fechaModificacion; }
-
-    public String getObservaciones() { return observaciones; }
-    public void setObservaciones(String observaciones) {
-        this.observaciones = observaciones;
-        this.fechaModificacion = LocalDate.now();
-    }
 
     // Utility Methods - Estado calculado basado en la nota
     public boolean estaAprobada() {
@@ -106,16 +97,16 @@ public class UsuarioMateria {
         return "DESAPROBADA";
     }
 
-    public void aprobar(Double nota) {
-        if (nota == null || nota < 4.0) {
+    public void aprobar(Integer nota) {
+        if (nota == null || nota < 4) {
             throw new IllegalArgumentException("Para aprobar, la nota debe ser mayor o igual a 4.0");
         }
         this.nota = nota;
         this.fechaModificacion = LocalDate.now();
     }
 
-    public void desaprobar(Double nota) {
-        if (nota == null || nota >= 4.0) {
+    public void desaprobar(Integer nota) {
+        if (nota == null || nota >= 4) {
             throw new IllegalArgumentException("Para desaprobar, la nota debe ser menor a 4.0");
         }
         this.nota = nota;

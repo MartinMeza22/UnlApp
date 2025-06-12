@@ -60,6 +60,41 @@ public class ServicioUsuarioMateria {
         return usuarioMateria;
     }
 
+    public UsuarioMateria asignarMateria(Long usuarioId, Long materiaId, Integer nota, Integer dificultad) {
+        // Validaciones básicas
+        validarUsuarioYMateria(usuarioId, materiaId);
+
+        // Verificar que el usuario existe
+        Usuario usuario = repositorioUsuario.buscarPorId(usuarioId);
+        if (usuario == null) {
+            throw new IllegalArgumentException("El usuario con ID " + usuarioId + " no existe");
+        }
+
+        // Verificar que la materia existe
+        Materia materia = repositorioMateria.buscarPorId(materiaId);
+        if (materia == null) {
+            throw new IllegalArgumentException("La materia con ID " + materiaId + " no existe");
+        }
+
+        // Verificar que no esté ya asignada
+        if (repositorioUsuarioMateria.existe(usuarioId, materiaId)) {
+            throw new IllegalArgumentException("El usuario ya tiene asignada esta materia");
+        }
+
+        // Validar dificultad
+        validarDificultad(dificultad);
+        validarNota(nota);
+
+        // Crear la relación (nota = null = cursando)
+        UsuarioMateria usuarioMateria = new UsuarioMateria(usuario, materia);
+        usuarioMateria.setDificultad(dificultad);
+        usuarioMateria.setNota(nota);
+        // Guardar
+        repositorioUsuarioMateria.guardar(usuarioMateria);
+
+        return usuarioMateria;
+    }
+
     /**
      * Asigna una materia sin especificar dificultad
      */
@@ -70,8 +105,8 @@ public class ServicioUsuarioMateria {
     /**
      * Modifica una materia cursada (nota, dificultad, observaciones)
      */
-    public UsuarioMateria modificarMateriaCursada(Long usuarioMateriaId, Double nota,
-                                                 Integer dificultad, String observaciones) {
+    public UsuarioMateria modificarMateriaCursada(Long usuarioMateriaId, Integer nota,
+                                                 Integer dificultad) {
         // Validaciones
         if (usuarioMateriaId == null) {
             throw new IllegalArgumentException("El ID de la relación usuario-materia es obligatorio");
@@ -89,6 +124,7 @@ public class ServicioUsuarioMateria {
 
         // Validar dificultad
         validarDificultad(dificultad);
+        validarNota(nota);
 
         // Actualizar campos
         if (nota != null || nota == null) { // Permitir set de null explícitamente
@@ -96,9 +132,6 @@ public class ServicioUsuarioMateria {
         }
         if (dificultad != null) {
             usuarioMateria.setDificultad(dificultad);
-        }
-        if (observaciones != null) {
-            usuarioMateria.setObservaciones(observaciones);
         }
 
         // Guardar cambios
@@ -189,7 +222,13 @@ public class ServicioUsuarioMateria {
     }
 
     private void validarDificultad(Integer dificultad) {
-        if (dificultad != null && (dificultad < 1 || dificultad > 10)) {
+        if (dificultad != null && (dificultad < 1 || dificultad > 3)) {
+            throw new IllegalArgumentException("La dificultad debe estar entre 1 y 3");
+        }
+    }
+
+    private void validarNota(Integer nota) {
+        if (nota != null && (nota < 1 || nota > 10)) {
             throw new IllegalArgumentException("La dificultad debe estar entre 1 y 10");
         }
     }

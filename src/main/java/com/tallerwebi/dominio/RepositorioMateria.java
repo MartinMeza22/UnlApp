@@ -14,4 +14,7 @@ public interface RepositorioMateria {
     void actualizar(Materia materia);
 
     void eliminar(Materia materia);
+
+    List<Materia> obtenerTodasLasMateriasPorNombre();
+
 }
