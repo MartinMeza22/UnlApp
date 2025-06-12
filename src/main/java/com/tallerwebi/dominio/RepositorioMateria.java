@@ -17,4 +17,6 @@ public interface RepositorioMateria {
 
     List<Materia> obtenerTodasLasMateriasPorNombre();
 
+    List<Materia> obtenerMateriasDeUnaCarrera(String idCarrera);
+
 }

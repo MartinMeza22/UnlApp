@@ -12,7 +12,8 @@ public class ServicioMateria {
     @Autowired
     private RepositorioMateria repositorioMateria;
 
-    public ServicioMateria() {
+    @Autowired
+    public ServicioMateria(RepositorioMateria repositorioMateria) {
         this.repositorioMateria = repositorioMateria;
     }
 
@@ -51,5 +52,9 @@ public class ServicioMateria {
 
     public List<Materia> obtenerTodasLasMateriasPorNombre() {
         return repositorioMateria.obtenerTodasLasMateriasPorNombre();
+    }
+
+    public List<Materia> obtenerMateriasPorCarrera(String idCarrera){
+        return this.repositorioMateria.obtenerMateriasDeUnaCarrera(idCarrera);
     }
 }

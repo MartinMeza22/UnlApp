@@ -122,19 +122,23 @@
             <version>${mysql.version}</version>
         </dependency>
 
-        <!-- Dependencia de Spring para soporte de correo -->
+        <!-- Dependencias para mandar emails -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context-support</artifactId>
             <version>${spring.version}</version>
         </dependency>
 
-        <!-- IMPORTANTE: Esta dependencia proporciona las clases javax.mail.* que tu código necesita.
-             Las dependencias de 'jakarta.mail' usan un namespace diferente y causaban el error. -->
         <dependency>
             <groupId>com.sun.mail</groupId>
             <artifactId>javax.mail</artifactId>
             <version>1.6.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.sun.activation</groupId>
+            <artifactId>jakarta.activation</artifactId>
+            <version>1.2.2</version>
         </dependency>
 
     </dependencies>

@@ -1,9 +1,9 @@
-package com.tallerwebi.email;
+package com.tallerwebi.presentacion;
 
 import com.tallerwebi.dominio.Usuario;
+import com.tallerwebi.dominio.ServicioEmail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,9 +21,9 @@ public class ControladorEmail {
         this.servicioEmail = servicioEmail;
     }
 
-    private String generarCodigo(){ // solo 2 digitos, cambiar el for para numero con mas digitos
+    private String generarCodigo(){ // solo 4 digitos, cambiar el for para numero con mas digitos
         String codigo = "";
-        for(int i = 0; i < 2; i++){
+        for(int i = 0; i < 4; i++){
             codigo += (int)(Math.random()*10);
         }
         return codigo;
