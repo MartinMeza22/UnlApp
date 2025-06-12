@@ -58,7 +58,7 @@ public class RepositorioMateriaImpl implements RepositorioMateria {
         Criteria criteria = session.createCriteria(Materia.class);
         criteria.add(Restrictions.eq("carrera", carrera));
         return criteria.list();
-
+    }
     @SuppressWarnings("unchecked")
     public List<Materia> obtenerTodasLasMateriasPorNombre(){
         final String hql = "FROM Materia ORDER BY nombre";
