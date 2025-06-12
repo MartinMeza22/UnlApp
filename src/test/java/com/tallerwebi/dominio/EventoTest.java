@@ -160,7 +160,7 @@ public class EventoTest {
         assertThat(evento.getEstado(), equalTo("VENCIDO"));
         
         // Test 4: HOY
-        evento.setFechaInicio(LocalDateTime.now().plusHours(2));
+        evento.setFechaInicio(LocalDateTime.now().plusMinutes(2));
         assertThat(evento.getEstado(), equalTo("HOY"));
     }
 
