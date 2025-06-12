@@ -9,11 +9,10 @@ import java.util.List;
 @Service("servicioMateria")
 @Transactional
 public class ServicioMateria {
-
+    @Autowired
     private RepositorioMateria repositorioMateria;
 
-    @Autowired
-    public ServicioMateria(RepositorioMateria repositorioMateria) {
+    public ServicioMateria() {
         this.repositorioMateria = repositorioMateria;
     }
 
@@ -54,4 +53,7 @@ public class ServicioMateria {
         return repositorioMateria.buscarPorCarrera(carrera);
     }
 
+    public List<Materia> obtenerTodasLasMateriasPorNombre() {
+        return repositorioMateria.obtenerTodasLasMateriasPorNombre();
+    }
 }

@@ -1,14 +1,14 @@
 @echo off
 
-echo Construyendo imagen con Docker...
+echo Paso 1: Maven
+call mvn clean package
+echo Maven exit code: %ERRORLEVEL%
+
+echo Paso 2: Docker Build
 docker build -f DockerfileJetty -t tallerwebi .
+echo Docker build exit code: %ERRORLEVEL%
 
-echo Ejecutando contenedor con Docker...
-echo.
-echo ➡ Link -^> http://localhost:8080/tallerwebi-base-1.0-SNAPSHOT/
-echo.
-
-REM Windows Docker Desktop needs port mapping and host.docker.internal for database access
+echo Paso 3: Docker Run
 docker run -p 8080:8080 -e DB_HOST=host.docker.internal tallerwebi
 
 pause

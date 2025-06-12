@@ -52,10 +52,17 @@ public class RepositorioMateriaImpl implements RepositorioMateria {
     }
 
     @Override
+
     public List<Materia> buscarPorCarrera(Carrera carrera) {
         Session session = sessionFactory.getCurrentSession();
         Criteria criteria = session.createCriteria(Materia.class);
         criteria.add(Restrictions.eq("carrera", carrera));
         return criteria.list();
+
+    @SuppressWarnings("unchecked")
+    public List<Materia> obtenerTodasLasMateriasPorNombre(){
+        final String hql = "FROM Materia ORDER BY nombre";
+                return sessionFactory.getCurrentSession().createQuery(hql).list();
+
     }
 }

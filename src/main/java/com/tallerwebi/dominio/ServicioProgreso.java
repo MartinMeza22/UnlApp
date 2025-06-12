@@ -130,7 +130,7 @@ public class ServicioProgreso {
         return materias;
     }
 
-    public Boolean actualizarDatosMateria(Long usuarioId, Long idMateria, Double nota, Integer dificultad) {
+    public Boolean actualizarDatosMateria(Long usuarioId, Long idMateria, Integer nota, Integer dificultad) {
 
         Boolean pudoActualizar = false;
 

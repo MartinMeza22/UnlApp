@@ -43,7 +43,7 @@ public class ControladorProgresoTest {
 
         controladorProgresoAcademico = new ControladorProgresoAcademico(mockServicioProgreso, mockServicioMateria);
 
-        materia1 = new MateriaDTO(1L, "matematicas", "Facil", "APROBADA", 7D, 1);
+        materia1 = new MateriaDTO(1L, "matematicas", "Facil", "APROBADA", 7, 1);
         materia2 = new MateriaDTO(2L, "base datos", "Dificil", "CURSANDO", null, 2);
 
         when(mockHttpSession.getAttribute("ID")).thenReturn(usuarioId);
