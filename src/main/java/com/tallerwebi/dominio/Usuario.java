@@ -19,7 +19,7 @@ public class Usuario {
     private Boolean activo = false;
 
     // Relación con Carrera
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "carreraID")
     private Carrera carrera;
 
@@ -113,7 +113,7 @@ public class Usuario {
         this.carrera = carrera;
     }
 
-    // Método de conveniencia para obtener el ID de la carrera
+    // Metodo para que no rompa mucho el ID de la carrera (codigo viejo)
     public Long getCarreraID() {
         return carrera != null ? carrera.getId() : null;
     }
