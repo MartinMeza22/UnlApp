@@ -71,8 +71,11 @@ VALUES
     (5, '2024-05-01', '2025-07-15', 9,  12, 1),
     (10, '2025-03-01', '2025-07-15', 8,  13, 1);
 
+-- ============================================================================
+-- EVENTOS - FIXED VERSION
+-- ============================================================================
 
-INSERT INTO evento(activo, completado, descripcion, es_recurrente,intervalo_recurrencia, fecha_inicio, tipo, titulo, materia_id, usuario_id)
+INSERT INTO evento(activo, completado, descripcion, fecha_creacion, fecha_modificacion, fecha_inicio, fecha_fin, tipo, titulo, ubicacion, materia_id, usuario_id)
 VALUES
 -- ============================================================================
 -- EVENTOS PARA USUARIO 1 (Juan Pérez) - 10 eventos
@@ -99,7 +102,7 @@ VALUES
 (true, false, 'Recuperatorio del primer parcial de Matemática General. Temas: funciones y límites.', NOW(), NOW(), '2025-06-24 10:00:00', '2025-06-24 12:00:00', 'EXAMEN', 'Recuperatorio Matemática', 'Aula 103', 3, 2),
 (true, false, 'Sesión de estudio intensiva para Inglés Técnico I. Practicar vocabulario de programación.', NOW(), NOW(), '2025-06-26 16:00:00', '2025-06-26 18:00:00', 'ESTUDIO', 'Repaso Inglés Técnico', 'Biblioteca - Sala Idiomas', 4, 2),
 -- Personal Events
-(true, false, 'Reunión trimestral de trabajo. Revisión de objetivos y planificación del próximo período.', NOW(), NOW(), '2025-06-16 09:00:00', '2025-06-16 11:00:00', 'PERSONAL', 'Reunión Trabajo - Q2 Review', 'Oficina Microcentro - Sala Juntas', NULL, 2),
+(true, false, 'Reunión trimestral de trabajo. Revisión de objetivos y planificación del próximo período.', NOW(), NOW(), '2025-06-16 09:00:00',  '2025-06-16 11:00:00', 'PERSONAL', 'Reunión Trabajo - Q2 Review', 'Oficina Microcentro - Sala Juntas', NULL, 2),
 (true, true, 'Cita con el dentista para limpieza dental y control de rutina. Recordar llevar radiografías.', NOW(), NOW(), '2025-06-13 14:00:00', '2025-06-13 15:00:00', 'PERSONAL', 'Dentista - Control Rutina', 'Clínica Odontológica San Martín', NULL, 2),
 (true, false, 'Clase de yoga nivel intermedio. Enfocar en posturas de equilibrio y respiración consciente.', NOW(), NOW(), '2025-06-18 19:30:00', '2025-06-18 21:00:00', 'PERSONAL', 'Clase de Yoga', 'Centro Holístico Belgrano', NULL, 2),
 (true, false, 'Cena con amigas de la facultad para ponernos al día y celebrar fin de parciales.', NOW(), NOW(), '2025-06-27 20:30:00', '2025-06-27 23:00:00', 'PERSONAL', 'Cena Amigas Facultad', 'Restaurante Las Violetas - Almagro', NULL, 2),
