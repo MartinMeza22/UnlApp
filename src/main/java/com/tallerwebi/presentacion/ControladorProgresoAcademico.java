@@ -89,7 +89,9 @@ public class ControladorProgresoAcademico {
     public ModelAndView guardarMateria(@ModelAttribute MateriasWrapper listadoMaterias,
                                        @ModelAttribute("datosLogin") DatosLogin datosLogin) {
             for( MateriasDTO materias : listadoMaterias.getMaterias()) {
-                servicioUsuarioMateria.asignarMateria(3L, materias.getId(), materias.getNota(), materias.getDificultad());
+                if(materias.getNota() != null && materias.getDificultad() != null) {
+                    servicioUsuarioMateria.asignarMateria(3L, materias.getId(), materias.getNota(), materias.getDificultad());
+                }
             }
         return new ModelAndView("login");
     }

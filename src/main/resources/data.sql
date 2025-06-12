@@ -53,7 +53,7 @@ VALUES
 INSERT INTO usuario_materia(dificultad, fecha_asignacion, fecha_modificacion, nota, materia_id, usuario_id)
 VALUES
     -- Cuatrimestre 1
-    (1, '2022-03-01', '2024-07-15', 8 1, 1),
+    (1, '2022-03-01', '2024-07-15', 8, 1, 1),
     (5, '2022-03-01', '2024-07-15', 9,  2, 1),
     (10, '2022-03-01', '2024-07-15', 6,  3, 1),
     (1, '2022-03-01', '2024-07-15', 7,  4, 1),
