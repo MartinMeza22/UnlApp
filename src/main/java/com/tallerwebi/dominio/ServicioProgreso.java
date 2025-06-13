@@ -26,10 +26,9 @@ public class ServicioProgreso {
         this.repositorioUsuario = repositorioUsuario;
     }
 
-    public List<MateriaDTO> materias(Long idUsuario) {
+    public List<MateriaDTO> materias(String idCarrera, Long idUsuario) {
 
-        String idCarrera = this.repositorioUsuario.buscarPorId(idUsuario).getCarreraID().toString();
-        List<UsuarioMateria> materiasQueCursoElUsuario = this.repositorioUsuarioMateria.buscarPorUsuario(idUsuario);
+        List<UsuarioMateria> materiasQueCursoElUsuario = this.repositorioUsuarioMateria.buscarPorUsuario(idCarrera, idUsuario);
         List<Materia> todasLasMaterias = this.repositorioMateria.obtenerMateriasDeUnaCarrera(idCarrera);
 
         Map<Long, UsuarioMateria> materiasCursadasMap = new HashMap<>();
@@ -95,17 +94,17 @@ public class ServicioProgreso {
         if (dificultad != null) {
             if (dificultad == 1) {
                 dificultadMat = "Facil";
-            } else if (dificultad == 5) {
+            } else if (dificultad == 2) {
                 dificultadMat = "Medio";
-            } else if (dificultad == 10) {
+            } else if (dificultad == 3) {
                 dificultadMat = "Dificil";
             }
         }
         return dificultadMat;
     }
 
-    public List<MateriaDTO> filtrarPor(String condicion, Long usuarioId) {
-        List<MateriaDTO> materias = this.materias(usuarioId);
+    public List<MateriaDTO> filtrarPor(String idCarrera, String condicion, Long usuarioId) {
+        List<MateriaDTO> materias = this.materias(idCarrera, usuarioId);
 
         if (condicion == null || condicion.isEmpty() || condicion.equalsIgnoreCase("todas")) {
             return materias;
@@ -213,10 +212,10 @@ public class ServicioProgreso {
         return pudoActualizar;
     }
 
-    public Double obtenerProgresoDeCarrera(Long usuarioId) {
+    public Double obtenerProgresoDeCarrera(String idCarrera, Long usuarioId) {
 
-        List<MateriaDTO> todasLasMaterias = this.materias(usuarioId);
-        List<MateriaDTO> materiasAprobadas = this.filtrarPor("aprobadas", usuarioId);
+        List<MateriaDTO> todasLasMaterias = this.materias(idCarrera, usuarioId);
+        List<MateriaDTO> materiasAprobadas = this.filtrarPor(idCarrera,"aprobadas", usuarioId);
 
         return (double) ((materiasAprobadas.size() * 100) / todasLasMaterias.size());
 

@@ -581,8 +581,8 @@
                             <select class="form-select" id="modalMateriaDificultad" name="dificultad">
                                 <option value="">Seleccione una dificultad</option>
                                 <option value="1">Fácil</option>
-                                <option value="5">Medio</option>
-                                <option value="10">Difícil</option>
+                                <option value="2">Medio</option>
+                                <option value="3">Difícil</option>
                             </select>
                         </div>
                     </div>
@@ -626,9 +626,9 @@
         if (dificultadString === 'Facil') {
             dificultadValueForSelect = '1';
         } else if (dificultadString === 'Medio') {
-            dificultadValueForSelect = '5';
+            dificultadValueForSelect = '2';
         } else if (dificultadString === 'Dificil') {
-            dificultadValueForSelect = '10';
+            dificultadValueForSelect = '3s';
         }
 
         modalMateriaNombre.textContent = nombre;

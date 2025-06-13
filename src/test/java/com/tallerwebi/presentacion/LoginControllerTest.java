@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.ui.ModelMap;
+import static org.hamcrest.Matchers.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,20 +23,30 @@ public class LoginControllerTest {
     private ControladorLogin controladorLogin;
     private RepositorioLogin repositorioLoginMock;
     private ServicioMateria servicioMateriaMock;
+    private ServicioEmail servicioEmailMock;
+    private RepositorioUsuario repositorioUsuarioMock;
+    private ServicioUsuarioMateria servicioUsuarioMateriaMock;
+    private ServicioCarrera servicioCarreraMock;
     private HttpServletRequest requestMock;
     private HttpSession sessionMock;
     private ServicioCarrera servicioCarreraMock;
 
     @BeforeEach
     public void init() {
+
+        servicioEmailMock = mock(ServicioEmail.class);
+        repositorioUsuarioMock = mock(RepositorioUsuario.class);
+        servicioUsuarioMateriaMock = mock(ServicioUsuarioMateria.class);
+        servicioCarreraMock = mock(ServicioCarrera.class);
         repositorioLoginMock = mock(RepositorioLogin.class);
         servicioMateriaMock = mock(ServicioMateria.class);
         servicioCarreraMock = mock(ServicioCarrera.class);
 
-        controladorLogin = new ControladorLogin(repositorioLoginMock, servicioMateriaMock, servicioCarreraMock);
+        controladorLogin = new ControladorLogin(repositorioLoginMock, servicioEmailMock, repositorioUsuarioMock, servicioUsuarioMateriaMock, servicioCarreraMock);
 
         requestMock = mock(HttpServletRequest.class);
         sessionMock = mock(HttpSession.class);
+        mockHttpServletRequestMock = mock(HttpServletRequest.class);
     }
 
     @Test

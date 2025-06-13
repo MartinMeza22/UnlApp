@@ -43,11 +43,13 @@ public class RepositorioUsuarioMateriaImpl implements RepositorioUsuarioMateria 
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<UsuarioMateria> buscarPorUsuario(Long usuarioId) {
+    public List<UsuarioMateria> buscarPorUsuario(String idCarrera, Long usuarioId) {
         return sessionFactory.getCurrentSession()
                 .createCriteria(UsuarioMateria.class)
                 .createAlias("usuario", "u")
+                .createAlias("materia", "m")
                 .add(Restrictions.eq("u.id", usuarioId))
+                .add(Restrictions.eq("m.carrera.id", Long.valueOf(idCarrera)))
                 .list();
     }
 

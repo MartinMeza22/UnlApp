@@ -45,6 +45,9 @@ public class ControladorProgresoAcademico {
 
         Long usuarioId = (Long) session.getAttribute("ID");
 
+        // Para obtener el id de la carrera
+        String idCarrera = this.servicioUsuarioMateria.obtenerUsuario(usuarioId).getCarreraID().toString();
+
         List<MateriaDTO> materias = new ArrayList<>();
 
         if(condicion != null && !condicion.isEmpty() && cuatrimestre != null) {
@@ -57,11 +60,10 @@ public class ControladorProgresoAcademico {
             materias = this.servicioProgreso.materias(usuarioId);
         }
 
-
-        Double porcentajeProgreso = this.servicioProgreso.obtenerProgresoDeCarrera(usuarioId);
-        Integer cantidadDeMateriasAprobadas = this.servicioProgreso.filtrarPor("aprobadas", usuarioId).size();
-        Integer cantidadMateriasTotal = this.servicioProgreso.materias(usuarioId).size();
-        Integer materiasEnCurso = this.servicioProgreso.filtrarPor("cursando", usuarioId).size();
+        Double porcentajeProgreso = this.servicioProgreso.obtenerProgresoDeCarrera(idCarrera, usuarioId);
+        Integer cantidadDeMateriasAprobadas = this.servicioProgreso.filtrarPor(idCarrera,"aprobadas", usuarioId).size();
+        Integer cantidadMateriasTotal = this.servicioProgreso.materias(idCarrera, usuarioId).size();
+        Integer materiasEnCurso = this.servicioProgreso.filtrarPor(idCarrera,"cursando", usuarioId).size();
 
         Carrera carrera = new Carrera();
         carrera.setNombre("Desarrollo Web");
@@ -84,6 +86,23 @@ public class ControladorProgresoAcademico {
         return new ModelAndView("progreso", model);
     }
 
+//    @PostMapping("/progresoDesdeElRegistro") //metodo util
+//    public ModelAndView cargarMaterias(@RequestParam Map<String, String> datos) {
+//        String id = datos.get("id");
+//        String nota = datos.get("nota");
+//        String dificultad = datos.get("dificultad");
+//        String materia = datos.get("materia");
+//        String usuario = datos.get("usuario");
+//
+//        Double idNota = Double.parseDouble(nota);
+//        Integer dificultadParse = Integer.parseInt(dificultad);
+//        Long idMateria = Long.parseLong(materia);
+//        Long idUsuario = Long.parseLong(usuario);
+//
+//        String observaciones = datos.get("observaciones");
+//        servicioUsuarioMateria.asignarMateria(idUsuario, idMateria,dificultadParse);
+//        return new ModelAndView("home");
+//    }
 
     @PostMapping("/pruebaDeDatos")
     public ModelAndView guardarMateria(@ModelAttribute MateriasWrapper listadoMaterias,

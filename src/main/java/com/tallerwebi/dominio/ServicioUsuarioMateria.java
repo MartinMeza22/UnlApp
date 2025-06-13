@@ -253,23 +253,23 @@ public class ServicioUsuarioMateria {
     /**
      * Muestra todas las materias de un usuario específico
      */
-    public List<UsuarioMateria> mostrarMateriasDeUsuario(Long usuarioId) {
+    public List<UsuarioMateria> mostrarMateriasDeUsuario(String idCarrera, Long usuarioId) {
         if (usuarioId == null) {
             throw new IllegalArgumentException("El ID del usuario es obligatorio");
         }
 
-        return repositorioUsuarioMateria.buscarPorUsuario(usuarioId);
+        return repositorioUsuarioMateria.buscarPorUsuario(idCarrera, usuarioId);
     }
 
     /**
      * Obtiene estadísticas básicas de un usuario
      */
-    public EstadisticasUsuario obtenerEstadisticasUsuario(Long usuarioId) {
+    public EstadisticasUsuario obtenerEstadisticasUsuario(String idCarrera, Long usuarioId) {
         if (usuarioId == null) {
             throw new IllegalArgumentException("El ID del usuario es obligatorio");
         }
 
-        List<UsuarioMateria> todasLasMaterias = mostrarMateriasDeUsuario(usuarioId);
+        List<UsuarioMateria> todasLasMaterias = mostrarMateriasDeUsuario(idCarrera,usuarioId);
 
         long aprobadas = todasLasMaterias.stream().filter(UsuarioMateria::estaAprobada).count();
         long cursando = todasLasMaterias.stream().filter(UsuarioMateria::estaCursando).count();

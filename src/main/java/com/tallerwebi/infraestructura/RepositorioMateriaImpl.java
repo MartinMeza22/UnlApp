@@ -68,10 +68,10 @@ public class RepositorioMateriaImpl implements RepositorioMateria {
 
     @Override
     public List<Materia> obtenerMateriasDeUnaCarrera(String idCarrera) {
-        final String hql = "FROM Materia WHERE carreraId = :idCarrera ORDER BY cuatrimestre, nombre";
+        final String hql = "FROM Materia WHERE carrera.id = :idCarrera ORDER BY cuatrimestre, nombre";
         return sessionFactory.getCurrentSession()
                 .createQuery(hql)
-                .setParameter("idCarrera", idCarrera)
+                .setParameter("idCarrera", Long.valueOf(idCarrera))
                 .list();
     }
 
