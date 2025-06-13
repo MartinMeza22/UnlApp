@@ -128,13 +128,6 @@ public class ControladorLogin {
     public ModelAndView nuevoUsuario() {
         ModelMap model = new ModelMap();//key / value
         List<Carrera> carreras = this.servicioCarrera.obtenerTodasLasCarreras();
-        System.out.println("ACA SE IMPRIME LAS CARRERAS");
-        for(Carrera carrera : carreras) {
-            System.out.println("----------------------------------------------------------------------------");
-            System.out.println(carrera);
-            System.out.println(carrera.getNombre());
-            System.out.println(carrera.getId());
-        }
         model.put("usuario", new Usuario()); //
         model.put("carreras", carreras);
         return new ModelAndView("nuevo-usuario", model);
