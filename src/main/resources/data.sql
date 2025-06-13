@@ -123,10 +123,10 @@ VALUES
 (true, false, 'Clase de yoga nivel intermedio. Enfocar en posturas de equilibrio y respiración consciente.', NOW(), NOW(), '2025-06-18 19:30:00', '2025-06-18 21:00:00', 'PERSONAL', 'Clase de Yoga', 'Centro Holístico Belgrano', NULL, 2),
 (true, false, 'Cena con amigas de la facultad para ponernos al día y celebrar fin de parciales.', NOW(), NOW(), '2025-06-27 20:30:00', '2025-06-27 23:00:00', 'PERSONAL', 'Cena Amigas Facultad', 'Restaurante Las Violetas - Almagro', NULL, 2),
 (true, false, 'Curso online de diseño UX/UI. Primera clase: fundamentos de experiencia de usuario.', NOW(), NOW(), '2025-06-29 10:00:00', '2025-06-29 13:00:00', 'ESTUDIO', 'Curso UX/UI - Clase 1', 'Online - Zoom', NULL, 2);
-    (10, '2024-03-01', '2025-07-15', 2,  10, 1),
-    (1, '2024-03-01', '2025-07-15', 8,  11, 1),
-    (5, '2024-05-01', '2025-07-15', 9,  12, 1),
-    (10, '2025-03-01', '2025-07-15', 8,  13, 1);
+--     (10, '2024-03-01', '2025-07-15', 2,  10, 1),
+--     (1, '2024-03-01', '2025-07-15', 8,  11, 1),
+--     (5, '2024-05-01', '2025-07-15', 9,  12, 1),
+--     (10, '2025-03-01', '2025-07-15', 8,  13, 1);
 
 
 -- *************************************************************************************************

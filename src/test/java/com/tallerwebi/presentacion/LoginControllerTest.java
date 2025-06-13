@@ -5,6 +5,7 @@ import com.tallerwebi.dominio.excepcion.UsuarioExistente;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.ui.ModelMap;
+import static org.hamcrest.Matchers.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,17 +22,28 @@ public class LoginControllerTest {
     private ControladorLogin controladorLogin;
     private RepositorioLogin repositorioLoginMock;
     private ServicioMateria servicioMateriaMock;
+    private ServicioEmail servicioEmailMock;
+    private RepositorioUsuario repositorioUsuarioMock;
+    private ServicioUsuarioMateria servicioUsuarioMateriaMock;
+    private ServicioCarrera servicioCarreraMock;
     private HttpServletRequest requestMock;
     private HttpSession sessionMock;
+    private HttpServletRequest mockHttpServletRequestMock;
 
     @BeforeEach
     public void init() {
+
+        servicioEmailMock = mock(ServicioEmail.class);
+        repositorioUsuarioMock = mock(RepositorioUsuario.class);
+        servicioUsuarioMateriaMock = mock(ServicioUsuarioMateria.class);
+        servicioCarreraMock = mock(ServicioCarrera.class);
         repositorioLoginMock = mock(RepositorioLogin.class);
         servicioMateriaMock = mock(ServicioMateria.class);
-        controladorLogin = new ControladorLogin(repositorioLoginMock, servicioMateriaMock);
+        controladorLogin = new ControladorLogin(repositorioLoginMock, servicioEmailMock, repositorioUsuarioMock, servicioUsuarioMateriaMock, servicioCarreraMock);
 
         requestMock = mock(HttpServletRequest.class);
         sessionMock = mock(HttpSession.class);
+        mockHttpServletRequestMock = mock(HttpServletRequest.class);
     }
 
     @Test
@@ -83,24 +95,31 @@ public class LoginControllerTest {
     }
 
     @Test
-    public void registrarme_conUsuarioNuevo_redirigeAFormularioDeMaterias() throws UsuarioExistente {
+    public void registrarme_conUsuarioNuevo_redirigeAVerificarToken() throws UsuarioExistente {
         Usuario usuario = new Usuario();
+        usuario.setId(1L);
+        usuario.setEmail("test@test.com");
 
-        when(servicioMateriaMock.obtenerTodasLasMateriasPorNombre()).thenReturn(List.of());
+        ModelAndView mav = controladorLogin.registrarme(usuario, mockHttpServletRequestMock);
 
-        ModelAndView mav = controladorLogin.registrarme(usuario);
+        verify(repositorioLoginMock, times(1)).registrar(usuario);
+        verify(servicioEmailMock, times(1)).guardarYEnviarCodigoDeVerificacion(usuario);
 
-        assertThat(mav.getViewName(), equalToIgnoringCase("nuevo-usuario"));
+        assertThat(mav.getViewName(), equalToIgnoringCase("verificar-token"));
+        assertThat(mav.getModel().get("usuario"), notNullValue());
+        //assertThat((Usuario) mav.getModel().get("usuario"), equalToIgnoringCase(usuario));
     }
 
     @Test
     public void registrarme_conUsuarioExistente_redirigeANuevoUsuarioConError() throws UsuarioExistente {
+        // GIVEN
         Usuario usuario = new Usuario();
 
+        // WHEN
         doThrow(UsuarioExistente.class).when(repositorioLoginMock).registrar(usuario);
+        ModelAndView mav = controladorLogin.registrarme(usuario, mockHttpServletRequestMock);
 
-        ModelAndView mav = controladorLogin.registrarme(usuario);
-
+        // THEN
         assertThat(mav.getViewName(), equalToIgnoringCase("nuevo-usuario"));
         assertThat(mav.getModel().get("error").toString(), equalToIgnoringCase("El usuario ya existe"));
     }

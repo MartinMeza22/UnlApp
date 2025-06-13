@@ -38,17 +38,20 @@ public class ControladorProgresoAcademico {
 
         Long usuarioId = (Long) session.getAttribute("ID");
 
+        // Para obtener el id de la carrera
+        String idCarrera = this.servicioUsuarioMateria.obtenerUsuario(usuarioId).getCarreraID().toString();
+
         List<MateriaDTO> materias = new ArrayList<>();
         if (condicion != null && !condicion.isEmpty()) {
-            materias = this.servicioProgreso.filtrarPor(condicion, usuarioId);
+            materias = this.servicioProgreso.filtrarPor(idCarrera, condicion, usuarioId);
         } else {
-            materias = this.servicioProgreso.materias(usuarioId);
+            materias = this.servicioProgreso.materias(idCarrera, usuarioId);
         }
 
-        Double porcentajeProgreso = this.servicioProgreso.obtenerProgresoDeCarrera(usuarioId);
-        Integer cantidadDeMateriasAprobadas = this.servicioProgreso.filtrarPor("aprobadas", usuarioId).size();
-        Integer cantidadMateriasTotal = this.servicioProgreso.materias(usuarioId).size();
-        Integer materiasEnCurso = this.servicioProgreso.filtrarPor("cursando", usuarioId).size();
+        Double porcentajeProgreso = this.servicioProgreso.obtenerProgresoDeCarrera(idCarrera, usuarioId);
+        Integer cantidadDeMateriasAprobadas = this.servicioProgreso.filtrarPor(idCarrera,"aprobadas", usuarioId).size();
+        Integer cantidadMateriasTotal = this.servicioProgreso.materias(idCarrera, usuarioId).size();
+        Integer materiasEnCurso = this.servicioProgreso.filtrarPor(idCarrera,"cursando", usuarioId).size();
 
         Carrera carrera = new Carrera();
         carrera.setNombre("Desarrollo Web");

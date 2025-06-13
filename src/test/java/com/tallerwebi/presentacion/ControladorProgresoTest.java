@@ -53,7 +53,8 @@ public class ControladorProgresoTest {
     public void queAlAccederAProgresoSeMuestrenTodasLasMateriasSiNoHayCondicion() {
 
         List<MateriaDTO> materiasEsperadas = Arrays.asList(materia1, materia2);
-        when(mockServicioProgreso.materias(usuarioId)).thenReturn(materiasEsperadas);
+        String idCarrera = "1";
+        when(mockServicioProgreso.materias(idCarrera,usuarioId)).thenReturn(materiasEsperadas);
 
         ModelAndView mav = this.controladorProgresoAcademico.verProgreso(null, mockHttpSession);
 
@@ -76,7 +77,8 @@ public class ControladorProgresoTest {
     public void queAlAccederAProgresoConCondicionSeFiltrenLasMaterias() {
         List<MateriaDTO> materiasFiltradas = Collections.singletonList(materia1);
         String condicion = "aprobadas";
-        when(mockServicioProgreso.filtrarPor(condicion, usuarioId)).thenReturn(materiasFiltradas);
+        String idCarrera = "1";
+        when(mockServicioProgreso.filtrarPor(idCarrera, condicion, usuarioId)).thenReturn(materiasFiltradas);
 
         ModelAndView mav = controladorProgresoAcademico.verProgreso(condicion, mockHttpSession);
 
