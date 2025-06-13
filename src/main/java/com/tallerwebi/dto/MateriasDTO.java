@@ -3,10 +3,9 @@ package com.tallerwebi.dto;
 public class MateriasDTO {
 
         private Long id; //materia ID
-        private Boolean cursando;
         private Integer dificultad;
         private Integer nota;
-
+        private Integer estado;
 
     public Long getId() {
         return id;
@@ -32,13 +31,21 @@ public class MateriasDTO {
         this.dificultad = dificultad;
     }
 
+    public Integer getEstado() {
+        return estado;
+    }
+
+    public void setEstado(Integer estado) {
+        this.estado = Integer.parseInt(String.valueOf(estado));
+    }
+
     @Override
     public String toString() {
         return "MateriasDTO{" +
                 "id=" + id +
-                ", cursando=" + cursando +
                 ", dificultad=" + dificultad +
                 ", nota=" + nota +
+                ", estado=" + estado +
                 '}';
     }
 }

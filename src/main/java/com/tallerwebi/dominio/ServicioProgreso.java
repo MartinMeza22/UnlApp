@@ -44,7 +44,7 @@ public class ServicioProgreso {
             MateriaDTO materiaDTO;
             if (matCurso != null) {
                 String dificultad = verificarDificultad(matCurso.getDificultad());
-                materiaDTO = new MateriaDTO(mat.getId(), mat.getNombre(), dificultad, matCurso.getEstado(), matCurso.getNota(), mat.getCuatrimestre());
+                materiaDTO = new MateriaDTO(mat.getId(), mat.getNombre(), dificultad, matCurso.getEstadoo(), matCurso.getNota(), mat.getCuatrimestre());
             } else {
                 String estado;
                 if (verificarCorrelativasAprobadas(mat, materiasCursadasMap)) {

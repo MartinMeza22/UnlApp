@@ -90,7 +90,9 @@ public class ControladorProgresoAcademico {
                                        @ModelAttribute("datosLogin") DatosLogin datosLogin) {
             for( MateriasDTO materias : listadoMaterias.getMaterias()) {
                 if(materias.getNota() != null && materias.getDificultad() != null) {
-                    servicioUsuarioMateria.asignarMateria(3L, materias.getId(), materias.getNota(), materias.getDificultad());
+                    servicioUsuarioMateria.asignarMateria(3L, materias.getId(), materias.getNota(), materias.getDificultad(), materias.getEstado());
+                }else if(materias.getEstado() == 2){ //estado == 2 (cursando)
+                    servicioUsuarioMateria.asignarMateria(3L, materias.getId(), materias.getEstado());
                 }
             }
         return new ModelAndView("login");

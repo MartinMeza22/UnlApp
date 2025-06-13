@@ -26,39 +26,39 @@ public class ServicioUsuarioMateria {
     /**
      * Asigna una materia a un usuario (empieza cursando = nota null)
      */
-    public UsuarioMateria asignarMateria(Long usuarioId, Long materiaId, Integer dificultad) {
-        // Validaciones básicas
-        validarUsuarioYMateria(usuarioId, materiaId);
-
-        // Verificar que el usuario existe
-        Usuario usuario = repositorioUsuario.buscarPorId(usuarioId);
-        if (usuario == null) {
-            throw new IllegalArgumentException("El usuario con ID " + usuarioId + " no existe");
-        }
-
-        // Verificar que la materia existe
-        Materia materia = repositorioMateria.buscarPorId(materiaId);
-        if (materia == null) {
-            throw new IllegalArgumentException("La materia con ID " + materiaId + " no existe");
-        }
-
-        // Verificar que no esté ya asignada
-        if (repositorioUsuarioMateria.existe(usuarioId, materiaId)) {
-            throw new IllegalArgumentException("El usuario ya tiene asignada esta materia");
-        }
-
-        // Validar dificultad
-        validarDificultad(dificultad);
-
-        // Crear la relación (nota = null = cursando)
-        UsuarioMateria usuarioMateria = new UsuarioMateria(usuario, materia);
-        usuarioMateria.setDificultad(dificultad);
-
-        // Guardar
-        repositorioUsuarioMateria.guardar(usuarioMateria);
-
-        return usuarioMateria;
-    }
+//    public UsuarioMateria asignarMateria(Long usuarioId, Long materiaId, Integer dificultad) {
+//        // Validaciones básicas
+//        validarUsuarioYMateria(usuarioId, materiaId);
+//
+//        // Verificar que el usuario existe
+//        Usuario usuario = repositorioUsuario.buscarPorId(usuarioId);
+//        if (usuario == null) {
+//            throw new IllegalArgumentException("El usuario con ID " + usuarioId + " no existe");
+//        }
+//
+//        // Verificar que la materia existe
+//        Materia materia = repositorioMateria.buscarPorId(materiaId);
+//        if (materia == null) {
+//            throw new IllegalArgumentException("La materia con ID " + materiaId + " no existe");
+//        }
+//
+//        // Verificar que no esté ya asignada
+//        if (repositorioUsuarioMateria.existe(usuarioId, materiaId)) {
+//            throw new IllegalArgumentException("El usuario ya tiene asignada esta materia");
+//        }
+//
+//        // Validar dificultad
+//        validarDificultad(dificultad);
+//
+//        // Crear la relación (nota = null = cursando)
+//        UsuarioMateria usuarioMateria = new UsuarioMateria(usuario, materia);
+//        usuarioMateria.setDificultad(dificultad);
+//
+//        // Guardar
+//        repositorioUsuarioMateria.guardar(usuarioMateria);
+//
+//        return usuarioMateria;
+//    }
 
     public UsuarioMateria asignarMateria(Long usuarioId, Long materiaId, Integer nota, Integer dificultad) {
         // Validaciones básicas
@@ -89,6 +89,75 @@ public class ServicioUsuarioMateria {
         UsuarioMateria usuarioMateria = new UsuarioMateria(usuario, materia);
         usuarioMateria.setDificultad(dificultad);
         usuarioMateria.setNota(nota);
+        // Guardar
+        repositorioUsuarioMateria.guardar(usuarioMateria);
+
+        return usuarioMateria;
+    }
+
+    public UsuarioMateria asignarMateria(Long usuarioId, Long materiaId, Integer nota, Integer dificultad, Integer estado) {
+        // Validaciones básicas
+        validarUsuarioYMateria(usuarioId, materiaId);
+
+        // Verificar que el usuario existe
+        Usuario usuario = repositorioUsuario.buscarPorId(usuarioId);
+        if (usuario == null) {
+            throw new IllegalArgumentException("El usuario con ID " + usuarioId + " no existe");
+        }
+
+        // Verificar que la materia existe
+        Materia materia = repositorioMateria.buscarPorId(materiaId);
+        if (materia == null) {
+            throw new IllegalArgumentException("La materia con ID " + materiaId + " no existe");
+        }
+
+        // Verificar que no esté ya asignada
+        if (repositorioUsuarioMateria.existe(usuarioId, materiaId)) {
+            throw new IllegalArgumentException("El usuario ya tiene asignada esta materia");
+        }
+
+        // Validar dificultad
+        validarDificultad(dificultad);
+        validarNota(nota);
+        validarEstado(estado);
+
+        // Crear la relación (nota = null = cursando)
+        UsuarioMateria usuarioMateria = new UsuarioMateria(usuario, materia);
+        usuarioMateria.setDificultad(dificultad);
+        usuarioMateria.setNota(nota);
+        usuarioMateria.setEstado(estado);
+        // Guardar
+        repositorioUsuarioMateria.guardar(usuarioMateria);
+
+        return usuarioMateria;
+    }
+
+    public UsuarioMateria asignarMateria(Long usuarioId, Long materiaId, Integer estado) {
+        // Validaciones básicas
+        validarUsuarioYMateria(usuarioId, materiaId);
+
+        // Verificar que el usuario existe
+        Usuario usuario = repositorioUsuario.buscarPorId(usuarioId);
+        if (usuario == null) {
+            throw new IllegalArgumentException("El usuario con ID " + usuarioId + " no existe");
+        }
+
+        // Verificar que la materia existe
+        Materia materia = repositorioMateria.buscarPorId(materiaId);
+        if (materia == null) {
+            throw new IllegalArgumentException("La materia con ID " + materiaId + " no existe");
+        }
+
+        // Verificar que no esté ya asignada
+        if (repositorioUsuarioMateria.existe(usuarioId, materiaId)) {
+            throw new IllegalArgumentException("El usuario ya tiene asignada esta materia");
+        }
+
+        validarEstado(estado);
+
+        // Crear la relación (nota = null = cursando)
+        UsuarioMateria usuarioMateria = new UsuarioMateria(usuario, materia);
+        usuarioMateria.setEstado(estado);
         // Guardar
         repositorioUsuarioMateria.guardar(usuarioMateria);
 
@@ -230,6 +299,12 @@ public class ServicioUsuarioMateria {
     private void validarNota(Integer nota) {
         if (nota != null && (nota < 1 || nota > 10)) {
             throw new IllegalArgumentException("La dificultad debe estar entre 1 y 10");
+        }
+    }
+
+    private void validarEstado(Integer estado) {
+        if(estado != null && (estado < 1  || estado > 4)){
+            throw new IllegalArgumentException("El estado debe ser pendiente, cursando, aprobado o desaprobado");
         }
     }
 
