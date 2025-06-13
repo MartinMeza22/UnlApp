@@ -4,6 +4,7 @@ import com.tallerwebi.dominio.*;
 import com.tallerwebi.dominio.excepcion.UsuarioExistente;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -23,12 +24,15 @@ public class LoginControllerTest {
     private ServicioMateria servicioMateriaMock;
     private HttpServletRequest requestMock;
     private HttpSession sessionMock;
+    private ServicioCarrera servicioCarreraMock;
 
     @BeforeEach
     public void init() {
         repositorioLoginMock = mock(RepositorioLogin.class);
         servicioMateriaMock = mock(ServicioMateria.class);
-        controladorLogin = new ControladorLogin(repositorioLoginMock, servicioMateriaMock);
+        servicioCarreraMock = mock(ServicioCarrera.class);
+
+        controladorLogin = new ControladorLogin(repositorioLoginMock, servicioMateriaMock, servicioCarreraMock);
 
         requestMock = mock(HttpServletRequest.class);
         sessionMock = mock(HttpSession.class);
@@ -76,6 +80,7 @@ public class LoginControllerTest {
 
     @Test
     public void nuevoUsuario_devuelveVistaConFormulario() {
+        when(servicioCarreraMock.getCarreras()).thenReturn(List.of());
         ModelAndView mav = controladorLogin.nuevoUsuario();
 
         assertThat(mav.getViewName(), equalToIgnoringCase("nuevo-usuario"));
