@@ -6,7 +6,7 @@ VALUES
 -- Luego insertar los usuarios (ahora la carreraID = 1 existe)
 INSERT INTO Usuario(id, email, password, rol, carreraID, nombre, apellido, telefono, situacionLaboral, disponibilidadHoraria, activo)
 VALUES
-    (1, 'user@user.com', '123', 'ALUMNO', 1, 'Juan', 'Pérez', NULL, 'desempleado', 1, false),
+    (1, 'user@gmail.com', '12345678', 'ALUMNO', 1, 'Juan', 'Pérez', NULL, 'desempleado', 1, false),
     (2, 'user2@user.com', '123', 'ALUMNO', 1, 'Ana', 'Gómez', NULL, 'empleado', 2, false);
 
 -- Insertar las materias del cuatrimestre 1 (sin correlativas)
@@ -50,26 +50,26 @@ VALUES
     (20, 'Taller Práctico Integrador', '', 'Obligatoria', 8, 5, true, 1, 14, 15, 16, 17, 18, NULL);
 
 -- Insertar relaciones usuario_materia para el primer usuario (Juan Pérez) - Primeros 3 cuatrimestres
-INSERT INTO usuario_materia(dificultad, fecha_asignacion, fecha_modificacion, nota, materia_id, usuario_id)
+INSERT INTO usuario_materia(dificultad, estado, fecha_asignacion, fecha_modificacion, nota, materia_id, usuario_id)
 VALUES
     -- Cuatrimestre 1
-    (1, '2022-03-01', '2024-07-15', 8, 1, 1),
-    (5, '2022-03-01', '2024-07-15', 9,  2, 1),
-    (10, '2022-03-01', '2024-07-15', 6,  3, 1),
-    (1, '2022-03-01', '2024-07-15', 7,  4, 1),
+    (1, 1,'2022-03-01', '2024-07-15', 8, 1, 1),
+    (5, 1, '2022-03-01', '2024-07-15', 9,  2, 1),
+    (10, 1, '2022-03-01', '2024-07-15', 6,  3, 1),
+    (1, 1, '2022-03-01', '2024-07-15', 7,  4, 1),
 
     -- Cuatrimestre 2
   --  (5, '2023-08-01', '2024-12-15', 8, 'Buena evolución en programación', 5, 1),
    -- (5, '2023-08-01', '2024-12-15', 9, 'Excelente trabajo con tecnologías web', 6, 1),
-    (10, '2023-08-01', '2024-12-15', 7,  7, 1),
-    (10, '2023-08-01', '2024-12-15', 8,  8, 1),
-    (1, '2023-08-01', '2024-12-15', 8,  9, 1),
+    (10, 1, '2023-08-01', '2024-12-15', 7,  7, 1),
+    (10, 1, '2023-08-01', '2024-12-15', 8,  8, 1),
+    (1, 1, '2023-08-01', '2024-12-15', 8,  9, 1),
 
     -- Cuatrimestre 3
-    (10, '2024-03-01', '2025-07-15', 2,  10, 1),
-    (1, '2024-03-01', '2025-07-15', 8,  11, 1),
-    (5, '2024-05-01', '2025-07-15', 9,  12, 1),
-    (10, '2025-03-01', '2025-07-15', 8,  13, 1);
+    (10,1, '2024-03-01', '2025-07-15', 2,  10, 1),
+    (1,1, '2024-03-01', '2025-07-15', 8,  11, 1),
+    (5,1, '2024-05-01', '2025-07-15', 9,  12, 1),
+    (10,1, '2025-03-01', '2025-07-15', 8,  13, 1);
 
 
 

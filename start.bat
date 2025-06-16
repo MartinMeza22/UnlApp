@@ -11,4 +11,4 @@ echo Docker build exit code: %ERRORLEVEL%
 echo Paso 3: Docker Run
 docker run -p 8080:8080 -e DB_HOST=host.docker.internal tallerwebi
 
-pause
+

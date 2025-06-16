@@ -26,6 +26,9 @@ public class UsuarioMateria {
     @Column
     private Integer dificultad; // Nivel de dificultad 1-10
 
+    @Column
+    private Integer estado; // del 0 al 4
+
     @Column(name = "fecha_asignacion")
     private LocalDate fechaAsignacion;
 
@@ -72,6 +75,14 @@ public class UsuarioMateria {
         this.fechaModificacion = LocalDate.now();
     }
 
+    public Integer getEstado() {
+        return estado;
+    }
+
+    public void setEstado(Integer estado) {
+        this.estado = estado;
+    }
+
     public LocalDate getFechaAsignacion() { return fechaAsignacion; }
     public void setFechaAsignacion(LocalDate fechaAsignacion) { this.fechaAsignacion = fechaAsignacion; }
 
@@ -91,7 +102,7 @@ public class UsuarioMateria {
         return nota != null && nota < 4.0;
     }
 
-    public String getEstado() {
+    public String getEstadoo() {
         if (estaCursando()) return "CURSANDO";
         if (estaAprobada()) return "APROBADA";
         return "DESAPROBADA";
