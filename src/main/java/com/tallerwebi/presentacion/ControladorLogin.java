@@ -19,11 +19,13 @@ public class ControladorLogin {
     @Autowired
     private ServicioMateria servicioMateria;
 
+    @Autowired
+    private ServicioCarrera servicioCarrera;
 
     @Autowired
-    public ControladorLogin(RepositorioLogin repositorioLogin, ServicioMateria servicioMateriaMock){
+    public ControladorLogin(RepositorioLogin repositorioLogin, ServicioMateria servicioMateriaMock, ServicioCarrera servicioCarrera) {
         this.repositorioLogin = repositorioLogin;
-
+        this.servicioCarrera = servicioCarrera;
     }
 
     @RequestMapping("/login")
@@ -67,8 +69,9 @@ public class ControladorLogin {
 
     @RequestMapping(path = "/nuevo-usuario", method = RequestMethod.GET)
     public ModelAndView nuevoUsuario() {
-        ModelMap model = new ModelMap();//key / value
-        model.put("usuario", new Usuario()); //
+        ModelMap model = new ModelMap();
+        model.put("usuario", new Usuario());
+        model.put("carreras", servicioCarrera.getCarreras());
         return new ModelAndView("nuevo-usuario", model);
     }
 

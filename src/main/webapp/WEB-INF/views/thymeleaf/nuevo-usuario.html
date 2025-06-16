@@ -53,9 +53,12 @@
       <input th:field="*{nombre}" id="nombre" class="form-control" required placeholder="Nombre" />
       <input th:field="*{apellido}" id="apellido" class="form-control" required placeholder="Apellido" />
 
-      <select th:field="*{carreraID}" id="carreraID" class="form-control" required>
+      <select th:field="*{carrera.id}" id="carreraID" class="form-control" required>
         <option value="" disabled selected>Seleccione una carrera</option>
-        <option value="1">Tecnicatura en Desarrollo Web</option>
+        <option th:each="c : ${carreras}"
+                th:value="${c.id}"
+                th:text="${c.nombre}">
+        </option>
       </select>
 
       <select th:field="*{situacionLaboral}" id="situacionLaboral" class="form-control" required>
