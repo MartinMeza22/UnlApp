@@ -89,7 +89,6 @@ public class ControladorLogin {
 
     @RequestMapping(path = "/logout", method = RequestMethod.GET)
     public ModelAndView logout(HttpServletRequest request) {
-        // Invalidate the session to log out the user
         if (request.getSession(false) != null) {
             request.getSession().invalidate();
         }
