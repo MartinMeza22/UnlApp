@@ -35,9 +35,6 @@ public class ControladorCalendario {
         ModelMap modelo = new ModelMap();
         
         Long usuarioId = (Long) request.getSession().getAttribute("ID");
-        if (usuarioId == null) {
-            return new ModelAndView("redirect:/login");
-        }
 
         // Obtener datos para la vista
         List<Evento> eventosHoy = servicioEvento.obtenerEventosHoy(usuarioId);
@@ -69,9 +66,6 @@ public class ControladorCalendario {
         ModelMap modelo = new ModelMap();
         
         Long usuarioId = (Long) request.getSession().getAttribute("ID");
-        if (usuarioId == null) {
-            return new ModelAndView("redirect:/login");
-        }
 
         try {
             // Debug logging
@@ -142,9 +136,6 @@ public class ControladorCalendario {
                                          HttpServletRequest request) {
         
         Long usuarioId = (Long) request.getSession().getAttribute("ID");
-        if (usuarioId == null) {
-            return new ModelAndView("redirect:/login");
-        }
 
         try {
             // Obtener el evento existente
@@ -185,9 +176,6 @@ public class ControladorCalendario {
     @RequestMapping(path = "/evento/{id}/completar", method = RequestMethod.POST)
     public ModelAndView completarEvento(@PathVariable Long id, HttpServletRequest request) {
         Long usuarioId = (Long) request.getSession().getAttribute("ID");
-        if (usuarioId == null) {
-            return new ModelAndView("redirect:/login");
-        }
 
         try {
             Evento evento = servicioEvento.obtenerEventoPorId(id);
@@ -205,9 +193,6 @@ public class ControladorCalendario {
     @RequestMapping(path = "/evento/{id}/eliminar", method = RequestMethod.POST)
     public ModelAndView eliminarEvento(@PathVariable Long id, HttpServletRequest request) {
         Long usuarioId = (Long) request.getSession().getAttribute("ID");
-        if (usuarioId == null) {
-            return new ModelAndView("redirect:/login");
-        }
 
         try {
             Evento evento = servicioEvento.obtenerEventoPorId(id);
