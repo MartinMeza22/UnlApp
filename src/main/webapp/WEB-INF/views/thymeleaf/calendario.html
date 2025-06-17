@@ -11,6 +11,7 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
             color: #333;
             padding-bottom: 50px;
+            padding-top: 50px;
         }
 
         .container {
@@ -974,6 +975,40 @@
         }
     });
 
+    // Function to set default datetime values
+    function setDefaultDateTimes() {
+        // Get tomorrow's date at current time
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        
+        // Create end date (1 hour later)
+        const endDate = new Date(tomorrow);
+        endDate.setHours(endDate.getHours() + 1);
+        
+        // Format dates for datetime-local input (YYYY-MM-DDTHH:MM)
+        const formatDateTime = (date) => {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            
+            return `${year}-${month}-${day}T${hours}:${minutes}`;
+        };
+        
+        // Set default values for create modal
+        const fechaInicioInput = document.getElementById('fechaInicio');
+        const fechaFinInput = document.getElementById('fechaFin');
+        
+        if (fechaInicioInput && !fechaInicioInput.value) {
+            fechaInicioInput.value = formatDateTime(tomorrow);
+        }
+        
+        if (fechaFinInput && !fechaFinInput.value) {
+            fechaFinInput.value = formatDateTime(endDate);
+        }
+    }
+
     // Functions for event actions
     function completarEvento(url) {
         // Create a form and submit it
@@ -1077,6 +1112,14 @@
             });
         } else {
             console.log('❌ Edit form NOT found');
+        }
+        
+        // Set defaults when create modal is shown
+        const eventModal = document.getElementById('eventModal');
+        if (eventModal) {
+            eventModal.addEventListener('shown.bs.modal', function() {
+                setDefaultDateTimes();
+            });
         }
         
         // Debug: Show what edit buttons are available

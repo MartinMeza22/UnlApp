@@ -68,15 +68,6 @@ public class ControladorCalendario {
         Long usuarioId = (Long) request.getSession().getAttribute("ID");
 
         try {
-            // Debug logging
-            System.out.println("Creando evento:");
-            System.out.println("- Titulo: " + titulo);
-            System.out.println("- Tipo: " + tipo);
-            System.out.println("- FechaInicio: " + fechaInicio);
-            System.out.println("- FechaFin: " + fechaFin);
-            System.out.println("- MateriaId: " + materiaId);
-            System.out.println("- UsuarioId: " + usuarioId);
-            
             // Crear el evento usando el servicio
             if (materiaId != null && materiaId > 0) {
                 // Evento académico
@@ -89,11 +80,9 @@ public class ControladorCalendario {
                 }
             } else {
                 // Evento personal
-                System.out.println("Creando evento personal");
                 servicioEvento.crearEventoPersonal(titulo, fechaInicio, usuarioId, tipo);
             }
             
-            System.out.println("✅ Evento creado exitosamente");
             modelo.put("mensaje", "Evento creado exitosamente");
         } catch (Exception e) {
             System.out.println("❌ Error al crear evento: " + e.getMessage());
