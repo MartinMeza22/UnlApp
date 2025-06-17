@@ -10,6 +10,7 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.thymeleaf.spring5.SpringTemplateEngine;
@@ -22,18 +23,29 @@ import java.util.List;
 
 @EnableWebMvc
 @Configuration
-@ComponentScan({"com.tallerwebi.presentacion", "com.tallerwebi.dominio", "com.tallerwebi.infraestructura"})
+@ComponentScan({"com.tallerwebi.presentacion", "com.tallerwebi.dominio", "com.tallerwebi.infraestructura", "com.tallerwebi.config"})
 public class SpringWebConfig implements WebMvcConfigurer {
 
     // Spring + Thymeleaf need this
     @Autowired
     private ApplicationContext applicationContext;
+    
+    @Autowired
+    private AuthenticationInterceptor authenticationInterceptor;
 
     @Override
     public void addResourceHandlers(final ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/css/**").addResourceLocations("/resources/core/css/");
         registry.addResourceHandler("/js/**").addResourceLocations("/resources/core/js/");
         registry.addResourceHandler("/webjars/**").addResourceLocations("/webjars/");
+    }
+
+    // Add the authentication interceptor
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(authenticationInterceptor)
+                .addPathPatterns("/**") // Apply to all paths
+                .excludePathPatterns("/css/**", "/js/**", "/webjars/**"); // Static resources
     }
 
     // Para poder usar acentos / letras raras
