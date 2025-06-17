@@ -33,17 +33,30 @@ public class ControladorProgresoAcademico {
     }
 
     @RequestMapping(path = "/progreso", method = RequestMethod.GET)
-    public ModelAndView verProgreso(@RequestParam(name = "condicion", required = false) String condicion, HttpSession session) {
+    public ModelAndView verProgreso(@RequestParam(name = "condicion", required = false) String condicion,
+                                    @RequestParam(name = "cuatrimestre", required = false) Integer cuatrimestre,
+                                    HttpSession session) {
         ModelMap model = new ModelMap();//key / value
+        List<Integer> cuatrimestresDisponibles = servicioMateria.obtenerCantidadDeCuatrimestres();
+        Integer cuatri = 0;
+        for (Integer i : cuatrimestresDisponibles) {
+            cuatri = i+1;
+        }
 
         Long usuarioId = (Long) session.getAttribute("ID");
 
         List<MateriaDTO> materias = new ArrayList<>();
-        if (condicion != null && !condicion.isEmpty()) {
+
+        if(condicion != null && !condicion.isEmpty() && cuatrimestre != null) {
+            materias = this.servicioProgreso.filtrarPorCuatrimestreYEstado(cuatrimestre, condicion, usuarioId);
+        }else if (condicion != null && !condicion.isEmpty()) {
             materias = this.servicioProgreso.filtrarPor(condicion, usuarioId);
-        } else {
+        } else if (cuatrimestre != null) {
+            materias = this.servicioProgreso.filtrarPorCuatrimestre(cuatrimestre, usuarioId);
+        }else {
             materias = this.servicioProgreso.materias(usuarioId);
         }
+
 
         Double porcentajeProgreso = this.servicioProgreso.obtenerProgresoDeCarrera(usuarioId);
         Integer cantidadDeMateriasAprobadas = this.servicioProgreso.filtrarPor("aprobadas", usuarioId).size();
@@ -64,26 +77,13 @@ public class ControladorProgresoAcademico {
         model.put("materiasEnCurso", materiasEnCurso);
         model.put("cantidadMateriasTotales", cantidadMateriasTotal);
         model.put("cantidadMateriasAprobadas", cantidadDeMateriasAprobadas);
+
+        model.put("cuatrimestresDisponibles", cuatri);
+        model.put("selectedCuatrimestre", cuatrimestresDisponibles);
+
         return new ModelAndView("progreso", model);
     }
 
-//    @PostMapping("/progresoDesdeElRegistro") //metodo util
-//    public ModelAndView cargarMaterias(@RequestParam Map<String, String> datos) {
-//        String id = datos.get("id");
-//        String nota = datos.get("nota");
-//        String dificultad = datos.get("dificultad");
-//        String materia = datos.get("materia");
-//        String usuario = datos.get("usuario");
-//
-//        Double idNota = Double.parseDouble(nota);
-//        Integer dificultadParse = Integer.parseInt(dificultad);
-//        Long idMateria = Long.parseLong(materia);
-//        Long idUsuario = Long.parseLong(usuario);
-//
-//        String observaciones = datos.get("observaciones");
-//        servicioUsuarioMateria.asignarMateria(idUsuario, idMateria,dificultadParse);
-//        return new ModelAndView("home");
-//    }
 
     @PostMapping("/pruebaDeDatos")
     public ModelAndView guardarMateria(@ModelAttribute MateriasWrapper listadoMaterias,

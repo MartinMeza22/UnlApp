@@ -56,4 +56,8 @@ public class ServicioMateria {
     public List<Materia> obtenerTodasLasMateriasPorNombre() {
         return repositorioMateria.obtenerTodasLasMateriasPorNombre();
     }
+
+    public List<Integer> obtenerCantidadDeCuatrimestres(){
+        return repositorioMateria.obtenerCantidadDeCuatrimestres();
+    }
 }

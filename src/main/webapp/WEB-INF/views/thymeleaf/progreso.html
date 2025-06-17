@@ -492,6 +492,11 @@
                     <option value="Cursando" th:selected="${'Cursando'.equalsIgnoreCase(selectedCondicion)}">Cursando</option>
                     <option value="Pendientes" th:selected="${'Pendientes'.equalsIgnoreCase(selectedCondicion)}">Pendientes</option>
                 </select>
+                <select class="form-select form-select-filter" id="cuatrimestreFilterInput" name="cuatrimestre"
+                        onchange="this.form.submit()">
+                    <option value="" th:selected="${selectedCuatrimestre == null or selectedCuatrimestre == ''}">Todos los cuatrimestres</option>
+                    <option th:each="n : ${selectedCuatrimestre}" th:value="${n}" th:text="'Cuatrimeste N°' + ${n}" th:selected="${n == cuatrimestresDisponibles}"></option>
+                </select>
             </form>
         </div>
     </div>

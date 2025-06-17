@@ -6,6 +6,7 @@ public class MateriasDTO {
         private Integer dificultad;
         private Integer nota;
         private Integer estado;
+        private Integer cuatrimestre;
 
     public Long getId() {
         return id;
@@ -37,6 +38,14 @@ public class MateriasDTO {
 
     public void setEstado(Integer estado) {
         this.estado = Integer.parseInt(String.valueOf(estado));
+    }
+
+    public Integer getCuatrimestre() {
+        return cuatrimestre;
+    }
+
+    public void setCuatrimestre(Integer cuatrimestre) {
+        this.cuatrimestre = cuatrimestre;
     }
 
     @Override

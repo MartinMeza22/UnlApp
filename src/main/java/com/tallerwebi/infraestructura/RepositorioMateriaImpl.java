@@ -65,4 +65,11 @@ public class RepositorioMateriaImpl implements RepositorioMateria {
                 return sessionFactory.getCurrentSession().createQuery(hql).list();
 
     }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<Integer> obtenerCantidadDeCuatrimestres(){
+        final String hql = "SELECT DISTINCT m.cuatrimestre FROM Materia m ORDER BY m.cuatrimestre";
+        return sessionFactory.getCurrentSession().createQuery(hql).list();
+    }
 }
