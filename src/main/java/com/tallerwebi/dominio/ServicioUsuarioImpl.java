@@ -15,6 +15,16 @@ public class ServicioUsuarioImpl implements ServicioUsuario {
         this.repositorioUsuario = repositorioUsuario;
     }
 
+
+
+    @Override
+    public void eliminarUsuario(Long id) throws UsuarioNoEncontrado {
+        Usuario usuario = repositorioUsuario.buscarPorId(id);
+        if (usuario == null) {
+            throw new UsuarioNoEncontrado();
+        }
+        repositorioUsuario.eliminar(usuario);
+    }
     @Override
     public Usuario obtenerUsuario(Long id) throws UsuarioNoEncontrado {
         Usuario usuario = repositorioUsuario.buscarPorId(id);
