@@ -130,6 +130,54 @@ public class ServicioProgreso {
         return materias;
     }
 
+    public List<MateriaDTO> filtrarPorCuatrimestre(Integer cuatrimestre, Long usuarioId) {
+        List<MateriaDTO> materias = this.materias(usuarioId);
+
+
+        if (cuatrimestre == null || cuatrimestre.equals(0)) {
+            return materias;
+        }
+
+        if (cuatrimestre.equals(1)) {
+            materias = materias.stream().filter(materia -> materia.getCuatrimestre() != null && materia.getCuatrimestre() == 1).collect(Collectors.toList());
+        }else if (cuatrimestre.equals(2)) {
+            materias = materias.stream().filter(materia -> materia.getCuatrimestre() != null && materia.getCuatrimestre() == 2).collect(Collectors.toList());
+        }else if (cuatrimestre.equals(3)) {
+            materias = materias.stream().filter(materia -> materia.getCuatrimestre() != null && materia.getCuatrimestre() == 3).collect(Collectors.toList());
+        }else if (cuatrimestre.equals(4)) {
+            materias = materias.stream().filter(materia -> materia.getCuatrimestre() != null && materia.getCuatrimestre() == 4).collect(Collectors.toList());
+        }else if (cuatrimestre.equals(5)) {
+            materias = materias.stream().filter(materia -> materia.getCuatrimestre() != null && materia.getCuatrimestre() == 5).collect(Collectors.toList());
+        }else if (cuatrimestre.equals(6)) {
+            materias = materias.stream().filter(materia -> materia.getCuatrimestre() != null && materia.getCuatrimestre() == 6).collect(Collectors.toList());
+        }else if (cuatrimestre.equals(7)) {
+            materias = materias.stream().filter(materia -> materia.getCuatrimestre() != null && materia.getCuatrimestre() == 7).collect(Collectors.toList());
+        }else if (cuatrimestre.equals(8)) {
+            materias = materias.stream().filter(materia -> materia.getCuatrimestre() != null && materia.getCuatrimestre() == 8).collect(Collectors.toList());
+        }else if (cuatrimestre.equals(9)) {
+            materias = materias.stream().filter(materia -> materia.getCuatrimestre() != null && materia.getCuatrimestre() == 9).collect(Collectors.toList());
+        }else if (cuatrimestre.equals(10)) {
+            materias = materias.stream().filter(materia -> materia.getCuatrimestre() != null && materia.getCuatrimestre() == 10).collect(Collectors.toList());
+        }
+
+        return materias;
+    }
+
+    public List<MateriaDTO> filtrarPorCuatrimestreYEstado(Integer cuatrimestre, String condicion, Long usuarioId) {
+        List<MateriaDTO> materias = this.materias(usuarioId);
+
+        if (condicion != null && !condicion.equalsIgnoreCase("todas")) {
+            materias = filtrarPor(condicion, usuarioId);
+        }
+
+        if (cuatrimestre != null && cuatrimestre > 0) {
+            final int cuatri = cuatrimestre;
+            materias = materias.stream().filter(materia -> materia.getCuatrimestre() != null
+                    && materia.getCuatrimestre() == cuatri).collect(Collectors.toList());
+        }
+        return materias;
+    }
+
     public Boolean actualizarDatosMateria(Long usuarioId, Long idMateria, Integer nota, Integer dificultad) {
 
         Boolean pudoActualizar = false;
