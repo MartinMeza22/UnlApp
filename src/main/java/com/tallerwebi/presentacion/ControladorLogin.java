@@ -87,6 +87,13 @@ public class ControladorLogin {
         return new ModelAndView("registroMateriasUsuario", model);
     }
 
+    @RequestMapping(path = "/logout", method = RequestMethod.GET)
+    public ModelAndView logout(HttpServletRequest request) {
+        if (request.getSession(false) != null) {
+            request.getSession().invalidate();
+        }
+        return new ModelAndView("redirect:/login");
+    }
 
 }
 
