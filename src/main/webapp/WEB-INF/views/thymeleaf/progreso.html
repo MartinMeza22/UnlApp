@@ -570,6 +570,8 @@
         </div>
     </div>
 
+
+    <button id="btnMostrarResumen" class="btn btn-primary">Ver Resumen Inteligente</button>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -602,5 +604,43 @@
         modalMateriaDificultad.value = dificultadValueForSelect;
     }
 </script>
+
+<script>
+    document.getElementById('btnMostrarResumen').addEventListener('click', function() {
+        const modalBody = document.getElementById('contenidoResumen');
+        modalBody.textContent = "Cargando...";
+
+        fetch('/tallerwebi-base-1.0-SNAPSHOT/prueba-gemini')
+            .then(response => response.text())
+            .then(text => {
+                modalBody.textContent = text;
+                let resumenModal = new bootstrap.Modal(document.getElementById('resumenModal'));
+                resumenModal.show();
+            })
+            .catch(err => {
+                modalBody.textContent = "Error al obtener el resumen.";
+                let resumenModal = new bootstrap.Modal(document.getElementById('resumenModal'));
+                resumenModal.show();
+            });
+    });
+</script>
+
+
+<div class="modal fade" id="resumenModal" tabindex="-1" aria-labelledby="resumenModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="resumenModalLabel">Resumen Inteligente</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body" id="contenidoResumen">
+                <p>Cargando...</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>
