@@ -360,8 +360,14 @@
     </style>
 </head>
 <body>
-<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top px-3">
     <a class="navbar-brand" th:href="@{/home}">UnlApp</a>
+
+    <div class="ms-auto pe-3">
+        <form th:action="@{/logout}" method="get" class="d-flex">
+            <button class="btn btn-outline-light" type="submit">Cerrar sesión</button>
+        </form>
+    </div>
 </nav>
 <div class="container">
     <!-- Header -->
