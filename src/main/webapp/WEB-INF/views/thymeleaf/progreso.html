@@ -576,7 +576,6 @@
         </div>
     </div>
 
-
     <button id="btnMostrarResumen" class="btn btn-primary">Ver Resumen Inteligente</button>
 </div>
 
@@ -612,22 +611,25 @@
 </script>
 
 <script>
-    document.getElementById('btnMostrarResumen').addEventListener('click', function() {
+    document.addEventListener('DOMContentLoaded', function () {
+        const modalElement = document.getElementById('resumenModal');
         const modalBody = document.getElementById('contenidoResumen');
-        modalBody.textContent = "Cargando...";
+        const resumenModal = new bootstrap.Modal(modalElement);
 
-        fetch('/tallerwebi-base-1.0-SNAPSHOT/prueba-gemini')
-            .then(response => response.text())
-            .then(text => {
-                modalBody.textContent = text;
-                let resumenModal = new bootstrap.Modal(document.getElementById('resumenModal'));
-                resumenModal.show();
-            })
-            .catch(err => {
-                modalBody.textContent = "Error al obtener el resumen.";
-                let resumenModal = new bootstrap.Modal(document.getElementById('resumenModal'));
-                resumenModal.show();
-            });
+        document.getElementById('btnMostrarResumen').addEventListener('click', function () {
+            modalBody.textContent = "Cargando...";
+
+            fetch('/tallerwebi-base-1.0-SNAPSHOT/resumen-inteligente')
+                .then(response => response.text())
+                .then(text => {
+                    modalBody.textContent = text;
+                    resumenModal.show();
+                })
+                .catch(err => {
+                    modalBody.textContent = "Error al obtener el resumen.";
+                    resumenModal.show();
+                });
+        });
     });
 </script>
 
@@ -641,9 +643,6 @@
             </div>
             <div class="modal-body" id="contenidoResumen">
                 <p>Cargando...</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
