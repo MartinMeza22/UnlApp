@@ -18,6 +18,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         "/validar-login", 
         "/nuevo-usuario",
         "/registrarme",
+        "/pruebaDeDatos",
         "/logout",
         "/",
         "/css",

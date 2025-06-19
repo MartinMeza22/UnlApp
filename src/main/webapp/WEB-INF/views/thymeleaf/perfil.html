@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Mi Perfil</title>
+
+  <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}" />
+  <!-- Custom CSS -->
+  <link rel="stylesheet" th:href="@{/css/main.css}" />
+
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    .mainbox {
+      background-color: #fff;
+      padding: 30px;
+      margin-top: 70px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .btn-quick {
+      margin-top: 15px;
+    }
+
+  </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+  <a class="navbar-brand" th:href="@{/home}">UnlApp</a>
+</nav>
+<div class="container">
+  <h1 class="list-title">Mi Perfil</h1>
+
+  <!-- Datos del usuario -->
+  <div class="progress-summary-container">
+    <div class="progress-card progress-main">
+      <div class="materia-info">
+        <div class="materia-name" th:text="${usuario.nombre + ' ' + usuario.apellido}">Nombre Apellido</div>
+        <div class="materia-details">
+          <span class="materia-badge badge-aprobado">Usuario</span>
+          <span th:text="'Email: ' + ${usuario.email}">Email</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Formulario para editar perfil -->
+  <h2 class="list-title">Editar Perfil</h2>
+  <form th:action="@{/perfil/actualizar}" method="post" class="progress-card">
+    <div class="form-group">
+      <label class="form-label" for="nombre">Nombre</label>
+      <input type="text" class="form-control" id="nombre" name="nombre" th:value="${usuario.nombre}" required>
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="apellido">Apellido</label>
+      <input type="text" class="form-control" id="apellido" name="apellido" th:value="${usuario.apellido}" required>
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="email">Email</label>
+      <input type="email" class="form-control" id="email" name="email" th:value="${usuario.email}" required>
+    </div>
+    <div class="modal-footer">
+      <button type="submit" class="btn-primary">Guardar Cambios</button>
+    </div>
+  </form>
+
+  <!-- Eliminar cuenta -->
+  <h2 class="list-title" style="color: var(--danger-color); margin-top: 40px;">Eliminar Cuenta</h2>
+  <form th:action="@{/perfil/eliminar}" method="post" onsubmit="return confirm('¿Estás seguro de que deseas eliminar tu cuenta? Esta acción no se puede deshacer.');">
+    <button type="submit" class="btn-secondary" style="background-color: var(--danger-color); border-color: var(--danger-color);">
+      Eliminar mi cuenta
+    </button>
+  </form>
+
+  <!-- Mostrar error si lo hay -->
+  <div th:if="${error}" style="color: var(--danger-color); margin-top: 20px;">
+    <p th:text="${error}"></p>
+  </div>
+</div>
+</body>
+</html>
