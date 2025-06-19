@@ -216,6 +216,10 @@ public class ServicioUsuarioMateria {
         validarUsuarioYMateria(usuarioId, materiaId);
 
         UsuarioMateria usuarioMateria = repositorioUsuarioMateria.buscarPorUsuarioYMateria(usuarioId, materiaId);
+        System.out.println("eliminando materia " + materiaId);
+        System.out.println("eliminando usuarioId " + usuarioId);
+        System.out.println("usuarioMateria " + usuarioMateria);
+
         if (usuarioMateria == null) {
             throw new IllegalArgumentException("No existe relación entre el usuario y la materia especificados");
         }

@@ -114,4 +114,11 @@ public class ControladorProgresoAcademico {
         return "redirect:/progreso";
     }
 
+    @RequestMapping(path = "/progreso/dejar-materia", method = RequestMethod.POST)
+    public String dejarMateria(@RequestParam(name = "materiaId") Long idMateria, HttpSession session) {
+        Long usuarioId = (Long) session.getAttribute("ID");
+        this.servicioUsuarioMateria.eliminarMateria(usuarioId, idMateria);
+        return "redirect:/progreso";
+    }
+
 }
