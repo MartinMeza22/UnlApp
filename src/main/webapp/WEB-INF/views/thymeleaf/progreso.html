@@ -536,6 +536,13 @@
                         th:disabled="${materia.getEstado() == 'Pendiente'}"
                         onclick="populateMateriaModal(this)"><i class="bi bi-pencil"></i></button>
             </div>
+            <div th:if="${materia.getEstado() == 'CURSANDO' and materia.getNota() == null}">
+                <form th:action="@{/progreso/dejar-materia}" method="post" style="display:inline;">
+                    <input type="hidden" name="materiaId" th:value="${materia.getId()}" />
+                    <button type="submit" class="btn btn-danger btn-sm">Dejar materia</button>
+                </form>
+            </div>
+
         </div>
     </div>
 
@@ -609,6 +616,8 @@
         modalMateriaDificultad.value = dificultadValueForSelect;
     }
 </script>
+<!---->
+=======
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {

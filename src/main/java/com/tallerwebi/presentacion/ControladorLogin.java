@@ -53,10 +53,12 @@ public class ControladorLogin {
     }
 
     @RequestMapping(path = "/registrarme", method = RequestMethod.POST)
-    public ModelAndView registrarme(@ModelAttribute("usuario") Usuario usuario) {
+    public ModelAndView registrarme(@ModelAttribute("usuario") Usuario usuario, HttpServletRequest request) {
         ModelMap model = new ModelMap();
         try{
             repositorioLogin.registrar(usuario);
+            Usuario usuarioBuscado = repositorioLogin.consultarUsuario(usuario.getEmail(), usuario.getPassword());
+            request.getSession().setAttribute("ID", usuarioBuscado.getId()); // <-- NUEVO
             return mostrarFormularioDeMaterias(model);
         } catch (UsuarioExistente e){
             model.put("error", "El usuario ya existe");

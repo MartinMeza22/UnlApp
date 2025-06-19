@@ -87,12 +87,14 @@ public class ControladorProgresoAcademico {
 
     @PostMapping("/pruebaDeDatos")
     public ModelAndView guardarMateria(@ModelAttribute MateriasWrapper listadoMaterias,
-                                       @ModelAttribute("datosLogin") DatosLogin datosLogin) {
+                                       @ModelAttribute("datosLogin") DatosLogin datosLogin,
+                                       HttpSession session) {
+        Long usuarioId = (Long) session.getAttribute("ID");
             for( MateriasDTO materias : listadoMaterias.getMaterias()) {
                 if(materias.getNota() != null && materias.getDificultad() != null) {
-                    servicioUsuarioMateria.asignarMateria(3L, materias.getId(), materias.getNota(), materias.getDificultad(), materias.getEstado());
+                    servicioUsuarioMateria.asignarMateria(usuarioId, materias.getId(), materias.getNota(), materias.getDificultad(), materias.getEstado());
                 }else if(materias.getEstado() == 2){ //estado == 2 (cursando)
-                    servicioUsuarioMateria.asignarMateria(3L, materias.getId(), materias.getEstado());
+                    servicioUsuarioMateria.asignarMateria(usuarioId, materias.getId(), materias.getEstado());
                 }
             }
         return new ModelAndView("login");
@@ -111,6 +113,13 @@ public class ControladorProgresoAcademico {
         // Pude haber utilizado el servicio de UsuarioMateria, el metodo modificar, pero le falta le id del usuario al metodo modificar
         this.servicioProgreso.actualizarDatosMateria(usuarioId, idMateria, nota, dificultad);
 
+        return "redirect:/progreso";
+    }
+
+    @RequestMapping(path = "/progreso/dejar-materia", method = RequestMethod.POST)
+    public String dejarMateria(@RequestParam(name = "materiaId") Long idMateria, HttpSession session) {
+        Long usuarioId = (Long) session.getAttribute("ID");
+        this.servicioUsuarioMateria.eliminarMateria(usuarioId, idMateria);
         return "redirect:/progreso";
     }
 

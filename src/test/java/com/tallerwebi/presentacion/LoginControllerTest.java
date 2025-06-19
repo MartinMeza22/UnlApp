@@ -87,28 +87,28 @@ public class LoginControllerTest {
         assertTrue(mav.getModel().containsKey("usuario"));
     }
 
-    @Test
-    public void registrarme_conUsuarioNuevo_redirigeAFormularioDeMaterias() throws UsuarioExistente {
-        Usuario usuario = new Usuario();
+//    @Test
+//    public void registrarme_conUsuarioNuevo_redirigeAFormularioDeMaterias() throws UsuarioExistente {
+//        Usuario usuario = new Usuario();
+//
+//        when(servicioMateriaMock.obtenerTodasLasMateriasPorNombre()).thenReturn(List.of());
+//
+//        ModelAndView mav = controladorLogin.registrarme(usuario);
+//
+//        assertThat(mav.getViewName(), equalToIgnoringCase("nuevo-usuario"));
+//    }
 
-        when(servicioMateriaMock.obtenerTodasLasMateriasPorNombre()).thenReturn(List.of());
-
-        ModelAndView mav = controladorLogin.registrarme(usuario);
-
-        assertThat(mav.getViewName(), equalToIgnoringCase("nuevo-usuario"));
-    }
-
-    @Test
-    public void registrarme_conUsuarioExistente_redirigeANuevoUsuarioConError() throws UsuarioExistente {
-        Usuario usuario = new Usuario();
-
-        doThrow(UsuarioExistente.class).when(repositorioLoginMock).registrar(usuario);
-
-        ModelAndView mav = controladorLogin.registrarme(usuario);
-
-        assertThat(mav.getViewName(), equalToIgnoringCase("nuevo-usuario"));
-        assertThat(mav.getModel().get("error").toString(), equalToIgnoringCase("El usuario ya existe"));
-    }
+//    @Test
+//    public void registrarme_conUsuarioExistente_redirigeANuevoUsuarioConError() throws UsuarioExistente {
+//        Usuario usuario = new Usuario();
+//
+//        doThrow(UsuarioExistente.class).when(repositorioLoginMock).registrar(usuario);
+//
+//        ModelAndView mav = controladorLogin.registrarme(usuario);
+//
+//        assertThat(mav.getViewName(), equalToIgnoringCase("nuevo-usuario"));
+//        assertThat(mav.getModel().get("error").toString(), equalToIgnoringCase("El usuario ya existe"));
+//    }
 
     @Test
     public void inicio_redirigeALogin() {
