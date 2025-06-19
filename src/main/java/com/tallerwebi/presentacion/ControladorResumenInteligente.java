@@ -13,7 +13,7 @@ public class ControladorResumenInteligente {
 
     @GetMapping("/prueba-gemini")
     public String prueba() {
-        String prompt = "Explain how AI works in a few words";
+        String prompt = "Hola";
         return servicioResumenInteligente.generarContenido(prompt);
     }
 }

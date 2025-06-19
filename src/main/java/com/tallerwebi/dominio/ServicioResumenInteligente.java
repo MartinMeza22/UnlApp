@@ -54,4 +54,5 @@ public class ServicioResumenInteligente {
 
         return (String) parts.get(0).get("text");
     }
+
 }
