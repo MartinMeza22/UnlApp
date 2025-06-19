@@ -17,4 +17,3 @@ public class ControladorResumenInteligente {
         return servicioResumenInteligente.generarContenido(prompt);
     }
 }
-
