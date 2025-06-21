@@ -12,7 +12,7 @@ public class ServicioCarreraImpl implements ServicioCarrera {
 
     private RepositorioCarrera repositorioCarrera;
 
-    //public ServicioCarreraImpl() {}
+    public ServicioCarreraImpl() {}
 
     @Autowired
     public ServicioCarreraImpl(RepositorioCarrera repositorioCarrera) {

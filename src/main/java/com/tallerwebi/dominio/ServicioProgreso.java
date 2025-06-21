@@ -231,4 +231,32 @@ public class ServicioProgreso {
         this.repositorioUsuarioMateria.actualizar(um);
 
     }
+
+    public Double obtenerPorcentajeDeMateriasDesaprobadas(String idCarrera, Long usuarioId) {
+        List<MateriaDTO> materias = this.materias(idCarrera, usuarioId);
+        List<MateriaDTO> materiasDesaprobadas = new ArrayList<>();
+
+        for(MateriaDTO materia : materias) {
+            if(materia.getNota() != null && materia.getNota() < 4){
+                materiasDesaprobadas.add(materia);
+            }
+        }
+
+        Double porcentajeDesaprobadas = (double) (materiasDesaprobadas.size() * 100 / materias.size());
+        return porcentajeDesaprobadas;
+    }
+
+    public Double obtenerPorcentajeDeMateriasAprobadas(String idCarrera, Long usuarioId) {
+        List<MateriaDTO> materias = this.materias(idCarrera, usuarioId);
+        List<MateriaDTO> materiasAprobadas = new ArrayList<>();
+
+        for(MateriaDTO materia : materias) {
+            if(materia.getNota() != null && materia.getNota() > 4){
+                materiasAprobadas.add(materia);
+            }
+        }
+
+        Double porcentajeAprobadas =  (double) (materiasAprobadas.size() * 100 / materias.size());
+        return porcentajeAprobadas;
+    }
 }

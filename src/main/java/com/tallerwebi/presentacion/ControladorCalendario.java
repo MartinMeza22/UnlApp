@@ -20,12 +20,14 @@ public class ControladorCalendario {
 
     private ServicioEvento servicioEvento;
     private ServicioMateria servicioMateria;
+    private ServicioUsuarioMateria servicioUsuarioMateria;
     private RepositorioUsuario repositorioUsuario;
 
     @Autowired
-    public ControladorCalendario(ServicioEvento servicioEvento, ServicioMateria servicioMateria, RepositorioUsuario repositorioUsuario) {
+    public ControladorCalendario(ServicioEvento servicioEvento, ServicioMateria servicioMateria, ServicioUsuarioMateria servicioUsuarioMateria ,RepositorioUsuario repositorioUsuario) {
         this.servicioEvento = servicioEvento;
         this.servicioMateria = servicioMateria;
+        this.servicioUsuarioMateria = servicioUsuarioMateria;
         this.repositorioUsuario = repositorioUsuario;
     }
 
@@ -36,13 +38,16 @@ public class ControladorCalendario {
         
         Long usuarioId = (Long) request.getSession().getAttribute("ID");
 
+        // Para obtener el id de la carrera
+        String idCarrera = this.servicioUsuarioMateria.obtenerUsuario(usuarioId).getCarreraID().toString();
+
         // Obtener datos para la vista
         List<Evento> eventosHoy = servicioEvento.obtenerEventosHoy(usuarioId);
         List<Evento> proximosEventos = servicioEvento.obtenerProximosEventos(usuarioId, 5);
         ServicioEvento.ResumenEventos resumen = servicioEvento.obtenerResumenHoy(usuarioId);
         
         // Obtener materias para el dropdown
-        List<Materia> materias = servicioMateria.obtenerTodasLasMaterias();
+        List<Materia> materias = servicioMateria.obtenerTodasLasMaterias(idCarrera);
         
         modelo.put("eventosHoy", eventosHoy);
         modelo.put("proximosEventos", proximosEventos);

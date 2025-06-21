@@ -83,19 +83,38 @@
             box-shadow: 0 6px 16px var(--shadow-medium);
         }
 
-        .progress-main {
-            flex-basis: 65%; /* Adjusted proportions */
-            max-width: 65%;
+        /* Adjusted flex-basis for new layout */
+        .progress-main,
+        .progress-current-courses,
+        .progress-percentages-group {
+            flex-basis: calc(33.33% - 13.33px); /* Distribute evenly, accounting for gap */
+            max-width: calc(33.33% - 13.33px);
+            min-width: 280px; /* Ensure cards don't get too small before wrapping */
         }
 
-        .progress-current-courses {
-            flex-basis: 30%; /* Adjusted proportions */
-            max-width: 30%;
+        .progress-percentages-group {
             display: flex;
             flex-direction: column;
-            justify-content: center; /* Center content vertically */
-            align-items: center; /* Center content horizontally */
-            text-align: center;
+            gap: 15px; /* Gap between percentage cards inside the group */
+            flex-grow: 1;
+        }
+
+        .progress-percentage-card {
+            background-color: var(--card-background);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px 25px;
+            box-shadow: 0 2px 8px var(--shadow-light);
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+
+        .progress-percentage-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px var(--shadow-medium);
         }
 
         .progress-label {
@@ -111,6 +130,15 @@
             color: var(--primary-blue);
             margin-bottom: 10px;
             line-height: 1; /* Tighter line height */
+        }
+
+        /* Specific styles for percentage texts */
+        .progress-percentage.aprobadas {
+            color: var(--success-color);
+        }
+
+        .progress-percentage.desaprobadas {
+            color: var(--danger-color);
         }
 
         .progress-bar-container {
@@ -129,6 +157,14 @@
             border-radius: 8px;
             transition: width 0.6s ease-in-out;
             box-shadow: 0 2px 5px var(--shadow-light); /* Subtle shadow on the bar itself */
+        }
+
+        .progress-bar.aprobadas {
+            background: linear-gradient(to right, #a8e063, var(--success-color));
+        }
+
+        .progress-bar.desaprobadas {
+            background: linear-gradient(to right, #ff9a9e, var(--danger-color));
         }
 
         .progress-text {
@@ -405,6 +441,19 @@
         }
 
         /* --- Responsive Adjustments --- */
+        @media (max-width: 992px) { /* Adjusted breakpoint for three columns */
+            .progress-main,
+            .progress-current-courses,
+            .progress-percentages-group {
+                flex-basis: calc(50% - 10px); /* Two columns on medium screens */
+                max-width: calc(50% - 10px);
+            }
+            .progress-percentages-group {
+                flex-basis: 100%; /* Take full width for the group on medium screens */
+                max-width: 100%;
+            }
+        }
+
         @media (max-width: 768px) {
             .container {
                 margin-top: 30px;
@@ -434,7 +483,9 @@
                 gap: 15px;
             }
 
-            .progress-main, .progress-current-courses {
+            .progress-main,
+            .progress-current-courses,
+            .progress-percentages-group {
                 flex-basis: 100%;
                 max-width: 100%;
             }
@@ -481,9 +532,28 @@
             <p class="progress-text"
                th:text="${cantidadMateriasAprobadas} + ' de ' + ${cantidadMateriasTotales} + ' materias aprobadas'"></p>
         </div>
+
         <div class="progress-card progress-current-courses">
             <h3 class="progress-label">Materias en Curso:</h3>
             <p class="current-courses-count" th:text="${materiasEnCurso}"></p>
+        </div>
+
+        <div class="progress-percentages-group">
+            <div class="progress-percentage-card">
+                <h3 class="progress-label">Aprobadas:</h3>
+                <div class="progress-percentage aprobadas" th:text="${#numbers.formatDecimal(porcentajeAprobadas, 0, 2)} + '%'">0%</div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar aprobadas" th:style="'width: ' + ${porcentajeAprobadas} + '%'"></div>
+                </div>
+            </div>
+
+            <div class="progress-percentage-card">
+                <h3 class="progress-label">Desaprobadas:</h3>
+                <div class="progress-percentage desaprobadas" th:text="${#numbers.formatDecimal(porcentajeDesaprobadas, 0, 2)} + '%'">0%</div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar desaprobadas" th:style="'width: ' + ${porcentajeDesaprobadas} + '%'"></div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -609,18 +679,19 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    // Este script NO tiene logica, es solo para frontend, muestra el modal con la informacion de la materia
     const modalMateriaNombre = document.getElementById('modalMateriaNombre');
     const modalMateriaId = document.getElementById('modalMateriaId');
     const modalMateriaNota = document.getElementById('modalMateriaNota');
     const modalMateriaDificultad = document.getElementById('modalMateriaDificultad');
+    const btnDejarDeCursar = document.getElementById('btnDejarDeCursar');
+
 
     function populateMateriaModal(buttonElement) {
         const id = buttonElement.dataset.id;
         const nombre = buttonElement.dataset.nombre;
         const nota = buttonElement.dataset.nota;
         const dificultadString = buttonElement.dataset.dificultad;
-
+        const estado = buttonElement.dataset.estado;
 
         let dificultadValueForSelect = '';
         if (dificultadString === 'Facil') {
@@ -628,7 +699,7 @@
         } else if (dificultadString === 'Medio') {
             dificultadValueForSelect = '2';
         } else if (dificultadString === 'Dificil') {
-            dificultadValueForSelect = '3s';
+            dificultadValueForSelect = '3';
         }
 
         modalMateriaNombre.textContent = nombre;
