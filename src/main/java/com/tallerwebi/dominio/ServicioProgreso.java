@@ -26,10 +26,10 @@ public class ServicioProgreso {
         this.repositorioUsuario = repositorioUsuario;
     }
 
-    public List<MateriaDTO> materias(Long idUsuario) {
+    public List<MateriaDTO> materias(String idCarrera, Long idUsuario) {
 
-        List<Materia> todasLasMaterias = this.repositorioMateria.buscarTodas();
-        List<UsuarioMateria> materiasQueCursoElUsuario = this.repositorioUsuarioMateria.buscarPorUsuario(idUsuario);
+        List<UsuarioMateria> materiasQueCursoElUsuario = this.repositorioUsuarioMateria.buscarPorUsuario(idCarrera, idUsuario);
+        List<Materia> todasLasMaterias = this.repositorioMateria.obtenerMateriasDeUnaCarrera(idCarrera);
 
         Map<Long, UsuarioMateria> materiasCursadasMap = new HashMap<>();
         for (UsuarioMateria um : materiasQueCursoElUsuario) {
@@ -40,24 +40,66 @@ public class ServicioProgreso {
 
         for (Materia mat : todasLasMaterias) {
             UsuarioMateria matCurso = materiasCursadasMap.get(mat.getId());
+            Boolean esCursable = verificarCorrelativasAprobadas(mat, materiasCursadasMap);
 
             MateriaDTO materiaDTO;
             if (matCurso != null) {
                 String dificultad = verificarDificultad(matCurso.getDificultad());
-                materiaDTO = new MateriaDTO(mat.getId(), mat.getNombre(), dificultad, matCurso.getEstadoo(), matCurso.getNota(), mat.getCuatrimestre());
+                materiaDTO = new MateriaDTO(mat.getId(), mat.getNombre(), dificultad, matCurso.getEstadoo(), matCurso.getNota(), mat.getCuatrimestre(), esCursable);
             } else {
                 String estado;
-                if (verificarCorrelativasAprobadas(mat, materiasCursadasMap)) {
-                    estado = "CURSANDO";
-                } else {
+//                if (verificarCorrelativasAprobadas(mat, materiasCursadasMap)) {
+//                    estado = "CURSANDO";
+//                } else {
                     estado = "PENDIENTE";
-                }
-                materiaDTO = new MateriaDTO(mat.getId(), mat.getNombre(), null, estado, null, mat.getCuatrimestre());
+//                }
+                materiaDTO = new MateriaDTO(mat.getId(), mat.getNombre(), null, estado, null, mat.getCuatrimestre(), esCursable);
             }
             materiasDTO.add(materiaDTO);
         }
 
         return materiasDTO;
+    }
+
+    public boolean marcarMateriaComoCursando(Long usuarioId, Long idMateria) {
+        Usuario usuario = repositorioUsuario.buscarPorId(usuarioId);
+        Materia materia = repositorioMateria.buscarPorId(idMateria);
+
+        if (usuario == null || materia == null) {
+            return false;
+        }
+
+        UsuarioMateria umExistente = repositorioUsuarioMateria.buscarPorUsuarioYMateria(usuarioId, idMateria);
+        if (umExistente != null) {
+
+            umExistente.reiniciarCursada();
+            repositorioUsuarioMateria.actualizar(umExistente);
+            return true;
+        }
+
+        List<UsuarioMateria> materiasCursadasUsuario = this.repositorioUsuarioMateria.buscarPorUsuario(usuario.getCarreraID().toString(), usuarioId);
+        Map<Long, UsuarioMateria> materiasCursadasMapParaCorrelativas = new HashMap<>();
+        for (UsuarioMateria um : materiasCursadasUsuario) {
+            materiasCursadasMapParaCorrelativas.put(um.getMateria().getId(), um);
+        }
+
+
+        if (!verificarCorrelativasAprobadas(materia, materiasCursadasMapParaCorrelativas)) {
+            return false;
+        }
+
+        UsuarioMateria nuevoUm = new UsuarioMateria(usuario, materia);
+        repositorioUsuarioMateria.guardar(nuevoUm);
+        return true;
+    }
+
+    public void marcarMateriaComoPendiente(Long idMateria, Long usuarioId) {
+        UsuarioMateria um = this.repositorioUsuarioMateria.buscarPorUsuarioYMateria(usuarioId, idMateria);
+        if (um != null) {
+            um.setNota(null);
+            um.setEstado(0);
+            this.repositorioUsuarioMateria.actualizar(um);
+        }
     }
 
     private boolean verificarCorrelativasAprobadas(Materia materia, Map<Long, UsuarioMateria> materiasCursadasMap) {
@@ -94,17 +136,17 @@ public class ServicioProgreso {
         if (dificultad != null) {
             if (dificultad == 1) {
                 dificultadMat = "Facil";
-            } else if (dificultad == 5) {
+            } else if (dificultad == 2) {
                 dificultadMat = "Medio";
-            } else if (dificultad == 10) {
+            } else if (dificultad == 3) {
                 dificultadMat = "Dificil";
             }
         }
         return dificultadMat;
     }
 
-    public List<MateriaDTO> filtrarPor(String condicion, Long usuarioId) {
-        List<MateriaDTO> materias = this.materias(usuarioId);
+    public List<MateriaDTO> filtrarPor(String idCarrera, String condicion, Long usuarioId) {
+        List<MateriaDTO> materias = this.materias(idCarrera, usuarioId);
 
         if (condicion == null || condicion.isEmpty() || condicion.equalsIgnoreCase("todas")) {
             return materias;
@@ -130,8 +172,8 @@ public class ServicioProgreso {
         return materias;
     }
 
-    public List<MateriaDTO> filtrarPorCuatrimestre(Integer cuatrimestre, Long usuarioId) {
-        List<MateriaDTO> materias = this.materias(usuarioId);
+    public List<MateriaDTO> filtrarPorCuatrimestre(String idCarrera, Integer cuatrimestre, Long usuarioId) {
+        List<MateriaDTO> materias = this.materias(idCarrera, usuarioId);
 
 
         if (cuatrimestre == null || cuatrimestre.equals(0)) {
@@ -140,34 +182,34 @@ public class ServicioProgreso {
 
         if (cuatrimestre.equals(1)) {
             materias = materias.stream().filter(materia -> materia.getCuatrimestre() != null && materia.getCuatrimestre() == 1).collect(Collectors.toList());
-        }else if (cuatrimestre.equals(2)) {
+        } else if (cuatrimestre.equals(2)) {
             materias = materias.stream().filter(materia -> materia.getCuatrimestre() != null && materia.getCuatrimestre() == 2).collect(Collectors.toList());
-        }else if (cuatrimestre.equals(3)) {
+        } else if (cuatrimestre.equals(3)) {
             materias = materias.stream().filter(materia -> materia.getCuatrimestre() != null && materia.getCuatrimestre() == 3).collect(Collectors.toList());
-        }else if (cuatrimestre.equals(4)) {
+        } else if (cuatrimestre.equals(4)) {
             materias = materias.stream().filter(materia -> materia.getCuatrimestre() != null && materia.getCuatrimestre() == 4).collect(Collectors.toList());
-        }else if (cuatrimestre.equals(5)) {
+        } else if (cuatrimestre.equals(5)) {
             materias = materias.stream().filter(materia -> materia.getCuatrimestre() != null && materia.getCuatrimestre() == 5).collect(Collectors.toList());
-        }else if (cuatrimestre.equals(6)) {
+        } else if (cuatrimestre.equals(6)) {
             materias = materias.stream().filter(materia -> materia.getCuatrimestre() != null && materia.getCuatrimestre() == 6).collect(Collectors.toList());
-        }else if (cuatrimestre.equals(7)) {
+        } else if (cuatrimestre.equals(7)) {
             materias = materias.stream().filter(materia -> materia.getCuatrimestre() != null && materia.getCuatrimestre() == 7).collect(Collectors.toList());
-        }else if (cuatrimestre.equals(8)) {
+        } else if (cuatrimestre.equals(8)) {
             materias = materias.stream().filter(materia -> materia.getCuatrimestre() != null && materia.getCuatrimestre() == 8).collect(Collectors.toList());
-        }else if (cuatrimestre.equals(9)) {
+        } else if (cuatrimestre.equals(9)) {
             materias = materias.stream().filter(materia -> materia.getCuatrimestre() != null && materia.getCuatrimestre() == 9).collect(Collectors.toList());
-        }else if (cuatrimestre.equals(10)) {
+        } else if (cuatrimestre.equals(10)) {
             materias = materias.stream().filter(materia -> materia.getCuatrimestre() != null && materia.getCuatrimestre() == 10).collect(Collectors.toList());
         }
 
         return materias;
     }
 
-    public List<MateriaDTO> filtrarPorCuatrimestreYEstado(Integer cuatrimestre, String condicion, Long usuarioId) {
-        List<MateriaDTO> materias = this.materias(usuarioId);
+    public List<MateriaDTO> filtrarPorCuatrimestreYEstado(String idCarrera, Integer cuatrimestre, String condicion, Long usuarioId) {
+        List<MateriaDTO> materias = this.materias(idCarrera, usuarioId);
 
         if (condicion != null && !condicion.equalsIgnoreCase("todas")) {
-            materias = filtrarPor(condicion, usuarioId);
+            materias = filtrarPor(idCarrera, condicion, usuarioId);
         }
 
         if (cuatrimestre != null && cuatrimestre > 0) {
@@ -212,12 +254,51 @@ public class ServicioProgreso {
         return pudoActualizar;
     }
 
-    public Double obtenerProgresoDeCarrera(Long usuarioId) {
+    public Double obtenerProgresoDeCarrera(String idCarrera, Long usuarioId) {
 
-        List<MateriaDTO> todasLasMaterias = this.materias(usuarioId);
-        List<MateriaDTO> materiasAprobadas = this.filtrarPor("aprobadas", usuarioId);
+        List<MateriaDTO> todasLasMaterias = this.materias(idCarrera, usuarioId);
+        List<MateriaDTO> materiasAprobadas = this.filtrarPor(idCarrera, "aprobadas", usuarioId);
 
-        return (double)((materiasAprobadas.size() * 100) / todasLasMaterias.size());
+        return (double) ((materiasAprobadas.size() * 100) / todasLasMaterias.size());
 
+    }
+
+//    public void marcarMateriaComoPendiente(Long idMateria, Long usuarioId) {
+//        UsuarioMateria um = this.repositorioUsuarioMateria.buscarPorUsuarioYMateria(usuarioId, idMateria);
+//
+////        if (um != null && um.getEstado().equalsIgnoreCase("CURSANDO")) {
+////            um.setEstado("PENDIENTE");
+////        }
+//
+//        this.repositorioUsuarioMateria.actualizar(um);
+//
+//    }
+
+    public Double obtenerPorcentajeDeMateriasDesaprobadas(String idCarrera, Long usuarioId) {
+        List<MateriaDTO> materias = this.materias(idCarrera, usuarioId);
+        List<MateriaDTO> materiasDesaprobadas = new ArrayList<>();
+
+        for (MateriaDTO materia : materias) {
+            if (materia.getNota() != null && materia.getNota() < 4) {
+                materiasDesaprobadas.add(materia);
+            }
+        }
+
+        Double porcentajeDesaprobadas = (double) (materiasDesaprobadas.size() * 100 / materias.size());
+        return porcentajeDesaprobadas;
+    }
+
+    public Double obtenerPorcentajeDeMateriasAprobadas(String idCarrera, Long usuarioId) {
+        List<MateriaDTO> materias = this.materias(idCarrera, usuarioId);
+        List<MateriaDTO> materiasAprobadas = new ArrayList<>();
+
+        for (MateriaDTO materia : materias) {
+            if (materia.getNota() != null && materia.getNota() > 4) {
+                materiasAprobadas.add(materia);
+            }
+        }
+
+        Double porcentajeAprobadas = (double) (materiasAprobadas.size() * 100 / materias.size());
+        return porcentajeAprobadas;
     }
 }

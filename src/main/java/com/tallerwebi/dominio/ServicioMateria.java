@@ -31,8 +31,8 @@ public class ServicioMateria {
         return repositorioMateria.buscarPorId(id);
     }
 
-    public List<Materia> obtenerTodasLasMaterias() {
-        return repositorioMateria.buscarTodas();
+    public List<Materia> obtenerTodasLasMaterias(String idCarrera) {
+        return repositorioMateria.obtenerMateriasDeUnaCarrera(idCarrera);
     }
 
     public void actualizarMateria(Materia materia) {
@@ -55,6 +55,10 @@ public class ServicioMateria {
 
     public List<Materia> obtenerTodasLasMateriasPorNombre() {
         return repositorioMateria.obtenerTodasLasMateriasPorNombre();
+    }
+
+    public List<Materia> obtenerMateriasPorCarrera(String idCarrera) {
+        return this.repositorioMateria.obtenerMateriasDeUnaCarrera(idCarrera);
     }
 
     public List<Integer> obtenerCantidadDeCuatrimestres(){

@@ -23,6 +23,7 @@ public class ServicioUsuarioMateriaTest {
     private Usuario usuarioMock;
     private Materia materiaMock;
     private UsuarioMateria usuarioMateriaMock;
+    private String idCarrera = "1";
 
     @BeforeEach
     public void init() {
@@ -372,21 +373,21 @@ public class ServicioUsuarioMateriaTest {
         // Preparación
         Long usuarioId = 1L;
         List<UsuarioMateria> materiasEsperadas = Arrays.asList(usuarioMateriaMock);
-        when(repositorioUsuarioMateriaMock.buscarPorUsuario(usuarioId)).thenReturn(materiasEsperadas);
+        when(repositorioUsuarioMateriaMock.buscarPorUsuario(idCarrera, usuarioId)).thenReturn(materiasEsperadas);
 
         // Ejecución
-        List<UsuarioMateria> resultado = servicioUsuarioMateria.mostrarMateriasDeUsuario(usuarioId);
+        List<UsuarioMateria> resultado = servicioUsuarioMateria.mostrarMateriasDeUsuario(idCarrera, usuarioId);
 
         // Validación
         assertThat(resultado, equalTo(materiasEsperadas));
-        verify(repositorioUsuarioMateriaMock, times(1)).buscarPorUsuario(usuarioId);
+        verify(repositorioUsuarioMateriaMock, times(1)).buscarPorUsuario(idCarrera, usuarioId);
     }
 
     @Test
     public void mostrarMateriasDeUsuarioConIdNuloDeberiaLanzarExcepcion() {
         // Ejecución y Validación
         assertThrows(IllegalArgumentException.class,
-            () -> servicioUsuarioMateria.mostrarMateriasDeUsuario(null));
+            () -> servicioUsuarioMateria.mostrarMateriasDeUsuario(idCarrera,null));
     }
 
     // ========== Tests for obtenerEstadisticasUsuario() ==========
@@ -410,10 +411,10 @@ public class ServicioUsuarioMateriaTest {
         desaprobada.setNota(2); // Desaprobada
 
         List<UsuarioMateria> materias = Arrays.asList(cursando, aprobada1, aprobada2, desaprobada);
-        when(repositorioUsuarioMateriaMock.buscarPorUsuario(usuarioId)).thenReturn(materias);
+        when(repositorioUsuarioMateriaMock.buscarPorUsuario(idCarrera, usuarioId)).thenReturn(materias);
 
         // Ejecución
-        ServicioUsuarioMateria.EstadisticasUsuario stats = servicioUsuarioMateria.obtenerEstadisticasUsuario(usuarioId);
+        ServicioUsuarioMateria.EstadisticasUsuario stats = servicioUsuarioMateria.obtenerEstadisticasUsuario(idCarrera, usuarioId);
 
         // Validación
         assertThat(stats.getTotalMaterias(), equalTo(4));
@@ -426,17 +427,17 @@ public class ServicioUsuarioMateriaTest {
         assertThat(stats.getPromedioNotas(), closeTo(5.33, 0.01));
 
 
-        verify(repositorioUsuarioMateriaMock, times(1)).buscarPorUsuario(usuarioId);
+        verify(repositorioUsuarioMateriaMock, times(1)).buscarPorUsuario(idCarrera, usuarioId);
     }
 
     @Test
     public void obtenerEstadisticasUsuarioSinMateriasDeberiaRetornarEstadisticasVacias() {
         // Preparación
         Long usuarioId = 1L;
-        when(repositorioUsuarioMateriaMock.buscarPorUsuario(usuarioId)).thenReturn(Arrays.asList());
+        when(repositorioUsuarioMateriaMock.buscarPorUsuario(idCarrera, usuarioId)).thenReturn(Arrays.asList());
 
         // Ejecución
-        ServicioUsuarioMateria.EstadisticasUsuario stats = servicioUsuarioMateria.obtenerEstadisticasUsuario(usuarioId);
+        ServicioUsuarioMateria.EstadisticasUsuario stats = servicioUsuarioMateria.obtenerEstadisticasUsuario(idCarrera, usuarioId);
 
         // Validación
         assertThat(stats.getTotalMaterias(), equalTo(0));
@@ -458,10 +459,10 @@ public class ServicioUsuarioMateriaTest {
         cursando2.setNota(null);
 
         List<UsuarioMateria> materias = Arrays.asList(cursando1, cursando2);
-        when(repositorioUsuarioMateriaMock.buscarPorUsuario(usuarioId)).thenReturn(materias);
+        when(repositorioUsuarioMateriaMock.buscarPorUsuario(idCarrera, usuarioId)).thenReturn(materias);
 
         // Ejecución
-        ServicioUsuarioMateria.EstadisticasUsuario stats = servicioUsuarioMateria.obtenerEstadisticasUsuario(usuarioId);
+        ServicioUsuarioMateria.EstadisticasUsuario stats = servicioUsuarioMateria.obtenerEstadisticasUsuario(idCarrera, usuarioId);
 
         // Validación
         assertThat(stats.getTotalMaterias(), equalTo(2));
@@ -475,7 +476,7 @@ public class ServicioUsuarioMateriaTest {
     public void obtenerEstadisticasUsuarioConIdNuloDeberiaLanzarExcepcion() {
         // Ejecución y Validación
         assertThrows(IllegalArgumentException.class,
-            () -> servicioUsuarioMateria.obtenerEstadisticasUsuario(null));
+            () -> servicioUsuarioMateria.obtenerEstadisticasUsuario(idCarrera,null));
     }
 
  

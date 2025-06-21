@@ -118,6 +118,24 @@ public class Usuario {
         return carrera != null ? carrera.getId() : null;
     }
 
+    public void setCarreraID(Long id) {
+        if (id != null) {
+            this.carrera = new Carrera();
+            this.carrera.setId(id);
+        } else {
+            this.carrera = null;
+        }
+    }
+
+//    public void setCarrera(Carrera carrera) {
+//        this.carrera = carrera;
+//    }
+//
+//    // Método de conveniencia para obtener el ID de la carrera
+//    public Long getCarreraID() {
+//        return carrera != null ? carrera.getId() : null;
+//    }
+
     public boolean activo() {
         return activo;
     }
