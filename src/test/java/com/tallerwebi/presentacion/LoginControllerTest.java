@@ -29,7 +29,7 @@ public class LoginControllerTest {
     private ServicioCarrera servicioCarreraMock;
     private HttpServletRequest requestMock;
     private HttpSession sessionMock;
-    private ServicioCarrera servicioCarreraMock;
+    private HttpServletRequest mockHttpServletRequestMock;
 
     @BeforeEach
     public void init() {

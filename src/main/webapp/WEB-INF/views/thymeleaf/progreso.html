@@ -623,6 +623,12 @@
                     <button type="submit" class="btn btn-danger btn-sm">Dejar materia</button>
                 </form>
             </div>
+            <div th:if="${materia.getEstado() == 'PENDIENTE' and materia.getEsCursable()}">
+                <form th:action="@{/progreso/cursar-materia}" method="post" style="display:inline;">
+                    <input type="hidden" name="materiaId" th:value="${materia.getId()}"/>
+                    <button type="submit" class="btn btn-success btn-sm">Cursar</button>
+                </form>
+            </div>
 
         </div>
     </div>

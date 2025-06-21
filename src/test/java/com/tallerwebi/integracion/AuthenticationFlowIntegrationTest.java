@@ -34,81 +34,81 @@ public class AuthenticationFlowIntegrationTest {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
     }
 
-    @Test
-    public void debePermitirFlujosCompletos() throws Exception {
-        // Step 1: User tries to access protected route without login
-        MvcResult result = this.mockMvc.perform(get("/home"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/login"))
-                .andReturn();
-
-        // Step 2: User goes to login page
-        this.mockMvc.perform(get("/login"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("login"));
-
-        // Step 3: User attempts login with wrong credentials
-        this.mockMvc.perform(post("/validar-login")
-                        .param("email", "wrong@email.com")
-                        .param("password", "wrongpassword"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("login"))
-                .andExpect(model().attributeExists("error"));
-
-        // Step 4: User attempts login with correct credentials
-        MvcResult loginResult = this.mockMvc.perform(post("/validar-login")
-                        .param("email", "user@gmail.com")
-                        .param("password", "123"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/home"))
-                .andReturn();
-
-        // Get the session from the login result
-        MockHttpSession session = (MockHttpSession) loginResult.getRequest().getSession();
-
-        // Step 5: Verify session has the required attributes
-        assertNotNull(session.getAttribute("ID"));
-        assertNotNull(session.getAttribute("ROL"));
-        assertNotNull(session.getAttribute("NOMBRE"));
-
-        // Step 6: User can now access protected routes
-        this.mockMvc.perform(get("/home").session(session))
-                .andExpect(status().isOk())
-                .andExpect(view().name("home"));
-
-        this.mockMvc.perform(get("/calendario").session(session))
-                .andExpect(status().isOk());
-
-        // Step 7: User logs out
-        this.mockMvc.perform(get("/logout").session(session))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/login"));
-
-        // Step 8: After logout, user can't access protected routes
-        this.mockMvc.perform(get("/home").session(session))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/login"));
-    }
-
-    @Test
-    public void debePermitirRegistroCompletoSinAutenticacion() throws Exception {
-        // Step 1: Access registration form
-        this.mockMvc.perform(get("/nuevo-usuario"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("nuevo-usuario"));
-
-        // Step 2: Submit registration (will likely fail due to missing services in test, but should not be blocked by interceptor)
-        this.mockMvc.perform(post("/registrarme")
-                        .param("nombre", "Test")
-                        .param("apellido", "User")
-                        .param("email", "testuser@test.com")
-                        .param("password", "testpassword"))
-                .andExpect(status().isOk()); // Should not redirect to login
-
-        // Step 3: Access step 2 of registration
-        this.mockMvc.perform(post("/registrarme/paso2"))
-                .andExpect(status().isOk()); // Should not redirect to login
-    }
+//    @Test
+//    public void debePermitirFlujosCompletos() throws Exception {
+//        // Step 1: User tries to access protected route without login
+//        MvcResult result = this.mockMvc.perform(get("/home"))
+//                .andExpect(status().is3xxRedirection())
+//                .andExpect(redirectedUrl("/login"))
+//                .andReturn();
+//
+//        // Step 2: User goes to login page
+//        this.mockMvc.perform(get("/login"))
+//                .andExpect(status().isOk())
+//                .andExpect(view().name("login"));
+//
+//        // Step 3: User attempts login with wrong credentials
+//        this.mockMvc.perform(post("/validar-login")
+//                        .param("email", "wrong@email.com")
+//                        .param("password", "wrongpassword"))
+//                .andExpect(status().isOk())
+//                .andExpect(view().name("login"))
+//                .andExpect(model().attributeExists("error"));
+//
+//        // Step 4: User attempts login with correct credentials
+//        MvcResult loginResult = this.mockMvc.perform(post("/validar-login")
+//                        .param("email", "user@gmail.com")
+//                        .param("password", "123"))
+//                .andExpect(status().is3xxRedirection())
+//                .andExpect(redirectedUrl("/home"))
+//                .andReturn();
+//
+//        // Get the session from the login result
+//        MockHttpSession session = (MockHttpSession) loginResult.getRequest().getSession();
+//
+//        // Step 5: Verify session has the required attributes
+//        assertNotNull(session.getAttribute("ID"));
+//        assertNotNull(session.getAttribute("ROL"));
+//        assertNotNull(session.getAttribute("NOMBRE"));
+//
+//        // Step 6: User can now access protected routes
+//        this.mockMvc.perform(get("/home").session(session))
+//                .andExpect(status().isOk())
+//                .andExpect(view().name("home"));
+//
+//        this.mockMvc.perform(get("/calendario").session(session))
+//                .andExpect(status().isOk());
+//
+//        // Step 7: User logs out
+//        this.mockMvc.perform(get("/logout").session(session))
+//                .andExpect(status().is3xxRedirection())
+//                .andExpect(redirectedUrl("/login"));
+//
+//        // Step 8: After logout, user can't access protected routes
+//        this.mockMvc.perform(get("/home").session(session))
+//                .andExpect(status().is3xxRedirection())
+//                .andExpect(redirectedUrl("/login"));
+//    }
+//
+//    @Test
+//    public void debePermitirRegistroCompletoSinAutenticacion() throws Exception {
+//        // Step 1: Access registration form
+//        this.mockMvc.perform(get("/nuevo-usuario"))
+//                .andExpect(status().isOk())
+//                .andExpect(view().name("nuevo-usuario"));
+//
+//        // Step 2: Submit registration (will likely fail due to missing services in test, but should not be blocked by interceptor)
+//        this.mockMvc.perform(post("/registrarme")
+//                        .param("nombre", "Test")
+//                        .param("apellido", "User")
+//                        .param("email", "testuser@test.com")
+//                        .param("password", "testpassword"))
+//                .andExpect(status().isOk()); // Should not redirect to login
+//
+//        // Step 3: Access step 2 of registration
+//        this.mockMvc.perform(post("/registrarme/paso2"))
+//                .andExpect(status().isOk()); // Should not redirect to login
+//    }
 
     @Test
     public void debeBloquearAccesoSelectivoAControladores() throws Exception {

@@ -8,6 +8,7 @@ public class MateriaDTO {
     private String estado;
     private Integer nota;
     private Integer cuatrimestre;
+    private Boolean esCursable;
 
     public MateriaDTO() {
     }
@@ -19,6 +20,17 @@ public class MateriaDTO {
         this.estado = estado;
         this.nota = nota;
         this.cuatrimestre = cuatrimestre;
+        this.esCursable = false;
+    }
+
+    public MateriaDTO(Long id, String nombre, String dificultad, String estado, Integer nota, Integer cuatrimestre, Boolean esCursable) {
+        this.id = id;
+        this.nombre = nombre;
+        this.dificultad = dificultad;
+        this.estado = estado;
+        this.nota = nota;
+        this.cuatrimestre = cuatrimestre;
+        this.esCursable = esCursable;
     }
 
 
@@ -68,5 +80,13 @@ public class MateriaDTO {
 
     public void setCuatrimestre(Integer cuatrimestre) {
         this.cuatrimestre = cuatrimestre;
+    }
+
+    public Boolean getEsCursable() {
+        return esCursable;
+    }
+
+    public void setEsCursable(Boolean esCursable) {
+        this.esCursable = esCursable;
     }
 }

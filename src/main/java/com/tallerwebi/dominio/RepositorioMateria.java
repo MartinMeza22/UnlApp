@@ -21,4 +21,6 @@ public interface RepositorioMateria {
 
     List<Materia> obtenerMateriasDeUnaCarrera(String idCarrera);
 
+    public List<Integer> obtenerCantidadDeCuatrimestres();
+
 }
