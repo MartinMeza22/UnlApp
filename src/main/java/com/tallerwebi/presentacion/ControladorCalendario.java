@@ -22,20 +22,23 @@ public class ControladorCalendario {
     private ServicioMateria servicioMateria;
     private ServicioUsuarioMateria servicioUsuarioMateria;
     private RepositorioUsuario repositorioUsuario;
+    private ServicioEmail servicioEmail;
+    private RepositorioMateria repositorioMateria;
 
     @Autowired
-    public ControladorCalendario(ServicioEvento servicioEvento, ServicioMateria servicioMateria, ServicioUsuarioMateria servicioUsuarioMateria ,RepositorioUsuario repositorioUsuario) {
+    public ControladorCalendario(ServicioEvento servicioEvento, ServicioMateria servicioMateria, ServicioUsuarioMateria servicioUsuarioMateria, RepositorioUsuario repositorioUsuario, ServicioEmail servicioEmail) {
         this.servicioEvento = servicioEvento;
         this.servicioMateria = servicioMateria;
         this.servicioUsuarioMateria = servicioUsuarioMateria;
         this.repositorioUsuario = repositorioUsuario;
+        this.servicioEmail = servicioEmail;
     }
 
     // Página principal del calendario
     @RequestMapping(path = "/calendario", method = RequestMethod.GET)
     public ModelAndView irACalendario(HttpServletRequest request) {
         ModelMap modelo = new ModelMap();
-        
+
         Long usuarioId = (Long) request.getSession().getAttribute("ID");
 
         // Para obtener el id de la carrera
@@ -45,64 +48,67 @@ public class ControladorCalendario {
         List<Evento> eventosHoy = servicioEvento.obtenerEventosHoy(usuarioId);
         List<Evento> proximosEventos = servicioEvento.obtenerProximosEventos(usuarioId, 5);
         ServicioEvento.ResumenEventos resumen = servicioEvento.obtenerResumenHoy(usuarioId);
-        
+
         // Obtener materias para el dropdown
         List<Materia> materias = servicioMateria.obtenerTodasLasMaterias(idCarrera);
-        
+
         modelo.put("eventosHoy", eventosHoy);
         modelo.put("proximosEventos", proximosEventos);
         modelo.put("resumen", resumen);
         modelo.put("materias", materias);
-        
+
         return new ModelAndView("calendario", modelo);
     }
 
     // Crear nuevo evento
     @RequestMapping(path = "/evento/crear", method = RequestMethod.POST)
     public ModelAndView crearEvento(@RequestParam("titulo") String titulo,
-                                   @RequestParam("tipo") String tipo,
-                                   @RequestParam("fechaInicio") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") LocalDateTime fechaInicio,
-                                   @RequestParam(value = "fechaFin", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") LocalDateTime fechaFin,
-                                   @RequestParam(value = "materiaId", required = false) Long materiaId,
-                                   @RequestParam(value = "ubicacion", required = false) String ubicacion,
-                                   @RequestParam(value = "descripcion", required = false) String descripcion,
-
-                                   HttpServletRequest request) {
+                                    @RequestParam("tipo") String tipo,
+                                    @RequestParam("fechaInicio") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") LocalDateTime fechaInicio,
+                                    @RequestParam(value = "fechaFin", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") LocalDateTime fechaFin,
+                                    @RequestParam(value = "materiaId", required = false) Long materiaId,
+                                    @RequestParam(value = "ubicacion", required = false) String ubicacion,
+                                    @RequestParam(value = "descripcion", required = false) String descripcion,
+                                    @RequestParam(name = "notificar", defaultValue = "false") Boolean notificar,
+                                    HttpServletRequest request) {
         ModelMap modelo = new ModelMap();
-        
+
         Long usuarioId = (Long) request.getSession().getAttribute("ID");
+
+        Usuario usuario = this.repositorioUsuario.buscarPorId(usuarioId);
+        Materia materia = this.servicioMateria.buscarMateriaPorId(materiaId);
+
 
         try {
             // Crear el evento usando el servicio
             if (materiaId != null && materiaId > 0) {
                 // Evento académico
                 if ("EXAMEN".equals(tipo)) {
-                    servicioEvento.crearExamen(titulo, fechaInicio, usuarioId, materiaId);
+                    servicioEvento.crearExamen(titulo, fechaInicio, usuarioId, materiaId, notificar);
                 } else if ("TAREA".equals(tipo)) {
-                    servicioEvento.crearTarea(titulo, fechaInicio, usuarioId, materiaId, descripcion);
+                    servicioEvento.crearTarea(titulo, fechaInicio, usuarioId, materiaId, descripcion, notificar);
                 } else {
-                    servicioEvento.crearSesionEstudio(titulo, fechaInicio, fechaFin, usuarioId, materiaId);
+                    servicioEvento.crearSesionEstudio(titulo, fechaInicio, fechaFin, usuarioId, materiaId, notificar);
                 }
             } else {
                 // Evento personal
-                servicioEvento.crearEventoPersonal(titulo, fechaInicio, usuarioId, tipo);
+                servicioEvento.crearEventoPersonal(titulo, fechaInicio, usuarioId, tipo, notificar);
             }
-            
+
             modelo.put("mensaje", "Evento creado exitosamente");
         } catch (Exception e) {
             System.out.println("❌ Error al crear evento: " + e.getMessage());
             e.printStackTrace();
-            
+
             // Fallback: crear evento básico directamente
             try {
                 System.out.println("Intentando crear evento básico...");
-                Usuario usuario = repositorioUsuario.buscarPorId(usuarioId);
                 if (usuario != null) {
                     Evento eventoBasico = new Evento(titulo, fechaInicio, usuario);
                     eventoBasico.setTipo(tipo);
                     if (descripcion != null) eventoBasico.setDescripcion(descripcion);
                     if (ubicacion != null) eventoBasico.setUbicacion(ubicacion);
-                    
+                    eventoBasico.setNotificarRecordatorio(notificar);
                     servicioEvento.crearEvento(eventoBasico);
                     System.out.println("✅ Evento básico creado exitosamente");
                 } else {
@@ -113,7 +119,7 @@ public class ControladorCalendario {
                 modelo.put("error", "Error al crear el evento: " + e.getMessage());
             }
         }
-        
+
         return new ModelAndView("redirect:/calendario");
     }
 
@@ -128,7 +134,7 @@ public class ControladorCalendario {
                                          @RequestParam(value = "ubicacion", required = false) String ubicacion,
                                          @RequestParam(value = "descripcion", required = false) String descripcion,
                                          HttpServletRequest request) {
-        
+
         Long usuarioId = (Long) request.getSession().getAttribute("ID");
 
         try {
@@ -137,7 +143,7 @@ public class ControladorCalendario {
             if (evento == null || !evento.getUsuario().getId().equals(usuarioId)) {
                 return new ModelAndView("redirect:/calendario");
             }
-            
+
             // Actualizar los campos del evento
             evento.setTitulo(titulo);
             evento.setTipo(tipo);
@@ -145,7 +151,7 @@ public class ControladorCalendario {
             evento.setFechaFin(fechaFin);
             evento.setUbicacion(ubicacion);
             evento.setDescripcion(descripcion);
-            
+
             // Actualizar la materia si es necesario
             if (materiaId != null && materiaId > 0) {
                 Materia materia = servicioMateria.buscarMateriaPorId(materiaId);
@@ -153,16 +159,16 @@ public class ControladorCalendario {
             } else {
                 evento.setMateria(null);
             }
-            
+
             servicioEvento.actualizarEvento(evento);
-            
+
             System.out.println("✅ Evento actualizado exitosamente: " + titulo);
-            
+
         } catch (Exception e) {
             System.out.println("❌ Error al actualizar evento: " + e.getMessage());
             e.printStackTrace();
         }
-        
+
         return new ModelAndView("redirect:/calendario");
     }
 

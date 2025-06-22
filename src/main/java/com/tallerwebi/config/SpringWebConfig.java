@@ -18,12 +18,18 @@ import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 import org.thymeleaf.templatemode.TemplateMode;
 
+
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+
 
 @EnableWebMvc
 @Configuration
 @ComponentScan("com.tallerwebi")
+@EnableScheduling
 public class SpringWebConfig implements WebMvcConfigurer {
 
     // Spring + Thymeleaf need this
@@ -98,6 +104,7 @@ public class SpringWebConfig implements WebMvcConfigurer {
         templateEngine.setEnableSpringELCompiler(true);
         return templateEngine;
     }
+
     // Spring + Thymeleaf
     // Configure Thymeleaf View Resolver
     @Bean
@@ -112,4 +119,12 @@ public class SpringWebConfig implements WebMvcConfigurer {
         return new ObjectMapper();
     }
 
+    @Bean
+    public ThreadPoolTaskScheduler taskScheduler() {
+        ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
+        scheduler.setPoolSize(10);
+        scheduler.setThreadNamePrefix("my-scheduled-task-pool-");
+        scheduler.initialize();
+        return scheduler;
+    }
 }

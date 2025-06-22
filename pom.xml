@@ -203,6 +203,9 @@
                     <webApp>
                         <contextPath>/spring</contextPath>
                     </webApp>
+                    <jvmArgs>
+                        -Duser.timezone=UTC
+                    </jvmArgs>
                 </configuration>
             </plugin>
 

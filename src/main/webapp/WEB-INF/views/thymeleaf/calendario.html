@@ -217,9 +217,15 @@
         }
 
         @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.7; }
-            100% { opacity: 1; }
+            0% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.7;
+            }
+            100% {
+                opacity: 1;
+            }
         }
 
         .evento-description {
@@ -435,23 +441,24 @@
                             <i class="bi bi-clock"></i>
                             <span th:text="${evento.fechaInicio != null ? evento.fechaInicio.format(T(java.time.format.DateTimeFormatter).ofPattern('HH:mm')) : 'Sin hora'}">10:00</span>
                             <span th:if="${evento.fechaFin != null}">
-                                - <span th:text="${evento.fechaFin.format(T(java.time.format.DateTimeFormatter).ofPattern('HH:mm'))}">12:00</span>
+                                - <span
+                                    th:text="${evento.fechaFin.format(T(java.time.format.DateTimeFormatter).ofPattern('HH:mm'))}">12:00</span>
                             </span>
                         </div>
                     </div>
                 </div>
 
                 <div class="evento-badges">
-                    <span class="evento-badge" 
+                    <span class="evento-badge"
                           th:classappend="${evento.tipo == 'EXAMEN' ? 'badge-examen' : (evento.tipo == 'TAREA' ? 'badge-tarea' : (evento.tipo == 'ESTUDIO' ? 'badge-estudio' : 'badge-personal'))}"
                           th:text="${evento.tipo}">TIPO</span>
-                    
-                    <span class="evento-badge" 
+
+                    <span class="evento-badge"
                           th:classappend="${evento.estado == 'COMPLETADO' ? 'badge-completado' : (evento.estado == 'VENCIDO' ? 'badge-vencido' : (evento.estado == 'HOY' ? 'badge-hoy' : 'badge-pendiente'))}"
                           th:text="${evento.estado}">ESTADO</span>
                 </div>
 
-                <div class="evento-description" th:if="${evento.descripcion != null and !evento.descripcion.empty}" 
+                <div class="evento-description" th:if="${evento.descripcion != null and !evento.descripcion.empty}"
                      th:text="${evento.descripcion}">
                     Descripción del evento
                 </div>
@@ -461,10 +468,10 @@
                 </div>
 
                 <div class="evento-actions">
-                    <button th:if="${!evento.completado}" 
-                            type="button" 
+                    <button th:if="${!evento.completado}"
+                            type="button"
                             class="btn btn-complete"
-                            data-bs-toggle="modal" 
+                            data-bs-toggle="modal"
                             data-bs-target="#completarModal"
                             th:data-evento-id="${evento.id}"
                             th:data-evento-titulo="${evento.titulo}"
@@ -472,9 +479,9 @@
                             onclick="prepararCompletar(this)">
                         <i class="bi bi-check"></i> Completar
                     </button>
-                    
-                    <button type="button" class="btn-edit" 
-                            data-bs-toggle="modal" 
+
+                    <button type="button" class="btn-edit"
+                            data-bs-toggle="modal"
                             data-bs-target="#editarModal"
                             th:data-evento-id="${evento.id}"
                             th:data-evento-titulo="${evento.titulo}"
@@ -488,9 +495,9 @@
                             onclick="prepararEditar(this)">
                         <i class="bi bi-pencil"></i>
                     </button>
-                    
-                    <button type="button" class="btn-delete" 
-                            data-bs-toggle="modal" 
+
+                    <button type="button" class="btn-delete"
+                            data-bs-toggle="modal"
                             data-bs-target="#eliminarModal"
                             th:data-evento-id="${evento.id}"
                             th:data-evento-titulo="${evento.titulo}"
@@ -515,23 +522,24 @@
                             <i class="bi bi-calendar"></i>
                             <span th:text="${evento.fechaInicio != null ? evento.fechaInicio.format(T(java.time.format.DateTimeFormatter).ofPattern('dd/MM/yyyy HH:mm')) : 'Sin fecha'}">15/03/2024 10:00</span>
                             <span th:if="${evento.fechaFin != null}">
-                                - <span th:text="${evento.fechaFin.format(T(java.time.format.DateTimeFormatter).ofPattern('HH:mm'))}">12:00</span>
+                                - <span
+                                    th:text="${evento.fechaFin.format(T(java.time.format.DateTimeFormatter).ofPattern('HH:mm'))}">12:00</span>
                             </span>
                         </div>
                     </div>
                 </div>
 
                 <div class="evento-badges">
-                    <span class="evento-badge" 
+                    <span class="evento-badge"
                           th:classappend="${evento.tipo == 'EXAMEN' ? 'badge-examen' : (evento.tipo == 'TAREA' ? 'badge-tarea' : (evento.tipo == 'ESTUDIO' ? 'badge-estudio' : 'badge-personal'))}"
                           th:text="${evento.tipo}">TIPO</span>
-                    
-                    <span class="evento-badge" 
+
+                    <span class="evento-badge"
                           th:classappend="${evento.estado == 'COMPLETADO' ? 'badge-completado' : (evento.estado == 'VENCIDO' ? 'badge-vencido' : (evento.estado == 'MAÑANA' ? 'badge-hoy' : 'badge-pendiente'))}"
                           th:text="${evento.estado}">ESTADO</span>
                 </div>
 
-                <div class="evento-description" th:if="${evento.descripcion != null and !evento.descripcion.empty}" 
+                <div class="evento-description" th:if="${evento.descripcion != null and !evento.descripcion.empty}"
                      th:text="${evento.descripcion}">
                     Descripción del evento
                 </div>
@@ -541,10 +549,10 @@
                 </div>
 
                 <div class="evento-actions">
-                    <button th:if="${!evento.completado}" 
-                            type="button" 
+                    <button th:if="${!evento.completado}"
+                            type="button"
                             class="btn btn-complete"
-                            data-bs-toggle="modal" 
+                            data-bs-toggle="modal"
                             data-bs-target="#completarModal"
                             th:data-evento-id="${evento.id}"
                             th:data-evento-titulo="${evento.titulo}"
@@ -552,9 +560,9 @@
                             onclick="prepararCompletar(this)">
                         <i class="bi bi-check"></i> Completar
                     </button>
-                    
-                    <button type="button" class="btn-edit" 
-                            data-bs-toggle="modal" 
+
+                    <button type="button" class="btn-edit"
+                            data-bs-toggle="modal"
                             data-bs-target="#editarModal"
                             th:data-evento-id="${evento.id}"
                             th:data-evento-titulo="${evento.titulo}"
@@ -567,9 +575,9 @@
                             onclick="prepararEditar(this)">
                         <i class="bi bi-pencil"></i>
                     </button>
-                    
-                    <button type="button" class="btn-delete" 
-                            data-bs-toggle="modal" 
+
+                    <button type="button" class="btn-delete"
+                            data-bs-toggle="modal"
                             data-bs-target="#eliminarModal"
                             th:data-evento-id="${evento.id}"
                             th:data-evento-titulo="${evento.titulo}"
@@ -582,7 +590,7 @@
         </div>
 
         <!-- Empty State -->
-        <div th:if="${(eventosHoy == null or eventosHoy.empty) and (proximosEventos == null or proximosEventos.empty)}" 
+        <div th:if="${(eventosHoy == null or eventosHoy.empty) and (proximosEventos == null or proximosEventos.empty)}"
              class="empty-state">
             <i class="bi bi-calendar-x"></i>
             <h3>No tienes eventos programados</h3>
@@ -599,7 +607,8 @@
                 <h5 class="modal-title" id="eventModalLabel">Agregar Nuevo Evento</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form th:action="@{/evento/crear}" method="POST" accept-charset="UTF-8" enctype="application/x-www-form-urlencoded">
+            <form th:action="@{/evento/crear}" method="POST" accept-charset="UTF-8"
+                  enctype="application/x-www-form-urlencoded">
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-8 mb-3">
@@ -622,11 +631,16 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="fechaInicio" class="form-label">Fecha y Hora de Inicio *</label>
-                            <input type="datetime-local" class="form-control" id="fechaInicio" name="fechaInicio" required>
+                            <input type="datetime-local" class="form-control" id="fechaInicio" name="fechaInicio"
+                                   required>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="fechaFin" class="form-label">Fecha y Hora de Fin</label>
                             <input type="datetime-local" class="form-control" id="fechaFin" name="fechaFin">
+                        </div>
+                        <div>
+                            <input type="checkbox" class="form-check-input" id="notificar" name="notificar">
+                            <label class="form-check-label" for="notificar">Notificar recordatorio</label>
                         </div>
                     </div>
 
@@ -635,8 +649,8 @@
                             <label for="materia" class="form-label">Materia (opcional)</label>
                             <select class="form-select" id="materia" name="materiaId">
                                 <option value="">Sin materia (evento personal)</option>
-                                <option th:each="materia : ${materias}" 
-                                        th:value="${materia.id}" 
+                                <option th:each="materia : ${materias}"
+                                        th:value="${materia.id}"
                                         th:text="${materia.nombre}">
                                     Materia
                                 </option>
@@ -644,13 +658,14 @@
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="ubicacion" class="form-label">Ubicación</label>
-                            <input type="text" class="form-control" id="ubicacion" name="ubicacion" placeholder="Ej: Aula 101, Casa, Online">
+                            <input type="text" class="form-control" id="ubicacion" name="ubicacion"
+                                   placeholder="Ej: Aula 101, Casa, Online">
                         </div>
                     </div>
 
                     <div class="mb-3">
                         <label for="descripcion" class="form-label">Descripción</label>
-                        <textarea class="form-control" id="descripcion" name="descripcion" rows="3" 
+                        <textarea class="form-control" id="descripcion" name="descripcion" rows="3"
                                   placeholder="Describe los detalles del evento..."></textarea>
                     </div>
 
@@ -741,7 +756,8 @@
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form id="editarEventoForm" method="POST" accept-charset="UTF-8" enctype="application/x-www-form-urlencoded">
+            <form id="editarEventoForm" method="POST" accept-charset="UTF-8"
+                  enctype="application/x-www-form-urlencoded">
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-8 mb-3">
@@ -764,7 +780,8 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="editFechaInicio" class="form-label">Fecha y Hora de Inicio *</label>
-                            <input type="datetime-local" class="form-control" id="editFechaInicio" name="fechaInicio" required>
+                            <input type="datetime-local" class="form-control" id="editFechaInicio" name="fechaInicio"
+                                   required>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="editFechaFin" class="form-label">Fecha y Hora de Fin</label>
@@ -777,8 +794,8 @@
                             <label for="editMateria" class="form-label">Materia (opcional)</label>
                             <select class="form-select" id="editMateria" name="materiaId">
                                 <option value="">Sin materia (evento personal)</option>
-                                <option th:each="materia : ${materias}" 
-                                        th:value="${materia.id}" 
+                                <option th:each="materia : ${materias}"
+                                        th:value="${materia.id}"
                                         th:text="${materia.nombre}">
                                     Materia
                                 </option>
@@ -786,13 +803,14 @@
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="editUbicacion" class="form-label">Ubicación</label>
-                            <input type="text" class="form-control" id="editUbicacion" name="ubicacion" placeholder="Ej: Aula 101, Casa, Online">
+                            <input type="text" class="form-control" id="editUbicacion" name="ubicacion"
+                                   placeholder="Ej: Aula 101, Casa, Online">
                         </div>
                     </div>
 
                     <div class="mb-3">
                         <label for="editDescripcion" class="form-label">Descripción</label>
-                        <textarea class="form-control" id="editDescripcion" name="descripcion" rows="3" 
+                        <textarea class="form-control" id="editDescripcion" name="descripcion" rows="3"
                                   placeholder="Describe los detalles del evento..."></textarea>
                     </div>
 
@@ -824,7 +842,7 @@
         eventoIdSeleccionado = button.getAttribute('data-evento-id');
         const eventoTitulo = button.getAttribute('data-evento-titulo');
         completeUrl = button.getAttribute('data-complete-url');
-        
+
         // Update modal content
         document.getElementById('eventoTituloCompletar').textContent = eventoTitulo;
     }
@@ -834,7 +852,7 @@
         eventoIdSeleccionado = button.getAttribute('data-evento-id');
         const eventoTitulo = button.getAttribute('data-evento-titulo');
         deleteUrl = button.getAttribute('data-delete-url');
-        
+
         // Update modal content
         document.getElementById('eventoTituloEliminar').textContent = eventoTitulo;
     }
@@ -842,7 +860,7 @@
     // Function to prepare the edit modal
     function prepararEditar(button) {
         console.log('🔧 EDIT BUTTON CLICKED'); // Debug log
-        
+
         // Helper function for safe attribute access
         function getAttributeValue(element, attributeName) {
             const value = element.getAttribute(attributeName);
@@ -851,7 +869,7 @@
             }
             return value;
         }
-        
+
         try {
             // Extract data safely
             const eventoId = getAttributeValue(button, 'data-evento-id');
@@ -862,23 +880,23 @@
             const fechaFin = getAttributeValue(button, 'data-evento-fecha-fin');
             const ubicacion = getAttributeValue(button, 'data-evento-ubicacion');
             const materiaId = getAttributeValue(button, 'data-evento-materia-id');
-            
+
             // Debug logging
-            console.log('📝 Editing event data:', { 
-                eventoId, 
-                titulo, 
-                tipo, 
-                fechaInicio, 
-                fechaFin, 
-                materiaId 
+            console.log('📝 Editing event data:', {
+                eventoId,
+                titulo,
+                tipo,
+                fechaInicio,
+                fechaFin,
+                materiaId
             });
-            
+
             // Populate form fields
             document.getElementById('editTitulo').value = titulo;
             document.getElementById('editTipo').value = tipo;
             document.getElementById('editDescripcion').value = descripcion;
             document.getElementById('editUbicacion').value = ubicacion;
-            
+
             // Handle datetime formatting
             if (fechaInicio) {
                 const fechaInicioFormatted = formatDateTimeForInput(fechaInicio);
@@ -887,7 +905,7 @@
             } else {
                 document.getElementById('editFechaInicio').value = '';
             }
-            
+
             if (fechaFin) {
                 const fechaFinFormatted = formatDateTimeForInput(fechaFin);
                 document.getElementById('editFechaFin').value = fechaFinFormatted;
@@ -895,16 +913,16 @@
             } else {
                 document.getElementById('editFechaFin').value = '';
             }
-            
+
             // Select the materia with validation
             const materiaSelect = document.getElementById('editMateria');
             materiaSelect.value = materiaId;
             console.log('📚 Materia selected:', materiaId);
-            
+
             // Set form action - use the URL that Thymeleaf generated correctly
             const form = document.getElementById('editarEventoForm');
             const updateUrl = button.getAttribute('data-update-url');
-            
+
             if (updateUrl) {
                 form.action = updateUrl;
                 console.log('🔗 Form action set to:', updateUrl);
@@ -915,23 +933,23 @@
                 form.action = '/' + contextPath + '/evento/' + eventoId + '/actualizar';
                 console.log('🔗 Form action fallback set to:', form.action);
             }
-            
+
         } catch (error) {
             console.error('❌ Error in prepararEditar:', error);
             alert('Error preparing edit form: ' + error.message);
         }
     }
-    
+
     // Improved helper function to format datetime for input field
     function formatDateTimeForInput(dateTimeString) {
         if (!dateTimeString || dateTimeString === 'null' || dateTimeString === 'undefined') {
             return '';
         }
-        
+
         try {
             // Handle LocalDateTime format from Java: "2024-03-15T10:30:00" or "2024-03-15T10:30"
             let formatted = dateTimeString.toString().trim();
-            
+
             // If it already looks like the right format, just remove seconds if present
             if (formatted.match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/)) {
                 // Remove seconds if present: "2024-03-15T10:30:00" -> "2024-03-15T10:30"
@@ -940,20 +958,20 @@
                 }
                 return formatted;
             }
-            
+
             // Fallback: try to parse as Date and reformat
             const date = new Date(dateTimeString);
             if (isNaN(date.getTime())) {
                 console.error('Invalid date:', dateTimeString);
                 return '';
             }
-            
+
             const year = date.getFullYear();
             const month = String(date.getMonth() + 1).padStart(2, '0');
             const day = String(date.getDate()).padStart(2, '0');
             const hours = String(date.getHours()).padStart(2, '0');
             const minutes = String(date.getMinutes()).padStart(2, '0');
-            
+
             return `${year}-${month}-${day}T${hours}:${minutes}`;
         } catch (e) {
             console.error('Error formatting date:', dateTimeString, e);
@@ -962,7 +980,7 @@
     }
 
     // Confirm completion
-    document.getElementById('confirmarCompletar').addEventListener('click', function() {
+    document.getElementById('confirmarCompletar').addEventListener('click', function () {
         if (eventoIdSeleccionado && completeUrl) {
             completarEvento(completeUrl);
             // Close modal
@@ -972,7 +990,7 @@
     });
 
     // Confirm deletion
-    document.getElementById('confirmarEliminar').addEventListener('click', function() {
+    document.getElementById('confirmarEliminar').addEventListener('click', function () {
         if (eventoIdSeleccionado && deleteUrl) {
             eliminarEvento(deleteUrl);
             // Close modal
@@ -986,11 +1004,11 @@
         // Get tomorrow's date at current time
         const tomorrow = new Date();
         tomorrow.setDate(tomorrow.getDate() + 1);
-        
+
         // Create end date (1 hour later)
         const endDate = new Date(tomorrow);
         endDate.setHours(endDate.getHours() + 1);
-        
+
         // Format dates for datetime-local input (YYYY-MM-DDTHH:MM)
         const formatDateTime = (date) => {
             const year = date.getFullYear();
@@ -998,18 +1016,18 @@
             const day = String(date.getDate()).padStart(2, '0');
             const hours = String(date.getHours()).padStart(2, '0');
             const minutes = String(date.getMinutes()).padStart(2, '0');
-            
+
             return `${year}-${month}-${day}T${hours}:${minutes}`;
         };
-        
+
         // Set default values for create modal
         const fechaInicioInput = document.getElementById('fechaInicio');
         const fechaFinInput = document.getElementById('fechaFin');
-        
+
         if (fechaInicioInput && !fechaInicioInput.value) {
             fechaInicioInput.value = formatDateTime(tomorrow);
         }
-        
+
         if (fechaFinInput && !fechaFinInput.value) {
             fechaFinInput.value = formatDateTime(endDate);
         }
@@ -1042,7 +1060,7 @@
 
         cards.forEach(card => {
             let showCard = true;
-            
+
             if (tipoFilter) {
                 const tipoBadge = card.querySelector('.evento-badge');
                 if (!tipoBadge || !tipoBadge.textContent.includes(tipoFilter)) {
@@ -1068,70 +1086,70 @@
     }
 
     // Set minimum date/time to now
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         console.log('🚀 Calendar page loaded');
-        
+
         const now = new Date();
         const isoString = now.toISOString().slice(0, 16);
         document.getElementById('fechaInicio').min = isoString;
         document.getElementById('fechaFin').min = isoString;
-        
+
         // Add form validation for edit form
         const editForm = document.getElementById('editarEventoForm');
         if (editForm) {
             console.log('✅ Edit form found');
-            
-            editForm.addEventListener('submit', function(e) {
+
+            editForm.addEventListener('submit', function (e) {
                 console.log('📤 Edit form submitted');
                 console.log('📤 Form action:', editForm.action);
-                
+
                 const titulo = document.getElementById('editTitulo').value.trim();
                 const fechaInicio = document.getElementById('editFechaInicio').value;
-                
-                console.log('📝 Form data:', { titulo, fechaInicio });
-                
+
+                console.log('📝 Form data:', {titulo, fechaInicio});
+
                 if (!titulo) {
                     e.preventDefault();
                     alert('El título del evento es obligatorio');
                     document.getElementById('editTitulo').focus();
                     return false;
                 }
-                
+
                 if (!fechaInicio) {
                     e.preventDefault();
                     alert('La fecha de inicio es obligatoria');
                     document.getElementById('editFechaInicio').focus();
                     return false;
                 }
-                
+
                 // Show that form is being submitted
                 console.log('✅ Form validation passed, submitting...');
-                
+
                 // Show loading state
                 const submitBtn = editForm.querySelector('button[type="submit"]');
                 if (submitBtn) {
                     submitBtn.disabled = true;
                     submitBtn.innerHTML = '<i class="bi bi-clock"></i> Actualizando...';
                 }
-                
+
                 return true;
             });
         } else {
             console.log('❌ Edit form NOT found');
         }
-        
+
         // Set defaults when create modal is shown
         const eventModal = document.getElementById('eventModal');
         if (eventModal) {
-            eventModal.addEventListener('shown.bs.modal', function() {
+            eventModal.addEventListener('shown.bs.modal', function () {
                 setDefaultDateTimes();
             });
         }
-        
+
         // Debug: Show what edit buttons are available
         const editButtons = document.querySelectorAll('.btn-edit');
         console.log('📝 Found', editButtons.length, 'edit buttons');
-        
+
         editButtons.forEach((btn, index) => {
             console.log(`Button ${index}:`, {
                 id: btn.getAttribute('data-evento-id'),
