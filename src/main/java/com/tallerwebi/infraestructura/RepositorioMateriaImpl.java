@@ -59,17 +59,26 @@ public class RepositorioMateriaImpl implements RepositorioMateria {
         criteria.add(Restrictions.eq("carrera", carrera));
         return criteria.list();
     }
+
     @SuppressWarnings("unchecked")
-    public List<Materia> obtenerTodasLasMateriasPorNombre(){
+    public List<Materia> obtenerTodasLasMateriasPorNombre() {
         final String hql = "FROM Materia ORDER BY nombre";
-                return sessionFactory.getCurrentSession().createQuery(hql).list();
+        return sessionFactory.getCurrentSession().createQuery(hql).list();
 
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<Integer> obtenerCantidadDeCuatrimestres(){
+    public List<Integer> obtenerCantidadDeCuatrimestres() {
         final String hql = "SELECT DISTINCT m.cuatrimestre FROM Materia m ORDER BY m.cuatrimestre";
         return sessionFactory.getCurrentSession().createQuery(hql).list();
     }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Long obtenerCantidadDeMateriasDeLaCarrera() {
+        final String hql = "SELECT COUNT(m.id) FROM Materia m";
+        return (Long) sessionFactory.getCurrentSession().createQuery(hql).uniqueResult();
+    }
+
 }

@@ -1,10 +1,13 @@
 package com.tallerwebi.dominio;
 
+import com.tallerwebi.dominio.DTO.ProgresoDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service("servicioUsuarioMateria")
 @Transactional
@@ -23,6 +26,27 @@ public class ServicioUsuarioMateria {
         this.repositorioMateria = repositorioMateria;
     }
 
+    public ProgresoDTO obtenerEstadisticaPorUsuario(Long usuarioId, Long idMateria) {
+        Long totalMaterias = repositorioMateria.obtenerCantidadDeMateriasDeLaCarrera();
+        Long materiasAprobadasPorUsuario = repositorioUsuarioMateria.contadorDeMateriasAprobadasPorUsuario(usuarioId);
+        Long materiasDesaprobadasPorUsuario = repositorioUsuarioMateria.contadorDeMateriasDesaprobadasPorUsuario(usuarioId);
+        Long materiasTotalesPorUsuario = repositorioUsuarioMateria.contadorDeMateriasPorUsuario(usuarioId);
+        Long materiasCursandoPorUsuario = repositorioUsuarioMateria.contadorDeMateriasCursandoPorUsuario(usuarioId);
+
+        Long materiasPendientes = totalMaterias - materiasTotalesPorUsuario;
+
+        ProgresoDTO estadisticaGeneral = new ProgresoDTO(totalMaterias, materiasCursandoPorUsuario,
+                materiasTotalesPorUsuario, materiasDesaprobadasPorUsuario, materiasAprobadasPorUsuario,
+                materiasPendientes);
+
+        estadisticaGeneral.setMateriasTotalesPorUsuario(totalMaterias); //Total de materias de la carrera
+        estadisticaGeneral.setMateriasAprobadasPorUsuario(materiasAprobadasPorUsuario); //Materias aprobadas x el usuario
+        estadisticaGeneral.setMateriasCursandoPorUsuario(materiasCursandoPorUsuario); //Materias que el usuario está cursando x el usuario
+        estadisticaGeneral.setMateriasDesaprobadasPorUsuario(materiasDesaprobadasPorUsuario); //Materias desaprobadas x el usuario
+        estadisticaGeneral.setMateriasPendientes(materiasPendientes); //Materias que no cursó el usuario
+
+        return estadisticaGeneral;
+    }
     /**
      * Asigna una materia a un usuario (empieza cursando = nota null)
      */
@@ -342,4 +366,6 @@ public class ServicioUsuarioMateria {
                 totalMaterias, materiasAprobadas, materiasCursando, materiasDesaprobadas, promedioNotas);
         }
     }
+
+
 }

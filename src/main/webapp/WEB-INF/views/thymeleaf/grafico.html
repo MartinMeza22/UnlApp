@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<canvas id="graficoTorta" width="400" height="400"></canvas>
+
+
+<script th:inline="javascript">
+    const progreso = {
+        aprobadas: /*[[${progreso.aprobadas}]]*/,
+        cursando: /*[[${progreso.cursando}]]*/,
+        desaprobadas: /*[[${progreso.desaprobadas}]]*/
+    };
+
+    const labels = ["Aprobadas", "Cursando", "Desaprobadas"];
+    const valores = [progreso.aprobadas, progreso.cursando, progreso.desaprobadas];
+
+    new Chart(document.getElementById("graficoTorta"), {
+        type: 'pie',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: "Progreso académico",
+                data: valores,
+                backgroundColor: ["#4caf50", "#2196f3", "#f44336"],
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'bottom' },
+                title: { display: true, text: 'Progreso de la Carrera' }
+            }
+        }
+    });
+</script>
+
+</body>
+</html>
