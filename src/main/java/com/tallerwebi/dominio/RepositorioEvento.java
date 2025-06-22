@@ -48,4 +48,6 @@ public interface RepositorioEvento {
     Long contarEventosPorUsuario(Long usuarioId);
     Long contarEventosCompletados(Long usuarioId);
     Long contarEventosPendientes(Long usuarioId);
+
+    public List<Evento> buscarEventosParaNotificar(LocalDateTime minFechaInicio, LocalDateTime maxFechaInicio);
 }

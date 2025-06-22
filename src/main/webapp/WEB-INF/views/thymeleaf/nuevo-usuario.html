@@ -1,79 +1,109 @@
 <!DOCTYPE HTML>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>UnlApp - Registro</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>UnlApp - Registro</title>
 
-  <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}" />
-  <link rel="stylesheet" th:href="@{/css/main.css}" />
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
 
-  <style>
-    body {
-      background-color: #f8f9fa;
-    }
-    .mainbox {
-      background-color: #fff;
-      padding: 30px;
-      margin-top: 80px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    .form-control {
-      margin-bottom: 15px;
-    }
-    #btn-registrarme {
-      width: 100%;
-    }
-  </style>
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .mainbox {
+            background-color: #fff;
+            padding: 30px;
+            margin-top: 80px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-control {
+            margin-bottom: 15px;
+        }
+
+        #btn-registrarme {
+            width: 100%;
+        }
+    </style>
 </head>
 
 <body>
 
 <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-  <a class="navbar-brand" href="#">UnlApp</a>
+    <a class="navbar-brand" href="#">UnlApp</a>
 </nav>
 
 <main role="main" class="container">
-  <div class="mainbox col-md-6 col-sm-10 mx-auto">
-    <form th:action="@{/registrarme}" method="POST" th:object="${usuario}" accept-charset="UTF-8">
+    <div class="mainbox col-md-6 col-sm-10 mx-auto">
+        <form th:action="@{/registrarme}" method="POST" th:object="${usuario}" accept-charset="UTF-8">
 
-      <!-- Barra de progreso -->
-      <div class="progress mb-4">
-        <div class="progress-bar progress-bar-striped bg-success" role="progressbar" style="width: 50%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
-          Paso 1 de 2
-        </div>
-      </div>
+            <div class="progress mb-4">
+                <div class="progress-bar progress-bar-striped bg-success" role="progressbar" style="width: 33%;"
+                     aria-valuenow="33" aria-valuemin="0" aria-valuemax="100">
+                    Paso 1 de 3
+                </div>
+            </div>
 
-      <h3 class="text-center">Registrarse en UnlApp</h3>
-      <hr class="colorgraph"><br>
+            <h3 class="text-center">Registrarse en UnlApp</h3>
+            <hr class="colorgraph">
+            <br>
 
-      <input th:field="*{email}" id="email" class="form-control" required placeholder="Email" />
-      <input th:field="*{password}" type="password" id="password" class="form-control" required placeholder="Contraseña" />
-      <input th:field="*{nombre}" id="nombre" class="form-control" required placeholder="Nombre" />
-      <input th:field="*{apellido}" id="apellido" class="form-control" required placeholder="Apellido" />
+            <div class="mb-3">
+                <label for="email" class="form-label">Email:</label>
+                <input th:field="*{email}" id="email" class="form-control" required placeholder="tu.email123@alumno.unlam.edu.ar"/>
+            </div>
 
-      <select th:field="*{carrera.id}" id="carreraID" class="form-control" required>
-        <option value="" disabled selected>Seleccione una carrera</option>
-        <option th:each="c : ${carreras}"
-                th:value="${c.id}"
-                th:text="${c.nombre}">
-        </option>
-      </select>
+            <div class="mb-3">
+                <label for="password" class="form-label">Contraseña:</label>
+                <input th:field="*{password}" type="password" id="password" class="form-control" required
+                       placeholder="Ingresa tu contraseña"/>
+            </div>
 
-      <select th:field="*{situacionLaboral}" id="situacionLaboral" class="form-control" required>
-        <option value="" disabled selected>Seleccione su situación laboral</option>
-        <option value="Empleado">Empleado</option>
-        <option value="Desempleado">Desempleado</option>
-      </select>
+            <div class="mb-3">
+                <label for="nombre" class="form-label">Nombre:</label>
+                <input th:field="*{nombre}" id="nombre" class="form-control" required placeholder="Tu nombre"/>
+            </div>
 
-      <input th:field="*{disponibilidadHoraria}" type="number" id="disponibilidadHoraria" class="form-control" required placeholder="Disponibilidad horaria (horas semanales)" />
+            <div class="mb-3">
+                <label for="apellido" class="form-label">Apellido:</label>
+                <input th:field="*{apellido}" id="apellido" class="form-control" required placeholder="Tu apellido"/>
+            </div>
 
-      <button id="btn-registrarme" class="btn btn-primary btn-lg mt-2" type="submit">Siguiente</button>
+            <div class="mb-3">
+                <label for="carreraID" class="form-label">Carrera:</label>
+                <select th:field="*{carreraID}" id="carreraID" class="form-control" required>
+                    <option value="" disabled selected>Seleccione una carrera</option>
+                    <option th:each="carrera : ${carreras}"
+                            th:value="${carrera.getId()}"
+                            th:text="${carrera.getNombre()}">
+                    </option>
+                </select>
+            </div>
 
-      <p th:if="${error != null}" class="alert alert-danger mt-3" th:text="'Error: ' + ${error}"></p>
-    </form>
-  </div>
+            <div class="mb-3">
+                <label for="situacionLaboral" class="form-label">Situación Laboral:</label>
+                <select th:field="*{situacionLaboral}" id="situacionLaboral" class="form-control" required>
+                    <option value="" disabled selected>Seleccione su situación laboral</option>
+                    <option value="Empleado">Empleado</option>
+                    <option value="Desempleado">Desempleado</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="disponibilidadHoraria" class="form-label">Disponibilidad Horaria (horas semanales):</label>
+                <input th:field="*{disponibilidadHoraria}" type="number" id="disponibilidadHoraria" class="form-control"
+                       required placeholder="Ej: 20"/>
+            </div>
+
+            <button id="btn-registrarme" class="btn btn-primary btn-lg mt-2" type="submit">Siguiente</button>
+
+            <p th:if="${error != null}" class="alert alert-danger mt-3" th:text="'Error: ' + ${error}"></p>
+        </form>
+    </div>
 </main>
 
 <script type="text/javascript" th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.min.js}"></script>

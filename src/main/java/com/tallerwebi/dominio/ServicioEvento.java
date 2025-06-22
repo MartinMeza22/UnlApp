@@ -46,7 +46,7 @@ public class ServicioEvento {
     }
 
     // Crear eventos específicos
-    public Evento crearExamen(String titulo, LocalDateTime fecha, Long usuarioId, Long materiaId) {
+    public Evento crearExamen(String titulo, LocalDateTime fecha, Long usuarioId, Long materiaId, Boolean notificarRecordatorio) {
         Usuario usuario = repositorioUsuario.buscarPorId(usuarioId);
         if (usuario == null) {
             throw new IllegalArgumentException("Usuario no encontrado con ID: " + usuarioId);
@@ -60,12 +60,12 @@ public class ServicioEvento {
         Evento examen = new Evento(titulo, fecha, usuario, materia);
         examen.setTipo("EXAMEN");
         examen.setDescripcion("Examen de " + materia.getNombre());
-        
+        examen.setNotificarRecordatorio(notificarRecordatorio);
         crearEvento(examen);
         return examen;
     }
 
-    public Evento crearTarea(String titulo, LocalDateTime fechaEntrega, Long usuarioId, Long materiaId, String descripcion) {
+    public Evento crearTarea(String titulo, LocalDateTime fechaEntrega, Long usuarioId, Long materiaId, String descripcion, Boolean notificarRecordatorio) {
         Usuario usuario = repositorioUsuario.buscarPorId(usuarioId);
         if (usuario == null) {
             throw new IllegalArgumentException("Usuario no encontrado con ID: " + usuarioId);
@@ -79,12 +79,12 @@ public class ServicioEvento {
         Evento tarea = new Evento(titulo, fechaEntrega, usuario, materia);
         tarea.setTipo("TAREA");
         tarea.setDescripcion(descripcion);
-        
+        tarea.setNotificarRecordatorio(notificarRecordatorio);
         crearEvento(tarea);
         return tarea;
     }
 
-    public Evento crearSesionEstudio(String titulo, LocalDateTime fechaInicio, LocalDateTime fechaFin, Long usuarioId, Long materiaId) {
+    public Evento crearSesionEstudio(String titulo, LocalDateTime fechaInicio, LocalDateTime fechaFin, Long usuarioId, Long materiaId, Boolean notificarRecordatorio) {
         Usuario usuario = repositorioUsuario.buscarPorId(usuarioId);
         if (usuario == null) {
             throw new IllegalArgumentException("Usuario no encontrado con ID: " + usuarioId);
@@ -99,12 +99,12 @@ public class ServicioEvento {
         sesion.setTipo("ESTUDIO");
         sesion.setFechaFin(fechaFin);
         sesion.setDescripcion("Sesión de estudio para " + materia.getNombre());
-        
+        sesion.setNotificarRecordatorio(notificarRecordatorio);
         crearEvento(sesion);
         return sesion;
     }
 
-    public Evento crearEventoPersonal(String titulo, LocalDateTime fecha, Long usuarioId, String tipo) {
+    public Evento crearEventoPersonal(String titulo, LocalDateTime fecha, Long usuarioId, String tipo, Boolean notificarRecordatorio) {
         Usuario usuario = repositorioUsuario.buscarPorId(usuarioId);
         if (usuario == null) {
             throw new IllegalArgumentException("Usuario no encontrado con ID: " + usuarioId);
@@ -112,7 +112,7 @@ public class ServicioEvento {
         
         Evento evento = new Evento(titulo, fecha, usuario);
         evento.setTipo(tipo != null ? tipo : "PERSONAL");
-        
+        evento.setNotificarRecordatorio(notificarRecordatorio);
         crearEvento(evento);
         return evento;
     }

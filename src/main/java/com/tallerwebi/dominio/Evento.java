@@ -51,6 +51,12 @@ public class Evento {
     @JoinColumn(name = "materia_id", nullable = true)
     private Materia materia;
 
+    @Column
+    private Boolean notificarRecordatorio = false;
+
+    @Column
+    private Boolean yaNotificado = false;
+
     // Constructors
     public Evento() {
         this.fechaCreacion = LocalDateTime.now();
@@ -200,6 +206,22 @@ public class Evento {
             // Handle lazy loading exceptions gracefully
             return "Sin materia";
         }
+    }
+
+    public Boolean getNotificarRecordatorio() {
+        return notificarRecordatorio;
+    }
+
+    public void setNotificarRecordatorio(Boolean notificarRecordatorio) {
+        this.notificarRecordatorio = notificarRecordatorio;
+    }
+
+    public Boolean getYaNotificado() {
+        return yaNotificado;
+    }
+
+    public void setYaNotificado(Boolean yaNotificado) {
+        this.yaNotificado = yaNotificado;
     }
 
     @Override
