@@ -1,11 +1,13 @@
 package com.tallerwebi.presentacion;
 
 import com.tallerwebi.dominio.*;
+import com.tallerwebi.dominio.DTO.ProgresoDTO;
 import com.tallerwebi.dto.MateriasDTO;
 import com.tallerwebi.dto.MateriasWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.tallerwebi.dominio.DTO.MateriaDTO;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -149,6 +151,26 @@ public class ControladorProgresoAcademico {
         Long usuarioId = (Long) session.getAttribute("ID");
         this.servicioUsuarioMateria.eliminarMateria(usuarioId, idMateria);
         return "redirect:/progreso";
+    }
+
+//    @PostMapping(path = "/") //METODO PARA UTILIZAR API DE GRAFICOS SE ENCARGA MARTÍN
+//
+//    public String estadisticasPersonales(@RequestParam(name = "materiaId") Long idMateria,
+//                                         HttpSession session) {
+//        Long usuarioId = (Long) session.getAttribute("ID");
+//
+//        ProgresoDTO progreso = this.servicioUsuarioMateria.obtenerEstadisticaPorUsuario(usuarioId, idMateria);
+//        return "redirect:/progreso";
+//    }
+    @GetMapping("/grafico")
+    public String mostrarGrafico(Model model, HttpSession session) {
+        Long usuarioId = (Long) session.getAttribute("ID");
+        Long idMateria = 6L;
+        ProgresoDTO progreso = servicioUsuarioMateria.obtenerEstadisticaPorUsuario(usuarioId,idMateria);
+        System.out.println("DTO: " + progreso);
+
+        model.addAttribute("progreso", progreso);
+        return "grafico";
     }
 
     @RequestMapping(path = "/progreso/cursar-materia", method = RequestMethod.POST)

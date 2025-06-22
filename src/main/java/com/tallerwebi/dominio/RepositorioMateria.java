@@ -23,4 +23,5 @@ public interface RepositorioMateria {
 
     public List<Integer> obtenerCantidadDeCuatrimestres();
 
+    Long obtenerCantidadDeMateriasDeLaCarrera();
 }

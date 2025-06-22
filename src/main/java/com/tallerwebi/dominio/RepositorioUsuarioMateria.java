@@ -43,4 +43,10 @@ public interface RepositorioUsuarioMateria {
      * Verifica si existe una relación entre usuario y materia
      */
     boolean existe(Long usuarioId, Long materiaId);
+
+    UsuarioMateria buscarProgresoPersonal(Long usuarioId, Long materiaId);
+    Long contadorDeMateriasPorUsuario(Long usuarioId);
+    Long contadorDeMateriasAprobadasPorUsuario(Long usuarioId);
+    Long contadorDeMateriasDesaprobadasPorUsuario(Long usuarioId);
+    Long contadorDeMateriasCursandoPorUsuario(Long usuarioId);
 }

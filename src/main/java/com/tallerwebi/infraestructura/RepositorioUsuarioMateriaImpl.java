@@ -6,7 +6,6 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -76,9 +75,66 @@ public class RepositorioUsuarioMateriaImpl implements RepositorioUsuarioMateria 
         sessionFactory.getCurrentSession().delete(usuarioMateria);
     }
     //Elimina una fila existente de la tabla usuario_materia
+
     @Override
     public boolean existe(Long usuarioId, Long materiaId) {
         UsuarioMateria resultado = buscarPorUsuarioYMateria(usuarioId, materiaId); //Reutilización de otro metodo
         return resultado != null;
     }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public UsuarioMateria buscarProgresoPersonal(Long usuarioId, Long materiaId) {
+        final String hql = "SELECT um.dificultad, um.estado, um.nota " +
+                "FROM UsuarioMateria um " +
+                "WHERE um.usuario.id = :usuarioId AND um.materia.id = :materiaId";
+
+        return (UsuarioMateria) (sessionFactory.getCurrentSession()
+                .createQuery(hql));
+    }
+
+    public Long contadorDeMateriasPorUsuario(Long usuarioId) {
+        final String hql = "SELECT COUNT(um.materia) " +
+                "FROM UsuarioMateria um " +
+                "WHERE um.usuario.id = :usuarioId";
+
+        return (Long) sessionFactory.getCurrentSession()
+                .createQuery(hql)
+                .setParameter("usuarioId", usuarioId)
+                .uniqueResult();
+    }
+
+    public Long contadorDeMateriasAprobadasPorUsuario(Long usuarioId) {
+        final String hql = "SELECT COUNT(um.materia) " +
+                "FROM UsuarioMateria um " +
+                "WHERE um.usuario.id = :usuarioId AND um.estado = 3";
+
+        return (Long) sessionFactory.getCurrentSession()
+                .createQuery(hql)
+                .setParameter("usuarioId", usuarioId)
+                .uniqueResult();
+    }
+
+    public Long contadorDeMateriasDesaprobadasPorUsuario(Long usuarioId) {
+        final String hql = "SELECT COUNT(um.materia) " +
+                "FROM UsuarioMateria um " +
+                "WHERE um.usuario.id = :usuarioId AND um.estado = 4";
+
+        return (Long) sessionFactory.getCurrentSession()
+                .createQuery(hql)
+                .setParameter("usuarioId", usuarioId)
+                .uniqueResult();
+    }
+
+    public Long contadorDeMateriasCursandoPorUsuario(Long usuarioId) {
+        final String hql = "SELECT COUNT(um.materia) " +
+                "FROM UsuarioMateria um " +
+                "WHERE um.usuario.id = :usuarioId AND um.estado = 2";
+
+        return (Long) sessionFactory.getCurrentSession()
+                .createQuery(hql)
+                .setParameter("usuarioId", usuarioId)
+                .uniqueResult();
+    }
+
 }
