@@ -199,7 +199,7 @@ public class ServicioUsuarioMateria {
      * Modifica una materia cursada (nota, dificultad, observaciones)
      */
     public UsuarioMateria modificarMateriaCursada(Long usuarioMateriaId, Integer nota,
-                                                 Integer dificultad) {
+                                                  Integer dificultad) {
         // Validaciones
         if (usuarioMateriaId == null) {
             throw new IllegalArgumentException("El ID de la relación usuario-materia es obligatorio");
@@ -277,23 +277,23 @@ public class ServicioUsuarioMateria {
     /**
      * Muestra todas las materias de un usuario específico
      */
-    public List<UsuarioMateria> mostrarMateriasDeUsuario(Long usuarioId) {
+    public List<UsuarioMateria> mostrarMateriasDeUsuario(String idCarrera, Long usuarioId) {
         if (usuarioId == null) {
             throw new IllegalArgumentException("El ID del usuario es obligatorio");
         }
 
-        return repositorioUsuarioMateria.buscarPorUsuario(usuarioId);
+        return repositorioUsuarioMateria.buscarPorUsuario(idCarrera, usuarioId);
     }
 
     /**
      * Obtiene estadísticas básicas de un usuario
      */
-    public EstadisticasUsuario obtenerEstadisticasUsuario(Long usuarioId) {
+    public EstadisticasUsuario obtenerEstadisticasUsuario(String idCarrera, Long usuarioId) {
         if (usuarioId == null) {
             throw new IllegalArgumentException("El ID del usuario es obligatorio");
         }
 
-        List<UsuarioMateria> todasLasMaterias = mostrarMateriasDeUsuario(usuarioId);
+        List<UsuarioMateria> todasLasMaterias = mostrarMateriasDeUsuario(idCarrera,usuarioId);
 
         long aprobadas = todasLasMaterias.stream().filter(UsuarioMateria::estaAprobada).count();
         long cursando = todasLasMaterias.stream().filter(UsuarioMateria::estaCursando).count();
@@ -345,7 +345,7 @@ public class ServicioUsuarioMateria {
         private final double promedioNotas;
 
         public EstadisticasUsuario(int totalMaterias, long materiasAprobadas, long materiasCursando,
-                                  long materiasDesaprobadas, double promedioNotas) {
+                                   long materiasDesaprobadas, double promedioNotas) {
             this.totalMaterias = totalMaterias;
             this.materiasAprobadas = materiasAprobadas;
             this.materiasCursando = materiasCursando;
@@ -354,18 +354,36 @@ public class ServicioUsuarioMateria {
         }
 
         // Getters
-        public int getTotalMaterias() { return totalMaterias; }
-        public long getMateriasAprobadas() { return materiasAprobadas; }
-        public long getMateriasCursando() { return materiasCursando; }
-        public long getMateriasDesaprobadas() { return materiasDesaprobadas; }
-        public double getPromedioNotas() { return promedioNotas; }
+        public int getTotalMaterias() {
+            return totalMaterias;
+        }
+
+        public long getMateriasAprobadas() {
+            return materiasAprobadas;
+        }
+
+        public long getMateriasCursando() {
+            return materiasCursando;
+        }
+
+        public long getMateriasDesaprobadas() {
+            return materiasDesaprobadas;
+        }
+
+        public double getPromedioNotas() {
+            return promedioNotas;
+        }
 
         @Override
         public String toString() {
             return String.format("Estadísticas: %d total, %d aprobadas, %d cursando, %d desaprobadas, promedio: %.2f",
-                totalMaterias, materiasAprobadas, materiasCursando, materiasDesaprobadas, promedioNotas);
+                    totalMaterias, materiasAprobadas, materiasCursando, materiasDesaprobadas, promedioNotas);
         }
     }
 
+    public Usuario obtenerUsuario(Long idUsuario) {
+
+        return this.repositorioUsuario.buscarPorId(idUsuario);
+    }
 
 }

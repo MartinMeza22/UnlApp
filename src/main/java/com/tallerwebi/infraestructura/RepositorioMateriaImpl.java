@@ -68,6 +68,14 @@ public class RepositorioMateriaImpl implements RepositorioMateria {
     }
 
     @Override
+    public List<Materia> obtenerMateriasDeUnaCarrera(String idCarrera) {
+        final String hql = "FROM Materia WHERE carrera.id = :idCarrera ORDER BY cuatrimestre, nombre";
+        return sessionFactory.getCurrentSession()
+                .createQuery(hql)
+                .setParameter("idCarrera", Long.valueOf(idCarrera))
+                .list();
+    }
+
     @SuppressWarnings("unchecked")
     public List<Integer> obtenerCantidadDeCuatrimestres() {
         final String hql = "SELECT DISTINCT m.cuatrimestre FROM Materia m ORDER BY m.cuatrimestre";

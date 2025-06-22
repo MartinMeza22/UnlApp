@@ -29,9 +29,10 @@ public class ControladorProgresoAcademico {
     private ServicioMateria servicioMateria;
     private UsuarioMateria usuarioMateria;
 
-    public ControladorProgresoAcademico(ServicioProgreso servicioProgreso, ServicioMateria servicioMateria) {
+    public ControladorProgresoAcademico(ServicioProgreso servicioProgreso, ServicioMateria servicioMateria, ServicioUsuarioMateria servicioUsuarioMateria) {
         this.servicioProgreso = servicioProgreso;
         this.servicioMateria = servicioMateria;
+        this.servicioUsuarioMateria = servicioUsuarioMateria;
     }
 
     @RequestMapping(path = "/progreso", method = RequestMethod.GET)
@@ -46,24 +47,27 @@ public class ControladorProgresoAcademico {
         }
 
         Long usuarioId = (Long) session.getAttribute("ID");
+        // Para obtener el id de la carrera
+        String idCarrera = this.servicioUsuarioMateria.obtenerUsuario(usuarioId).getCarreraID().toString();
 
         List<MateriaDTO> materias = new ArrayList<>();
 
         if(condicion != null && !condicion.isEmpty() && cuatrimestre != null) {
-            materias = this.servicioProgreso.filtrarPorCuatrimestreYEstado(cuatrimestre, condicion, usuarioId);
+            materias = this.servicioProgreso.filtrarPorCuatrimestreYEstado(idCarrera, cuatrimestre, condicion, usuarioId);
         }else if (condicion != null && !condicion.isEmpty()) {
-            materias = this.servicioProgreso.filtrarPor(condicion, usuarioId);
+            materias = this.servicioProgreso.filtrarPor(idCarrera, condicion, usuarioId);
         } else if (cuatrimestre != null) {
-            materias = this.servicioProgreso.filtrarPorCuatrimestre(cuatrimestre, usuarioId);
+            materias = this.servicioProgreso.filtrarPorCuatrimestre(idCarrera, cuatrimestre, usuarioId);
         }else {
-            materias = this.servicioProgreso.materias(usuarioId);
+            materias = this.servicioProgreso.materias(idCarrera, usuarioId);
         }
 
-
-        Double porcentajeProgreso = this.servicioProgreso.obtenerProgresoDeCarrera(usuarioId);
-        Integer cantidadDeMateriasAprobadas = this.servicioProgreso.filtrarPor("aprobadas", usuarioId).size();
-        Integer cantidadMateriasTotal = this.servicioProgreso.materias(usuarioId).size();
-        Integer materiasEnCurso = this.servicioProgreso.filtrarPor("cursando", usuarioId).size();
+        Double porcentajeProgreso = this.servicioProgreso.obtenerProgresoDeCarrera(idCarrera, usuarioId);
+        Integer cantidadDeMateriasAprobadas = this.servicioProgreso.filtrarPor(idCarrera,"aprobadas", usuarioId).size();
+        Integer cantidadMateriasTotal = this.servicioProgreso.materias(idCarrera, usuarioId).size();
+        Integer materiasEnCurso = this.servicioProgreso.filtrarPor(idCarrera,"cursando", usuarioId).size();
+        Double procentajeDesaprobadas = this.servicioProgreso.obtenerPorcentajeDeMateriasDesaprobadas(idCarrera, usuarioId);
+        Double procentajeAprobadas = this.servicioProgreso.obtenerPorcentajeDeMateriasAprobadas(idCarrera, usuarioId);
 
         Carrera carrera = new Carrera();
         carrera.setNombre("Desarrollo Web");
@@ -76,6 +80,8 @@ public class ControladorProgresoAcademico {
         model.put("materiasTotales", materias);
         model.put("selectedCondicion", condicion);
         model.put("porcentajeCarrera", porcentajeProgreso);
+        model.put("porcentajeDesaprobadas",  procentajeDesaprobadas);
+        model.put("porcentajeAprobadas",  procentajeAprobadas);
         model.put("materiasEnCurso", materiasEnCurso);
         model.put("cantidadMateriasTotales", cantidadMateriasTotal);
         model.put("cantidadMateriasAprobadas", cantidadDeMateriasAprobadas);
@@ -86,6 +92,23 @@ public class ControladorProgresoAcademico {
         return new ModelAndView("progreso", model);
     }
 
+//    @PostMapping("/progresoDesdeElRegistro") //metodo util
+//    public ModelAndView cargarMaterias(@RequestParam Map<String, String> datos) {
+//        String id = datos.get("id");
+//        String nota = datos.get("nota");
+//        String dificultad = datos.get("dificultad");
+//        String materia = datos.get("materia");
+//        String usuario = datos.get("usuario");
+//
+//        Double idNota = Double.parseDouble(nota);
+//        Integer dificultadParse = Integer.parseInt(dificultad);
+//        Long idMateria = Long.parseLong(materia);
+//        Long idUsuario = Long.parseLong(usuario);
+//
+//        String observaciones = datos.get("observaciones");
+//        servicioUsuarioMateria.asignarMateria(idUsuario, idMateria,dificultadParse);
+//        return new ModelAndView("home");
+//    }
 
     @PostMapping("/pruebaDeDatos")
     public ModelAndView guardarMateria(@ModelAttribute MateriasWrapper listadoMaterias,
@@ -106,14 +129,19 @@ public class ControladorProgresoAcademico {
     public String actualizarDatosMateria(
             @RequestParam(name = "nota", required = false) Integer nota,
             @RequestParam(name = "dificultad", required = false) Integer dificultad,
+            @RequestParam(name = "action") String action,
             @RequestParam(name = "id") Long idMateria,
             HttpSession session,
             RedirectAttributes redirectAttributes // Para redireccionamiento a /progreso, ModelAndView no me funciono aca
     ) {
         Long usuarioId = (Long) session.getAttribute("ID");
 
-        // Pude haber utilizado el servicio de UsuarioMateria, el metodo modificar, pero le falta le id del usuario al metodo modificar
-        this.servicioProgreso.actualizarDatosMateria(usuarioId, idMateria, nota, dificultad);
+        if("guardarCambios".equalsIgnoreCase(action)) {
+            // Pude haber utilizado el servicio de UsuarioMateria, el metodo modificar, pero le falta le id del usuario al metodo modificar
+            this.servicioProgreso.actualizarDatosMateria(usuarioId, idMateria, nota, dificultad);
+        } else if("dejarDeCursar".equalsIgnoreCase(action)) {
+            this.servicioProgreso.marcarMateriaComoPendiente(idMateria, usuarioId);
+        }
 
         return "redirect:/progreso";
     }
@@ -145,4 +173,14 @@ public class ControladorProgresoAcademico {
         return "grafico";
     }
 
+    @RequestMapping(path = "/progreso/cursar-materia", method = RequestMethod.POST)
+    public String cursarMateria(@RequestParam(name = "materiaId") Long idMateria, HttpSession session, RedirectAttributes redirectAttributes) {
+        Long usuarioId = (Long) session.getAttribute("ID");
+        boolean exito = this.servicioProgreso.marcarMateriaComoCursando(usuarioId, idMateria);
+
+        if (!exito) {
+            redirectAttributes.addFlashAttribute("error", "No se pudo cursar la materia. Verifique las correlativas.");
+        }
+        return "redirect:/progreso";
+    }
 }

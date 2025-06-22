@@ -22,7 +22,7 @@ public interface RepositorioUsuarioMateria {
     /**
      * Obtiene todas las materias de un usuario específico
      */
-    List<UsuarioMateria> buscarPorUsuario(Long usuarioId);
+    List<UsuarioMateria> buscarPorUsuario(String idCarrera, Long usuarioId);
 
     /**
      * Obtiene todas las relaciones usuario-materia

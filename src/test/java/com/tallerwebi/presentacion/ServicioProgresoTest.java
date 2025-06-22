@@ -30,6 +30,7 @@ public class ServicioProgresoTest {
     private Materia materia3;
     private UsuarioMateria usuarioMateria1;
     private UsuarioMateria usuarioMateria2;
+    private String idCarrera = "1";
 
     @BeforeEach
     public void init() {
@@ -72,10 +73,10 @@ public class ServicioProgresoTest {
         List<Materia> todasLasMaterias = Arrays.asList(materia1, materia2, materia3);
         List<UsuarioMateria> materiasCursadas = Arrays.asList(usuarioMateria1, usuarioMateria2);
 
-        when(mockRepositorioMateria.buscarTodas()).thenReturn(todasLasMaterias);
-        when(mockRepositorioUsuarioMateria.buscarPorUsuario(usuario.getId())).thenReturn(materiasCursadas);
+        when(mockRepositorioMateria.obtenerMateriasDeUnaCarrera(idCarrera)).thenReturn(todasLasMaterias);
+        when(mockRepositorioUsuarioMateria.buscarPorUsuario(idCarrera, usuario.getId())).thenReturn(materiasCursadas);
 
-        List<MateriaDTO> resultado = this.servicioProgreso.materias(usuario.getId());
+        List<MateriaDTO> resultado = this.servicioProgreso.materias(idCarrera, usuario.getId());
 
         assertThat(resultado, hasSize(3));
 
@@ -93,7 +94,7 @@ public class ServicioProgresoTest {
         assertThat(materiaDTO2.getNombre(), is("Base de datos"));
         assertThat(materiaDTO2.getEstado(), is("CURSANDO"));
         assertThat(materiaDTO2.getCuatrimestre(), is(2));
-        assertThat(materiaDTO2.getDificultad(), is("Medio"));
+        // assertThat(materiaDTO2.getDificultad(), is("Medio")); --> Si esta CURSANDO no tiene dificultad
 
     }
 
@@ -103,10 +104,10 @@ public class ServicioProgresoTest {
         usuarioMateria2.setNota(8);
         List<UsuarioMateria> materiasCursadas = Arrays.asList(usuarioMateria1, usuarioMateria2);
 
-        when(mockRepositorioMateria.buscarTodas()).thenReturn(todasLasMaterias);
-        when(mockRepositorioUsuarioMateria.buscarPorUsuario(usuario.getId())).thenReturn(materiasCursadas);
+        when(mockRepositorioMateria.obtenerMateriasDeUnaCarrera(idCarrera)).thenReturn(todasLasMaterias);
+        when(mockRepositorioUsuarioMateria.buscarPorUsuario(idCarrera, usuario.getId())).thenReturn(materiasCursadas);
 
-        List<MateriaDTO> materiasAprobadas = this.servicioProgreso.filtrarPor("APROBADAS", usuario.getId());
+        List<MateriaDTO> materiasAprobadas = this.servicioProgreso.filtrarPor(idCarrera, "APROBADAS", usuario.getId());
 
         assertThat(materiasAprobadas, hasSize(2));
         assertThat(materiasAprobadas.get(1).getNota(), is(8));
@@ -149,10 +150,10 @@ public class ServicioProgresoTest {
         List<Materia> todasLasMaterias = Arrays.asList(materia1, materia2, materia3);
         List<UsuarioMateria> materiasCursadas = Arrays.asList(usuarioMateria1, usuarioMateria2);
 
-        when(mockRepositorioMateria.buscarTodas()).thenReturn(todasLasMaterias);
-        when(mockRepositorioUsuarioMateria.buscarPorUsuario(usuario.getId())).thenReturn(materiasCursadas);
+        when(mockRepositorioMateria.obtenerMateriasDeUnaCarrera(idCarrera)).thenReturn(todasLasMaterias);
+        when(mockRepositorioUsuarioMateria.buscarPorUsuario(idCarrera, usuario.getId())).thenReturn(materiasCursadas);
 
-        List<MateriaDTO> materiasCursando = this.servicioProgreso.filtrarPor("CURSANDO", usuario.getId());
+        List<MateriaDTO> materiasCursando = this.servicioProgreso.filtrarPor(idCarrera, "CURSANDO", usuario.getId());
 
         assertThat(materiasCursando, hasSize(1));
         assertThat(materiasCursando.get(0).getNota(), is(nullValue()));
@@ -165,10 +166,10 @@ public class ServicioProgresoTest {
         List<Materia> todasLasMaterias = Arrays.asList(materia1, materia2, materia3);
         List<UsuarioMateria> materiasCursadas = Arrays.asList(usuarioMateria1, usuarioMateria2);
 
-        when(mockRepositorioMateria.buscarTodas()).thenReturn(todasLasMaterias);
-        when(mockRepositorioUsuarioMateria.buscarPorUsuario(usuario.getId())).thenReturn(materiasCursadas);
+        when(mockRepositorioMateria.obtenerMateriasDeUnaCarrera(idCarrera)).thenReturn(todasLasMaterias);
+        when(mockRepositorioUsuarioMateria.buscarPorUsuario(idCarrera, usuario.getId())).thenReturn(materiasCursadas);
 
-        List<MateriaDTO> materiasPendientes = this.servicioProgreso.filtrarPor("PENDIENTES", usuario.getId());
+        List<MateriaDTO> materiasPendientes = this.servicioProgreso.filtrarPor(idCarrera ,"PENDIENTES", usuario.getId());
 
         assertThat(materiasPendientes, hasSize(1));
         assertThat(materiasPendientes.get(0).getNota(), is(nullValue()));
@@ -182,10 +183,10 @@ public class ServicioProgresoTest {
         List<Materia> todasLasMaterias = Arrays.asList(materia1, materia2, materia3);
         List<UsuarioMateria> materiasCursadas = Arrays.asList(usuarioMateria1, usuarioMateria2);
 
-        when(mockRepositorioMateria.buscarTodas()).thenReturn(todasLasMaterias);
-        when(mockRepositorioUsuarioMateria.buscarPorUsuario(usuario.getId())).thenReturn(materiasCursadas);
+        when(mockRepositorioMateria.obtenerMateriasDeUnaCarrera(idCarrera)).thenReturn(todasLasMaterias);
+        when(mockRepositorioUsuarioMateria.buscarPorUsuario(idCarrera, usuario.getId())).thenReturn(materiasCursadas);
 
-        List<MateriaDTO> todas = this.servicioProgreso.filtrarPor("TODAS", usuario.getId());
+        List<MateriaDTO> todas = this.servicioProgreso.filtrarPor(idCarrera, "TODAS", usuario.getId());
 
         assertThat(todas, hasSize(3));
         assertThat(todas.get(0).getNombre(), is("Matematicas"));

@@ -275,4 +275,15 @@ public class RepositorioEventoImpl implements RepositorioEvento {
                 .setProjection(org.hibernate.criterion.Projections.rowCount())
                 .uniqueResult();
     }
+
+    @Override
+    public List<Evento> buscarEventosParaNotificar(LocalDateTime minFechaInicio, LocalDateTime maxFechaInicio) {
+        return sessionFactory.getCurrentSession()
+                .createQuery("FROM Evento e WHERE e.notificarRecordatorio = true " +
+                        "AND e.fechaInicio BETWEEN :minFechaInicio AND :maxFechaInicio " +
+                        "AND e.yaNotificado = false", Evento.class)
+                .setParameter("minFechaInicio", minFechaInicio)
+                .setParameter("maxFechaInicio", maxFechaInicio)
+                .getResultList();
+    }
 }
