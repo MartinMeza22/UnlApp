@@ -22,4 +22,12 @@ public class RepositorioComentarioImpl implements RepositorioComentario {
     public void guardar(Comentario comentario) {
         sessionFactory.getCurrentSession().save(comentario);
     }
+    @Override
+    public Comentario buscarPorId(Long id) {
+        return sessionFactory.getCurrentSession().get(Comentario.class, id);
+    }
+    @Override
+    public void eliminar(Comentario comentario) {
+        sessionFactory.getCurrentSession().delete(comentario);
+    }
 }

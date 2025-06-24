@@ -1,5 +1,6 @@
 package com.tallerwebi.dominio;
 
+import com.tallerwebi.dominio.excepcion.AccesoDenegado;
 import com.tallerwebi.dominio.excepcion.PublicacionInexistente;
 import com.tallerwebi.dominio.excepcion.UsuarioNoEncontrado;
 
@@ -11,4 +12,8 @@ public interface ServicioPublicacion {
     Publicacion obtenerPublicacion(Long idPublicacion) throws PublicacionInexistente;
 
     void cambiarEstadoLike(Long idPublicacion, Long idUsuario) throws PublicacionInexistente, UsuarioNoEncontrado;
+
+    void eliminarPublicacion(Long idPublicacion, Long idUsuarioQueElimina) throws PublicacionInexistente, AccesoDenegado, AccesoDenegado;
+
+    void modificarPublicacion(Long idPublicacion, String titulo, String descripcion, Long idUsuario) throws PublicacionInexistente, AccesoDenegado;
 }
