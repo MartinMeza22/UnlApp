@@ -1,6 +1,7 @@
 package com.tallerwebi.dominio;
 
 import com.tallerwebi.dominio.excepcion.PublicacionInexistente;
+import com.tallerwebi.dominio.excepcion.UsuarioNoEncontrado;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
@@ -11,11 +12,13 @@ import java.util.List;
 public class ServicioPublicacionImpl implements ServicioPublicacion {
     private final RepositorioPublicacion repositorioPublicacion;
     private final RepositorioMateria repositorioMateria;
+    private final RepositorioUsuario repositorioUsuario;
 
     @Autowired
-    public ServicioPublicacionImpl(RepositorioPublicacion repositorioPublicacion, RepositorioMateria repositorioMateria) {
+    public ServicioPublicacionImpl(RepositorioPublicacion repositorioPublicacion, RepositorioMateria repositorioMateria, RepositorioUsuario repositorioUsuario) {
         this.repositorioPublicacion = repositorioPublicacion;
         this.repositorioMateria = repositorioMateria;
+        this.repositorioUsuario = repositorioUsuario;
     }
 
     @Override
@@ -45,5 +48,25 @@ public class ServicioPublicacionImpl implements ServicioPublicacion {
             throw new PublicacionInexistente("La publicación solicitada no existe.");
         }
         return publicacion;
+    }
+    @Override
+    public void cambiarEstadoLike(Long idPublicacion, Long idUsuario) throws PublicacionInexistente, UsuarioNoEncontrado {
+        Publicacion publicacion = repositorioPublicacion.buscarPorId(idPublicacion);
+        if (publicacion == null) {
+            throw new PublicacionInexistente("No se encontró la publicación.");
+        }
+
+        Usuario usuario = repositorioUsuario.buscarPorId(idUsuario);
+        if (usuario == null) {
+            throw new UsuarioNoEncontrado();
+        }
+
+        if (publicacion.usuarioDioLike(usuario)) {
+            publicacion.quitarLike(usuario);
+        } else {
+            publicacion.agregarLike(usuario);
+        }
+
+        repositorioPublicacion.guardar(publicacion);
     }
 }

@@ -39,6 +39,7 @@ public class RepositorioPublicacionImpl implements RepositorioPublicacion {
         Criteria criteria = session.createCriteria(Publicacion.class)
                 .setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         criteria.setFetchMode("comentarios", FetchMode.JOIN);
+        criteria.setFetchMode("usuariosQueDieronLike", FetchMode.JOIN);
         criteria.createAlias("materia", "m");
         criteria.add(Restrictions.eq("m.carrera", carrera));
         if (materia != null) {

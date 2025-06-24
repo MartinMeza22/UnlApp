@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpSession;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 @Controller
 @RequestMapping("/foro")
@@ -118,6 +120,21 @@ public class ControladorForo {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "No se pudo agregar el comentario.");
         }
+        return new ModelAndView("redirect:/foro");
+    }
+    @PostMapping("/publicacion/{idPublicacion}/like")
+    public ModelAndView darLike(@PathVariable("idPublicacion") Long idPublicacion, HttpSession session, RedirectAttributes redirectAttributes) {
+        Long idUsuario = obtenerIdUsuarioDeSesion(session);
+        if (idUsuario == null) {
+            return new ModelAndView("redirect:/login");
+        }
+
+        try {
+            servicioPublicacion.cambiarEstadoLike(idPublicacion, idUsuario);
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error al procesar el like: " + e.getMessage());
+        }
+
         return new ModelAndView("redirect:/foro");
     }
 }

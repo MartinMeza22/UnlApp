@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Foro</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         body { background-color: #f8f9fa; }
         .publicacion-container { background-color: #ffffff; }
@@ -72,7 +73,18 @@
 
             <div class="d-flex justify-content-between text-muted small mt-3">
                 <span th:text="${'Publicado el: ' + pub.getFechaCreacionFormateada()}"></span>
-                <span><span th:text="${pub.likes ?: 0}">0</span> Likes</span>
+
+                <div class="d-flex align-items-center">
+                    <form th:action="@{/foro/publicacion/{id}/like(id=${pub.id})}" method="post" class="d-inline">
+
+                        <button type="submit" class="btn btn-sm"
+                                th:classappend="${pub.usuarioDioLike(usuario)} ? 'btn-primary' : 'btn-outline-primary'">
+                            <i class="fas fa-thumbs-up"></i> Me gusta
+                        </button>
+                    </form>
+
+                    <span class="ml-2"><span th:text="${pub.likes ?: 0}">0</span> Likes</span>
+                </div>
             </div>
 
             <div class="comentarios-section border-top mt-3 pt-3">
