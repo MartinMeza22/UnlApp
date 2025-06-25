@@ -3,7 +3,9 @@ package com.tallerwebi.dominio;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Publicacion {
@@ -25,6 +27,16 @@ public class Publicacion {
     private Integer likes = 0;
     @OneToMany(mappedBy = "publicacion", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comentario> comentarios;
+
+    // usuarios que dieron like a esta publicación
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+            name = "Usuario_Publicacion_Like", // Nombre de la tabla intermedia
+            joinColumns = @JoinColumn(name = "publicacion_id"),
+            inverseJoinColumns = @JoinColumn(name = "usuario_id")
+    )
+    private Set<Usuario> usuariosQueDieronLike = new HashSet<>();
+
 
     public Publicacion() {
         this.fechaCreacion = LocalDateTime.now();
@@ -59,4 +71,15 @@ public class Publicacion {
 
         return this.fechaCreacion.format(formatter);
     }
+    public void agregarLike(Usuario usuario) {
+        if (this.usuariosQueDieronLike.add(usuario)) {this.likes++;}}
+
+    public void quitarLike(Usuario usuario) {
+        if (this.usuariosQueDieronLike.remove(usuario)) {this.likes--;}}
+
+    public boolean usuarioDioLike(Usuario usuario) {return this.usuariosQueDieronLike.contains(usuario);}
+
+    public Set<Usuario> getUsuariosQueDieronLike() {return usuariosQueDieronLike;}
+
+    public void setUsuariosQueDieronLike(Set<Usuario> usuariosQueDieronLike){this.usuariosQueDieronLike = usuariosQueDieronLike;}
 }

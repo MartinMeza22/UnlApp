@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Foro</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         body { background-color: #f8f9fa; }
         .publicacion-container { background-color: #ffffff; }
@@ -62,7 +63,21 @@
         <div class="p-3 mb-4 rounded shadow-sm publicacion-container" th:each="pub : ${publicaciones}">
             <div class="d-flex align-items-center border-bottom pb-2 mb-2">
                 <strong class="mr-auto" th:text="${pub.usuario.nombre}">Nombre de Usuario</strong>
-                <span class="badge badge-info" th:text="${pub.materia.nombre}">Materia</span>
+
+                <div th:if="${pub.usuario.id == usuario.id}" class="ml-2">
+                    <button class="btn btn-sm btn-outline-secondary"
+                            data-toggle="modal"
+                            data-target="#editarPublicacionModal"
+                            th:attr="data-id=${pub.id}, data-titulo=${pub.titulo}, data-descripcion=${pub.descripcion}">
+                        Editar
+                    </button>
+
+                    <form th:action="@{/foro/publicacion/eliminar}" method="post" class="d-inline form-eliminar">
+                        <input type="hidden" name="idPublicacion" th:value="${pub.id}" />
+                        <button type="submit" class="btn btn-sm btn-outline-danger">Eliminar</button>
+                    </form>
+                </div>
+                <span class="badge badge-info ml-2" th:text="${pub.materia.nombre}">Materia</span>
             </div>
 
             <div class="publicacion-body mt-3">
@@ -72,16 +87,45 @@
 
             <div class="d-flex justify-content-between text-muted small mt-3">
                 <span th:text="${'Publicado el: ' + pub.getFechaCreacionFormateada()}"></span>
-                <span><span th:text="${pub.likes ?: 0}">0</span> Likes</span>
+
+                <div class="d-flex align-items-center">
+                    <form th:action="@{/foro/publicacion/{id}/like(id=${pub.id})}" method="post" class="d-inline">
+
+                        <button type="submit" class="btn btn-sm"
+                                th:classappend="${pub.usuarioDioLike(usuario)} ? 'btn-primary' : 'btn-outline-primary'">
+                            <i class="fas fa-thumbs-up"></i> Me gusta
+                        </button>
+                    </form>
+
+                    <span class="ml-2"><span th:text="${pub.likes ?: 0}">0</span> Likes</span>
+                </div>
             </div>
 
             <div class="comentarios-section border-top mt-3 pt-3">
                 <div th:if="${!#lists.isEmpty(pub.comentarios)}">
                     <div class="comentario mb-2" th:each="com : ${pub.comentarios}">
-                        <p class="mb-0 bg-light p-2 rounded">
-                            <strong th:text="${com.usuario.nombre} + ':'"></strong>
-                            <span th:text="${com.descripcion}"></span>
-                        </p>
+                        <div class="d-flex justify-content-between align-items-center bg-light p-2 rounded">
+                            <p class="mb-0">
+                                <strong th:text="${com.usuario.nombre} + ':'"></strong>
+                                <span th:text="${com.descripcion}"></span>
+                            </p>
+
+                            <div th:if="${com.usuario.id == usuario.id}" class="ml-2">
+                                <button class="btn btn-sm btn-outline-secondary py-0 px-1 mr-1"
+                                        data-toggle="modal"
+                                        data-target="#editarComentarioModal"
+                                        th:attr="data-id=${com.id}, data-descripcion=${com.descripcion}">
+                                    <i class="fas fa-pencil-alt"></i>
+                                </button>
+
+                                <form th:action="@{/foro/comentario/eliminar}" method="post" class="d-inline form-eliminar">
+                                    <input type="hidden" name="idComentario" th:value="${com.id}" />
+                                    <button type="submit" class="btn btn-sm btn-outline-danger py-0 px-1">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -134,10 +178,139 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="confirmarEliminarModal" tabindex="-1" role="dialog" aria-labelledby="modalLabelConfirmar" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalLabelConfirmar">Confirmar Eliminación</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                ¿Estás seguro de que quieres eliminar este elemento? Esta acción no se puede deshacer.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger" id="botonConfirmarEliminar">Eliminar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="editarPublicacionModal" tabindex="-1" role="dialog" aria-labelledby="modalLabelEditar" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form id="formEditarPublicacion" th:action="@{/foro/publicacion/editar}" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLabelEditar">Editar Publicación</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="editIdPublicacion" name="idPublicacion">
 
+                    <div class="form-group">
+                        <label for="editTitulo">Título</label>
+                        <input type="text" class="form-control" id="editTitulo" name="titulo" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editDescripcion">Descripción</label>
+                        <textarea class="form-control" id="editDescripcion" name="descripcion" rows="4" required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="editarComentarioModal" tabindex="-1" role="dialog" aria-labelledby="modalLabelEditarComentario" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form id="formEditarComentario" th:action="@{/foro/comentario/editar}" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLabelEditarComentario">Editar Comentario</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="editIdComentario" name="idComentario">
+                    <div class="form-group">
+                        <label for="editDescripcionComentario">Descripción</label>
+                        <textarea class="form-control" id="editDescripcionComentario" name="descripcion" rows="3" required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
+<script>
+    $(document).ready(function() {
+        var formParaEliminar;
+
+
+        $('.form-eliminar button[type="submit"]').on('click', function(event) {
+
+            event.preventDefault();
+
+
+            formParaEliminar = $(this).closest('form');
+
+
+            $('#confirmarEliminarModal').modal('show');
+        });
+
+
+        $('#botonConfirmarEliminar').on('click', function() {
+
+            if (formParaEliminar) {
+                formParaEliminar.submit();
+            }
+        });
+    });
+    $('#editarPublicacionModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget); // El botón que activó el modal
+
+        // agarra la info de data
+        var id = button.data('id');
+        var titulo = button.data('titulo');
+        var descripcion = button.data('descripcion');
+
+        // actualiza el contenido del modal
+        var modal = $(this);
+        modal.find('#editIdPublicacion').val(id);
+        modal.find('#editTitulo').val(titulo);
+        modal.find('#editDescripcion').val(descripcion);
+    });
+    // script para el modal de editar publicación
+    $('#editarPublicacionModal').on('show.bs.modal', function (event) {
+        // ...
+    });
+
+
+    $('#editarComentarioModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+
+        var id = button.data('id');
+        var descripcion = button.data('descripcion');
+
+
+        var modal = $(this);
+        modal.find('#editIdComentario').val(id);
+        modal.find('#editDescripcionComentario').val(descripcion);
+    });
+</script>
 </body>
 </html>
