@@ -147,8 +147,8 @@ public class UsuarioMateria {
                 "id=" + id +
                 ", usuario=" + (usuario != null ? usuario.getEmail() : "null") +
                 ", materia=" + (materia != null ? materia.getNombre() : "null") +
-                ", estado='" + getEstado() + '\'' +
-                ", nota=" + nota +
+                ", estado='" + getEstadoo() + '\'' +
+                ", nota=" + getNota() +
                 ", dificultad=" + dificultad +
                 ", fechaAsignacion=" + fechaAsignacion +
                 '}';
