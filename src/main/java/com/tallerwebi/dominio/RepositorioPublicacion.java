@@ -9,4 +9,5 @@ public interface RepositorioPublicacion {
 
     Publicacion buscarPorId(Long id);
     List<Publicacion> buscarPublicaciones(Carrera carrera, Materia materia, String orden);
+
 }
