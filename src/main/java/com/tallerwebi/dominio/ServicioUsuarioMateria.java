@@ -47,6 +47,29 @@ public class ServicioUsuarioMateria {
 
         return estadisticaGeneral;
     }
+
+//    public ProgresoDTO obtenerEstadisticaGeneralPorCarrera(Long usuarioId) {
+//        Long totalMaterias = repositorioMateria.obtenerCantidadDeMateriasDeLaCarrera();
+//        Long totalDeUsuariosPorCarrera = repositorioUsuarioMateria.contadorDeTotalDeUsuariosPorCarrera(1L);
+//
+//        Long materiasAprobadasPorUsuario = repositorioUsuarioMateria.contadorDeMateriasAprobadasGeneralPorCarrera(1L);
+//        Long materiasDesaprobadasPorUsuario = repositorioUsuarioMateria.contadorDeMateriasDesaprobadasGeneralPorCarrera(1L);
+//        Long materiasCursandoPorUsuario = repositorioUsuarioMateria.contadorDeMateriasCursandoGeneralPorCarrera(1L);
+//
+//        Long materiasPendientes = totalMaterias - materiasAprobadasPorUsuario * 1;
+//
+//        ProgresoDTO estadisticaGeneral = new ProgresoDTO(totalMaterias, materiasCursandoPorUsuario,
+//                materiasTotalesPorUsuario, materiasDesaprobadasPorUsuario, materiasAprobadasPorUsuario,
+//                materiasPendientes);
+//
+//        estadisticaGeneral.setMateriasTotalesPorUsuario(totalMaterias); //Total de materias de la carrera
+//        estadisticaGeneral.setMateriasAprobadasPorUsuario(materiasAprobadasPorUsuario); //Materias aprobadas x el usuario
+//        estadisticaGeneral.setMateriasCursandoPorUsuario(materiasCursandoPorUsuario); //Materias que el usuario está cursando x el usuario
+//        estadisticaGeneral.setMateriasDesaprobadasPorUsuario(materiasDesaprobadasPorUsuario); //Materias desaprobadas x el usuario
+//        estadisticaGeneral.setMateriasPendientes(materiasPendientes); //Materias que no cursó el usuario
+//
+//        return estadisticaGeneral;
+//    }
     /**
      * Asigna una materia a un usuario (empieza cursando = nota null)
      */

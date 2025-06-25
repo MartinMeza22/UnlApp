@@ -27,7 +27,7 @@ public class ServicioEmail {
 
     public String generarCodigoVerificacion(){
         Random random = new Random();
-        Integer codigo = 1000 + random.nextInt(10000);
+        Integer codigo = 1000 + random.nextInt(9000);
         return String.valueOf(codigo);
     }
 
@@ -103,6 +103,4 @@ public class ServicioEmail {
 
     }
 
-    public void verificarCodigo(String iduser, String codigo) {
-    }
 }

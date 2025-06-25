@@ -137,4 +137,54 @@ public class RepositorioUsuarioMateriaImpl implements RepositorioUsuarioMateria 
                 .uniqueResult();
     }
 
+    //Estadisticas generales
+
+    public Long contadorDeMateriasAprobadasGeneralPorCarrera(Long carreraId) {
+        //Contar solamente relacion usuario-materia con estado 3
+        final String hql = "SELECT COUNT(um.id) " +
+                "FROM UsuarioMateria um " +
+                "WHERE um.estado = 3";
+
+        return (Long) sessionFactory.getCurrentSession()
+                .createQuery(hql)
+                .setParameter("carreraId", carreraId)
+                .uniqueResult();
+    }
+
+    public Long contadorDeMateriasDesaprobadasGeneralPorCarrera(Long carreraId) {
+        //Contar solamente relacion usuario-materia con estado 4
+        final String hql = "SELECT COUNT(um.id) " +
+                "FROM UsuarioMateria um " +
+                "WHERE um.usuario.id = :usuarioId AND um.estado = 4";
+
+        return (Long) sessionFactory.getCurrentSession()
+                .createQuery(hql)
+                .setParameter("carreraId", carreraId)
+                .uniqueResult();
+    }
+
+    public Long contadorDeMateriasCursandoGeneralPorCarrera(Long carreraId) {
+        //Contar solamente relacion usuario-materia con estado 2
+        final String hql = "SELECT COUNT(um.id) " +
+                "FROM UsuarioMateria um " +
+                "WHERE um.usuario.id = :usuarioId AND um.estado = 2";
+
+        return (Long) sessionFactory.getCurrentSession()
+                .createQuery(hql)
+                .setParameter("carreraId", carreraId)
+                .uniqueResult();
+    }
+
+    public Long contadorDeTotalDeUsuariosPorCarrera(Long carreraId) {
+        final String hql = "SELECT COUNT(um.id) " +
+                "FROM UsuarioMateria um ";
+
+        return (Long) sessionFactory.getCurrentSession()
+                .createQuery(hql)
+                .setParameter("carreraId", carreraId)
+                .uniqueResult();
+    }
+
+
+
 }

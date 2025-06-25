@@ -49,4 +49,10 @@ public interface RepositorioUsuarioMateria {
     Long contadorDeMateriasAprobadasPorUsuario(Long usuarioId);
     Long contadorDeMateriasDesaprobadasPorUsuario(Long usuarioId);
     Long contadorDeMateriasCursandoPorUsuario(Long usuarioId);
+
+    Long contadorDeMateriasAprobadasGeneralPorCarrera(Long carreraId);
+    Long contadorDeMateriasDesaprobadasGeneralPorCarrera(Long carreraId);
+    Long contadorDeMateriasCursandoGeneralPorCarrera(Long carreraId);
+
+    Long contadorDeTotalDeUsuariosPorCarrera(Long carreraId);
 }
