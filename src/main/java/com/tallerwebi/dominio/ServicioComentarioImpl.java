@@ -1,5 +1,7 @@
 package com.tallerwebi.dominio;
 
+import com.tallerwebi.dominio.excepcion.AccesoDenegado;
+import com.tallerwebi.dominio.excepcion.ComentarioInexistente;
 import com.tallerwebi.dominio.excepcion.PublicacionInexistente;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,5 +32,32 @@ public class ServicioComentarioImpl implements ServicioComentario {
         nuevoComentario.setPublicacion(publicacion);
 
         repositorioComentario.guardar(nuevoComentario);
+    }
+    @Override
+    public void modificarComentario(Long idComentario, String descripcion, Long idUsuario) throws ComentarioInexistente, AccesoDenegado {
+        Comentario comentario = repositorioComentario.buscarPorId(idComentario);
+        if (comentario == null) {
+            throw new ComentarioInexistente("El comentario que intentás modificar no existe.");
+        }
+
+        // ¡Verificación de seguridad!
+        if (!comentario.getUsuario().getId().equals(idUsuario)) {
+            throw new AccesoDenegado("No tenés permiso para modificar este comentario.");
+        }
+
+        comentario.setDescripcion(descripcion);
+        repositorioComentario.guardar(comentario); // guardar usa saveOrUpdate, por lo que actualiza
+    }
+    @Override
+    public void eliminarComentario(Long idComentario, Long idUsuarioQueElimina) throws ComentarioInexistente, AccesoDenegado {
+        Comentario comentario = repositorioComentario.buscarPorId(idComentario); // Necesitarás añadir buscarPorId al repositorio
+        if (comentario == null) {
+            throw new ComentarioInexistente("El comentario que intentas eliminar no existe.");
+        }
+        // ¡COMPROBACIÓN DE SEGURIDAD CRÍTICA!
+        if (!comentario.getUsuario().getId().equals(idUsuarioQueElimina)) {
+            throw new AccesoDenegado("No tienes permiso para eliminar este comentario.");
+        }
+        repositorioComentario.eliminar(comentario);
     }
 }

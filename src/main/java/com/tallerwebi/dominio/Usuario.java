@@ -1,6 +1,9 @@
 package com.tallerwebi.dominio;
 
 import javax.persistence.*;
+import java.util.Set;
+import java.util.Objects;
+
 
 @Entity
 public class Usuario {
@@ -22,6 +25,10 @@ public class Usuario {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "carreraID")
     private Carrera carrera;
+
+    //relacion con likes de las publicaciones
+    @ManyToMany(mappedBy = "usuariosQueDieronLike")
+    private Set<Publicacion> publicacionesLikeadas;
 
     // Getters and Setters
     public Long getId() {
@@ -127,6 +134,15 @@ public class Usuario {
         }
     }
 
+    //metodos para saber los likes del usuario
+    public Set<Publicacion> getPublicacionesLikeadas() {
+        return publicacionesLikeadas;
+    }
+
+    public void setPublicacionesLikeadas(Set<Publicacion> publicacionesLikeadas) {
+        this.publicacionesLikeadas = publicacionesLikeadas;
+    }
+
 //    public void setCarrera(Carrera carrera) {
 //        this.carrera = carrera;
 //    }
@@ -142,5 +158,29 @@ public class Usuario {
 
     public void activar() {
         activo = true;
+    }
+
+    /*esto es para que el programa pueda saber si el usuario le dio like a la publicacion o no
+      porque no comparaba los ids correctamente
+    */
+    @Override
+    public boolean equals(Object o) {
+
+        if (this == o) return true;
+
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+
+        Usuario usuario = (Usuario) o;
+
+
+        return id != null && id.equals(usuario.id);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id);
     }
 }
