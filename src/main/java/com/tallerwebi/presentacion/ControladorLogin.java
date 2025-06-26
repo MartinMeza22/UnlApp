@@ -49,17 +49,18 @@ public class ControladorLogin {
         ModelMap model = new ModelMap();
 
         Usuario usuarioBuscado = repositorioLogin.consultarUsuario(datosLogin.getEmail(), datosLogin.getPassword());
-        if (usuarioBuscado != null) {
-            request.getSession().setAttribute("ROL", usuarioBuscado.getRol());
-            request.getSession().setAttribute("NOMBRE", usuarioBuscado.getNombre()); // <-- NUEVO
-            request.getSession().setAttribute("ID", usuarioBuscado.getId()); // <-- NUEVO
-            return new ModelAndView("redirect:/home");
+        if (usuarioBuscado == null) {
+            model.put("error", "Usuario o clave incorrecta");
         } else if (!usuarioBuscado.getActivo()) {
             model.put("error", "Tu cuenta no ha sido activada. Por favor, verifica tu email");
         } else {
-            model.put("error", "Usuario o clave incorrecta");
+            request.getSession().setAttribute("ROL", usuarioBuscado.getRol());
+            request.getSession().setAttribute("NOMBRE", usuarioBuscado.getNombre());
+            request.getSession().setAttribute("ID", usuarioBuscado.getId());
+            return new ModelAndView("redirect:/home");
         }
         return new ModelAndView("login", model);
+
     }
 
     @RequestMapping(path = "/registrarme", method = RequestMethod.POST)
