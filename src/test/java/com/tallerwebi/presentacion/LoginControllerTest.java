@@ -80,7 +80,7 @@ public class LoginControllerTest {
         verify(sessionMock).setAttribute("NOMBRE", "Franco");
         verify(sessionMock).setAttribute("ID", 5L);
     }
-
+//
     @Test
     public void validarLogin_conCredencialesInvalidas_redirigeAlLoginConError() {
         DatosLogin datosLogin = new DatosLogin("fail@mail.com", "wrong");
