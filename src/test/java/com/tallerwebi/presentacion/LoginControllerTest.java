@@ -2,6 +2,7 @@ package com.tallerwebi.presentacion;
 
 import com.tallerwebi.dominio.*;
 import com.tallerwebi.dominio.excepcion.UsuarioExistente;
+import com.tallerwebi.dominio.excepcion.UsuarioNoEncontrado;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -27,6 +28,7 @@ public class LoginControllerTest {
     private RepositorioUsuario repositorioUsuarioMock;
     private ServicioUsuarioMateria servicioUsuarioMateriaMock;
     private ServicioCarrera servicioCarreraMock;
+    private ServicioUsuario servicioUsuarioMock;
     private HttpServletRequest requestMock;
     private HttpSession sessionMock;
     private HttpServletRequest mockHttpServletRequestMock;
@@ -41,6 +43,7 @@ public class LoginControllerTest {
         repositorioLoginMock = mock(RepositorioLogin.class);
         servicioMateriaMock = mock(ServicioMateria.class);
         servicioCarreraMock = mock(ServicioCarrera.class);
+        servicioUsuarioMock = mock(ServicioUsuario.class);
 
         controladorLogin = new ControladorLogin(repositorioLoginMock, servicioEmailMock, repositorioUsuarioMock, servicioUsuarioMateriaMock, servicioCarreraMock);
 
@@ -98,28 +101,28 @@ public class LoginControllerTest {
         assertTrue(mav.getModel().containsKey("usuario"));
     }
 
-//    @Test
-//    public void registrarme_conUsuarioNuevo_redirigeAFormularioDeMaterias() throws UsuarioExistente {
-//        Usuario usuario = new Usuario();
-//
-//        when(servicioMateriaMock.obtenerTodasLasMateriasPorNombre()).thenReturn(List.of());
-//
-//        ModelAndView mav = controladorLogin.registrarme(usuario);
-//
-//        assertThat(mav.getViewName(), equalToIgnoringCase("nuevo-usuario"));
-//    }
+    @Test
+    public void registrarme_conUsuarioNuevo_redirigeAFormularioDeMaterias() throws UsuarioExistente {
+        Usuario usuario = new Usuario();
+        ModelAndView mav = controladorLogin.registrarme(usuario,mockHttpServletRequestMock);
 
-//    @Test
-//    public void registrarme_conUsuarioExistente_redirigeANuevoUsuarioConError() throws UsuarioExistente {
-//        Usuario usuario = new Usuario();
-//
-//        doThrow(UsuarioExistente.class).when(repositorioLoginMock).registrar(usuario);
-//
-//        ModelAndView mav = controladorLogin.registrarme(usuario);
-//
-//        assertThat(mav.getViewName(), equalToIgnoringCase("nuevo-usuario"));
-//        assertThat(mav.getModel().get("error").toString(), equalToIgnoringCase("El usuario ya existe"));
-//    }
+        assertThat(mav.getViewName(), equalToIgnoringCase("nuevo-usuario"));
+    }
+
+    @Test
+    public void registrarme_conUsuarioExistente_redirigeANuevoUsuarioConError() throws UsuarioExistente {
+        Usuario usuario = new Usuario();
+        usuario.setEmail("test@unlam.com");
+        usuario.setPassword("1234");
+
+        // Muy importante: usar any(Usuario.class) para que el mock funcione
+        doThrow(UsuarioExistente.class).when(repositorioLoginMock).registrar(usuario);
+
+        ModelAndView mav = controladorLogin.registrarme(usuario, requestMock); // <-- pasás el requestMock
+
+        assertThat(mav.getViewName(), equalToIgnoringCase("nuevo-usuario"));
+        assertThat(mav.getModel().get("error").toString(), equalToIgnoringCase("El usuario ya existe"));
+    }
 
     @Test
     public void inicio_redirigeALogin() {
@@ -129,4 +132,35 @@ public class LoginControllerTest {
     }
 
 
+    @Test
+    public void registrarmeExitosamente() throws UsuarioExistente, UsuarioNoEncontrado {
+        Usuario usuario = new Usuario();
+        usuario.setEmail("martin@gmail.com");
+        usuario.setPassword("1234");
+        usuario.setNombre("Martin");
+        usuario.setApellido("Meza");
+        usuario.setCarreraID(1L);
+        usuario.setSituacionLaboral("Empleado");
+        usuario.setDisponibilidadHoraria(20);
+
+        Usuario usuarioGuardado = new Usuario();
+        usuarioGuardado.setId(4L);
+        usuarioGuardado.setEmail("martin@gmail.com");
+
+        when(servicioUsuarioMock.obtenerUsuario(4L)).thenReturn(usuarioGuardado);
+        when(repositorioLoginMock.consultarUsuario("martin@gmail.com", "1234")).thenReturn(usuarioGuardado);
+        when(requestMock.getSession()).thenReturn(sessionMock);
+
+        ModelAndView mav = controladorLogin.registrarme(usuario, requestMock);
+        verify(repositorioLoginMock).registrar(usuario);
+        verify(sessionMock).setAttribute("ID", usuarioGuardado.getId());
+    }
+
 }
+
+
+//Preparás los datos y mocks (Setup).
+//
+//Ejecutás el método que querés testear (Act).
+//
+//Verificás lo que esperás que pase (Assert).

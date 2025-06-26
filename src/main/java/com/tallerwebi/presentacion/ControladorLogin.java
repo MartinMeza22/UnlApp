@@ -54,7 +54,7 @@ public class ControladorLogin {
             request.getSession().setAttribute("NOMBRE", usuarioBuscado.getNombre()); // <-- NUEVO
             request.getSession().setAttribute("ID", usuarioBuscado.getId()); // <-- NUEVO
             return new ModelAndView("redirect:/home");
-        } else if (usuarioBuscado != null && !usuarioBuscado.getActivo()) {
+        } else if (!usuarioBuscado.getActivo()) {
             model.put("error", "Tu cuenta no ha sido activada. Por favor, verifica tu email");
         } else {
             model.put("error", "Usuario o clave incorrecta");
