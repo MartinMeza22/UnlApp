@@ -67,7 +67,8 @@ public class LoginControllerTest {
         Usuario usuarioMock = new Usuario();
         usuarioMock.setNombre("Franco");
         usuarioMock.setRol("USER");
-        usuarioMock.setId(1L);
+        usuarioMock.setId(5L);
+        usuarioMock.setActivo(true);
 
         when(repositorioLoginMock.consultarUsuario("test@mail.com", "1234")).thenReturn(usuarioMock);
         when(requestMock.getSession()).thenReturn(sessionMock);
@@ -77,14 +78,14 @@ public class LoginControllerTest {
         assertThat(mav.getViewName(), equalToIgnoringCase("redirect:/home"));
         verify(sessionMock).setAttribute("ROL", "USER");
         verify(sessionMock).setAttribute("NOMBRE", "Franco");
-        verify(sessionMock).setAttribute("ID", 1L);
+        verify(sessionMock).setAttribute("ID", 5L);
     }
 
     @Test
     public void validarLogin_conCredencialesInvalidas_redirigeAlLoginConError() {
         DatosLogin datosLogin = new DatosLogin("fail@mail.com", "wrong");
 
-        when(repositorioLoginMock.consultarUsuario(anyString(), anyString())).thenReturn(null);
+        when(repositorioLoginMock.consultarUsuario("fail@mail.com", "wrong")).thenReturn(null);
 
         ModelAndView mav = controladorLogin.validarLogin(datosLogin, requestMock);
 
