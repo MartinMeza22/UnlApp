@@ -59,7 +59,16 @@ public class RepositorioUsuarioImpl implements RepositorioUsuario {
     @Transactional
     public void eliminar(Usuario usuario) {
         Session session = sessionFactory.getCurrentSession();
+
+        // Eliminar relaciones usuario_materia antes de eliminar al usuario
+        String hql = "DELETE FROM UsuarioMateria um WHERE um.usuario.id = :usuarioId";
+        session.createQuery(hql)
+                .setParameter("usuarioId", usuario.getId())
+                .executeUpdate();
+
+        // Ahora sí, eliminar el usuario
         session.delete(session.contains(usuario) ? usuario : session.merge(usuario));
     }
+
 
 }
