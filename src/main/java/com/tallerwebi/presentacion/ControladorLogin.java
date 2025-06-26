@@ -49,8 +49,16 @@ public class ControladorLogin {
         ModelMap model = new ModelMap();
 
         Usuario usuarioBuscado = repositorioLogin.consultarUsuario(datosLogin.getEmail(), datosLogin.getPassword());
+
         if (usuarioBuscado == null) {
             model.put("error", "Usuario o clave incorrecta");
+
+        if (usuarioBuscado != null) {
+            request.getSession().setAttribute("ROL", usuarioBuscado.getRol());
+            request.getSession().setAttribute("NOMBRE", usuarioBuscado.getNombre()); // <-- NUEVO
+            request.getSession().setAttribute("ID", usuarioBuscado.getId()); // <-- NUEVO
+            return new ModelAndView("redirect:/home");
+
         } else if (!usuarioBuscado.getActivo()) {
             model.put("error", "Tu cuenta no ha sido activada. Por favor, verifica tu email");
         } else {
