@@ -83,20 +83,25 @@ public class VistaResumenInteligenteE2E {
 
         // Mostrar resumen
         page.click("#btnMostrarResumen");
-        page.waitForSelector(".modal.show >> #contenidoResumen", new Page.WaitForSelectorOptions()
+
+        // Esperar a que el contenido cargue dentro del modal
+        page.waitForSelector("#contenidoResumen", new Page.WaitForSelectorOptions()
                 .setTimeout(10000)
                 .setState(WaitForSelectorState.VISIBLE));
 
-        // Esperar la descarga del PDF
+        // Esperar a que el botón de descarga aparezca
+        page.waitForSelector("#btnDescargarResumen", new Page.WaitForSelectorOptions()
+                .setTimeout(5000)
+                .setState(WaitForSelectorState.VISIBLE));
+
+        // Iniciar y esperar la descarga
         Download download = page.waitForDownload(() -> {
             page.click("#btnDescargarResumen");
         });
 
-        // Validar que el archivo se descargó
         assertNotNull(download);
         assertThat(download.suggestedFilename(), endsWith(".pdf"));
-
-
     }
+
 
 }
