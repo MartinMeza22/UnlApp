@@ -29,7 +29,7 @@ public class VistaResumenInteligenteE2E {
     }
     @BeforeEach
     void crearContextoYPagina() {
-        ReiniciarDB.limpiarBaseDeDatos();
+       // ReiniciarDB.limpiarBaseDeDatos();
 
         context = browser.newContext(new Browser.NewContextOptions().setAcceptDownloads(true)); // clave para capturar descargas
         page = context.newPage();
@@ -39,5 +39,31 @@ public class VistaResumenInteligenteE2E {
     @AfterEach
     void cerrarContexto() {
         context.close();
+    }
+    @Test
+    void deberiaMostrarYDescargarElResumenInteligente() {
+        // Login
+        vistaLogin.escribirEMAIL("user@gmail.com");
+        vistaLogin.escribirClave("12345678");
+        vistaLogin.darClickEnIniciarSesion();
+
+        VistaHome vistaHome = new VistaHome(page);
+
+        // Mostrar resumen
+        vistaHome.darClickEnBotonVerResumen();
+
+        // Esperar a que cargue el modal con el texto generado
+        page.waitForSelector("#contenidoResumen", new Page.WaitForSelectorOptions().setTimeout(5000));
+        String contenido = page.locator("#contenidoResumen").textContent();
+        assertThat(contenido, containsString("fortaleza"));
+
+        // Descargar PDF
+        Download descarga = page.waitForDownload(() -> {
+            vistaHome.darClickEnBotonDescargarPDF();
+        });
+
+        Path archivoPDF = descarga.path();
+        assertThat("El archivo descargado debe ser un PDF", archivoPDF.toString(), endsWith(".pdf"));
+        assertThat("El archivo debe existir", archivoPDF.toFile().exists(), is(true));
     }
 }

@@ -6,7 +6,7 @@ VALUES
 -- Luego insertar los usuarios (ahora la carreraID = 1 existe)
 INSERT INTO Usuario(id, email, password, rol, carreraID, nombre, apellido, telefono, situacionLaboral, disponibilidadHoraria, activo)
 VALUES
-    (1, 'user@gmail.com', '12345678', 'ALUMNO', 1, 'Juan', 'Pérez', NULL, 'desempleado', 1, false),
+    (1, 'user@gmail.com', '12345678', 'ALUMNO', 1, 'Juan', 'Pérez', NULL, 'desempleado', 1, true),
     (2, 'user2@user.com', '123', 'ALUMNO', 1, 'Ana', 'Gómez', NULL, 'empleado', 2, false);
 
 -- Insertar las materias del cuatrimestre 1 (sin correlativas)
