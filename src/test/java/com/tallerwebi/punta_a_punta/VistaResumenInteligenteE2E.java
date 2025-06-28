@@ -10,6 +10,8 @@ import java.nio.file.Path;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 public class VistaResumenInteligenteE2E {
     static Playwright playwright;
     static Browser browser;
@@ -70,6 +72,31 @@ public class VistaResumenInteligenteE2E {
                         containsString("fuerte"),
                         containsString("tu fuerte radica")
                 ));
+    }
+    @Test
+    void deberiaDescargarElResumenInteligente() {
+        realizarLoginComoTestUser();
+
+        // Ir al progreso académico
+        page.click("text=Ver progreso académico");
+        page.waitForURL("**/progreso");
+
+        // Mostrar resumen
+        page.click("#btnMostrarResumen");
+        page.waitForSelector(".modal.show >> #contenidoResumen", new Page.WaitForSelectorOptions()
+                .setTimeout(10000)
+                .setState(WaitForSelectorState.VISIBLE));
+
+        // Esperar la descarga del PDF
+        Download download = page.waitForDownload(() -> {
+            page.click("#btnDescargarResumen");
+        });
+
+        // Validar que el archivo se descargó
+        assertNotNull(download);
+        assertThat(download.suggestedFilename(), endsWith(".pdf"));
+
+
     }
 
 }
