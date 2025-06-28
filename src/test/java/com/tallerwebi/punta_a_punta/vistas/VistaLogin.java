@@ -6,7 +6,7 @@ public class VistaLogin extends VistaWeb {
 
     public VistaLogin(Page page) {
         super(page);
-        page.navigate("localhost:8080/spring/login");
+        page.navigate("http://localhost:8080/tallerwebi-base-1.0-SNAPSHOT/login");
     }
 
     public String obtenerTextoDeLaBarraDeNavegacion(){
