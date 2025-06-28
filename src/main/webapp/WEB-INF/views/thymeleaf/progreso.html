@@ -730,6 +730,15 @@
         const resumenModal = new bootstrap.Modal(modalElement);
         const btnDescargar = document.getElementById('btnDescargarResumen');
 
+        let nombreUsuario = "Estudiante";
+
+        // Obtener nombre de usuario desde backend
+        fetch('/tallerwebi-base-1.0-SNAPSHOT/nombre-usuario')
+            .then(res => res.text())
+            .then(nombre => {
+                nombreUsuario = nombre;
+            });
+
         document.getElementById('btnMostrarResumen').addEventListener('click', function () {
             modalBody.textContent = "Cargando...";
             btnDescargar.style.display = 'none';
@@ -751,18 +760,32 @@
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
 
+            const fecha = new Date().toLocaleDateString('es-AR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+
             const texto = modalBody.textContent;
             const marginLeft = 10;
-            const marginTop = 20;
-            const lineHeight = 10;
+            const marginTop = 40;
 
-            const lines = doc.splitTextToSize(texto, 180); // 180 = ancho del texto dentro del A4
+            // Título
+            doc.setFontSize(14);
+            doc.text(`Resumen Académico de ${nombreUsuario}`, marginLeft, 15);
+            doc.setFontSize(10);
+            doc.text(`Fecha: ${fecha}`, marginLeft, 25);
+
+            // Contenido
+            doc.setFontSize(12);
+            const lines = doc.splitTextToSize(texto, 180);
             doc.text(lines, marginLeft, marginTop);
 
-            doc.save("ResumenAcademico.pdf");
+            doc.save(`Resumen_${nombreUsuario.replace(/\s+/g, '_')}.pdf`);
         });
     });
 </script>
+
 
 
 <div class="modal fade" id="resumenModal" tabindex="-1" aria-labelledby="resumenModalLabel" aria-hidden="true">
