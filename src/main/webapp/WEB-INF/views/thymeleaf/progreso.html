@@ -681,6 +681,8 @@
     </div>
 
     <button id="btnMostrarResumen" class="btn btn-primary">Ver Resumen Inteligente</button>
+    <button id="btnDescargarResumen" class="btn btn-success mt-2" style="display: none;">Descargar como PDF</button>
+
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -720,26 +722,44 @@
         }
     }
 </script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const modalElement = document.getElementById('resumenModal');
         const modalBody = document.getElementById('contenidoResumen');
         const resumenModal = new bootstrap.Modal(modalElement);
+        const btnDescargar = document.getElementById('btnDescargarResumen');
 
         document.getElementById('btnMostrarResumen').addEventListener('click', function () {
             modalBody.textContent = "Cargando...";
+            btnDescargar.style.display = 'none';
 
             fetch('/tallerwebi-base-1.0-SNAPSHOT/resumen-inteligente')
                 .then(response => response.text())
                 .then(text => {
                     modalBody.textContent = text;
                     resumenModal.show();
+                    btnDescargar.style.display = 'inline-block';
                 })
                 .catch(err => {
                     modalBody.textContent = "Error al obtener el resumen.";
                     resumenModal.show();
                 });
+        });
+
+        btnDescargar.addEventListener('click', async () => {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            const texto = modalBody.textContent;
+            const marginLeft = 10;
+            const marginTop = 20;
+            const lineHeight = 10;
+
+            const lines = doc.splitTextToSize(texto, 180); // 180 = ancho del texto dentro del A4
+            doc.text(lines, marginLeft, marginTop);
+
+            doc.save("ResumenAcademico.pdf");
         });
     });
 </script>
@@ -758,5 +778,9 @@
         </div>
     </div>
 </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+
 </body>
 </html>
