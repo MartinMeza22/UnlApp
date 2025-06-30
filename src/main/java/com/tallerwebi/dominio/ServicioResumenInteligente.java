@@ -13,9 +13,12 @@ public class ServicioResumenInteligente {
     private static final String API_KEY = "AIzaSyAYBb9GvrXAYLcDSRzPRiY2V4Z9XZfjTOE";
     private static final String ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + API_KEY;
 
+    public ServicioResumenInteligente(RestTemplate restTemplateMock, ServicioProgreso servicioProgresoMock) {
+    }
+
     public String generarPrompt(List<MateriaDTO> materias, Double progreso) {
         StringBuilder prompt = new StringBuilder();
-        prompt.append("Soy un estudiante de una tecnicatura en desarrollo web. Estas son las materias que he cursado y sus respectivas notas y dificultades:\n\n");
+        prompt.append("Soy un estudiante universitario. Estas son las materias que he cursado y sus respectivas notas y dificultades:\n\n");
 
         for (MateriaDTO mat : materias) {
             if ("APROBADA".equalsIgnoreCase(mat.getEstado())) {
@@ -64,22 +67,22 @@ public class ServicioResumenInteligente {
         content.put("parts", Collections.singletonList(part));
 
         Map<String, Object> requestBody = new HashMap<>();
-        requestBody.put("contents", Collections.singletonList(content));
+        requestBody.put("contents", Collections.singletonList(content)); //lista con un solo elemento
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers); //representa el request
 
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<Map> response = restTemplate.postForEntity(ENDPOINT, entity, Map.class);
+        ResponseEntity<Map> response = restTemplate.postForEntity(ENDPOINT, entity, Map.class); //hace un post al endpoint
 
-        if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
+        if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) { //evalua el codigo de respuesta
             return "Error al generar el resumen.";
         }
 
         Map<String, Object> body = response.getBody();
-        List<Map<String, Object>> candidates = (List<Map<String, Object>>) body.get("candidates");
+        List<Map<String, Object>> candidates = (List<Map<String, Object>>) body.get("candidates"); //lista de respuestas que genero Gemini
 
         if (candidates == null || candidates.isEmpty()) {
             return "Error al generar el resumen";

@@ -35,7 +35,6 @@ public class ControladorResumenInteligente {
             return "Error: usuario no autenticado.";
         }
 
-        // Para obtener el id de la carrera
         String idCarrera = this.servicioUsuarioMateria.obtenerUsuario(usuarioId).getCarreraID().toString();
 
         List<MateriaDTO> materias = servicioProgreso.materias(idCarrera, usuarioId);
