@@ -6,21 +6,28 @@ import com.tallerwebi.dominio.excepcion.UsuarioNoEncontrado;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.ui.ModelMap;
 import static org.hamcrest.Matchers.*;
+
+import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
+import java.util.Objects;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.text.IsEqualIgnoringCase.equalToIgnoringCase;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class LoginControllerTest {
-
     private ControladorLogin controladorLogin;
     private RepositorioLogin repositorioLoginMock;
     private ServicioMateria servicioMateriaMock;
@@ -32,10 +39,10 @@ public class LoginControllerTest {
     private HttpServletRequest requestMock;
     private HttpSession sessionMock;
     private HttpServletRequest mockHttpServletRequestMock;
+    private MockMvc mockMvc;
 
     @BeforeEach
     public void init() {
-
         servicioEmailMock = mock(ServicioEmail.class);
         repositorioUsuarioMock = mock(RepositorioUsuario.class);
         servicioUsuarioMateriaMock = mock(ServicioUsuarioMateria.class);
@@ -61,7 +68,7 @@ public class LoginControllerTest {
     }
 
     @Test
-    public void validarLogin_conCredencialesValidas_redirigeAHome() {
+    public void debeLoguearseCorrectamenteEIrAHome(){
         DatosLogin datosLogin = new DatosLogin("test@mail.com", "1234");
 
         Usuario usuarioMock = new Usuario();
@@ -75,7 +82,7 @@ public class LoginControllerTest {
 
         ModelAndView mav = controladorLogin.validarLogin(datosLogin, requestMock);
 
-        assertThat(mav.getViewName(), equalToIgnoringCase("redirect:/home"));
+        assertThat(mav.getViewName(), equalToIgnoringCase("/home"));
         verify(sessionMock).setAttribute("ROL", "USER");
         verify(sessionMock).setAttribute("NOMBRE", "Franco");
         verify(sessionMock).setAttribute("ID", 5L);
@@ -157,6 +164,33 @@ public class LoginControllerTest {
         verify(sessionMock).setAttribute("ID", usuarioGuardado.getId());
     }
 
+//    @Test
+//    public void debeRetornarLaPaginaLoginCuandoSeNavegaALaRaiz() throws Exception {
+//
+//        MvcResult result = this.mockMvc.perform(get("/"))
+//                /*.andDo(print())*/
+//                .andExpect(status().is3xxRedirection())
+//                .andReturn();
+//
+//        ModelAndView modelAndView = result.getModelAndView();
+//        assert modelAndView != null;
+//        assertThat("redirect:/login", equalToIgnoringCase(Objects.requireNonNull(modelAndView.getViewName())));
+//        assertThat(true, is(modelAndView.getModel().isEmpty()));
+//    }
+
+//    @Test
+//    public void debeRetornarLaPaginaLoginCuandoSeNavegaALLogin() throws Exception {
+//
+//        MvcResult result = this.mockMvc.perform(get("/login"))
+//                .andExpect(status().isOk())
+//                .andReturn();
+//
+//        ModelAndView modelAndView = result.getModelAndView();
+//        assert modelAndView != null;
+//        assertThat(modelAndView.getViewName(), equalToIgnoringCase("login"));
+//        assertThat(modelAndView.getModel().get("datosLogin").toString(),  containsString("com.tallerwebi.dominio.DatosLogin"));
+//
+//    }
 }
 
 
