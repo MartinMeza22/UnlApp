@@ -1,4 +1,8 @@
-package com.tallerwebi.dominio;
+package com.tallerwebi.repositorioInterfaz;
+
+import com.tallerwebi.dominio.Evento;
+import com.tallerwebi.dominio.Materia;
+import com.tallerwebi.dominio.Usuario;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

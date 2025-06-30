@@ -1,4 +1,8 @@
-package com.tallerwebi.dominio;
+package com.tallerwebi.repositorioInterfaz;
+
+import com.tallerwebi.dominio.Carrera;
+import com.tallerwebi.dominio.Materia;
+import com.tallerwebi.dominio.Publicacion;
 
 import java.util.List;
 

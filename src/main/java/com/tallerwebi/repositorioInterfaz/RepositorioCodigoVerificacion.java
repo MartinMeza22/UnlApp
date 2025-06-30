@@ -1,4 +1,7 @@
-package com.tallerwebi.dominio;
+package com.tallerwebi.repositorioInterfaz;
+
+import com.tallerwebi.dominio.CodigoVerificacion;
+import com.tallerwebi.dominio.Usuario;
 
 public interface RepositorioCodigoVerificacion {
     void guardar(CodigoVerificacion codigoVerificacion);

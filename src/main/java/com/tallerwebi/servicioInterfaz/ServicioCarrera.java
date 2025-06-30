@@ -1,4 +1,6 @@
-package com.tallerwebi.dominio;
+package com.tallerwebi.servicioInterfaz;
+
+import com.tallerwebi.dominio.Carrera;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.tallerwebi.dominio;
+package com.tallerwebi.servicioInterfaz;
 
 public interface ServicioNotificacionProgramada {
 

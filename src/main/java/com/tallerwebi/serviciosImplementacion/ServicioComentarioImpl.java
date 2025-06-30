@@ -1,8 +1,14 @@
-package com.tallerwebi.dominio;
+package com.tallerwebi.serviciosImplementacion;
 
+import com.tallerwebi.dominio.Comentario;
+import com.tallerwebi.dominio.Publicacion;
+import com.tallerwebi.dominio.Usuario;
+import com.tallerwebi.repositorioInterfaz.RepositorioComentario;
 import com.tallerwebi.dominio.excepcion.AccesoDenegado;
 import com.tallerwebi.dominio.excepcion.ComentarioInexistente;
 import com.tallerwebi.dominio.excepcion.PublicacionInexistente;
+import com.tallerwebi.servicioInterfaz.ServicioComentario;
+import com.tallerwebi.servicioInterfaz.ServicioPublicacion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;

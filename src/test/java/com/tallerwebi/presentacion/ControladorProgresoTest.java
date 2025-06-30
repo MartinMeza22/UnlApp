@@ -2,7 +2,9 @@ package com.tallerwebi.presentacion;
 
 import com.tallerwebi.dominio.*;
 import com.tallerwebi.dominio.DTO.MateriaDTO;
-import com.tallerwebi.dominio.DTO.ProgresoDTO;
+import com.tallerwebi.dominio.servicios.ServicioMateria;
+import com.tallerwebi.dominio.servicios.ServicioProgreso;
+import com.tallerwebi.dominio.servicios.ServicioUsuarioMateria;
 import com.tallerwebi.dto.MateriasDTO;
 import com.tallerwebi.dto.MateriasWrapper;
 import org.junit.jupiter.api.BeforeEach;

@@ -2,7 +2,7 @@ package com.tallerwebi.infraestructura;
 
 import com.tallerwebi.dominio.Carrera;
 import com.tallerwebi.dominio.Materia;
-import com.tallerwebi.dominio.RepositorioMateria;
+import com.tallerwebi.repositorioInterfaz.RepositorioMateria;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;

@@ -1,5 +1,11 @@
-package com.tallerwebi.dominio;
+package com.tallerwebi.serviciosImplementacion;
 
+import com.tallerwebi.dominio.Evento;
+import com.tallerwebi.dominio.Materia;
+import com.tallerwebi.dominio.Usuario;
+import com.tallerwebi.dominio.servicios.ServicioEmail;
+import com.tallerwebi.repositorioInterfaz.RepositorioEvento;
+import com.tallerwebi.servicioInterfaz.ServicioNotificacionProgramada;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 

@@ -1,4 +1,6 @@
-package com.tallerwebi.dominio;
+package com.tallerwebi.repositorioInterfaz;
+
+import com.tallerwebi.dominio.Comentario;
 
 public interface RepositorioComentario {
     void guardar(Comentario comentario);

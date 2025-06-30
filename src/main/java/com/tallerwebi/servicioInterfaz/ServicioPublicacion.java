@@ -1,5 +1,8 @@
-package com.tallerwebi.dominio;
+package com.tallerwebi.servicioInterfaz;
 
+import com.tallerwebi.dominio.Carrera;
+import com.tallerwebi.dominio.Publicacion;
+import com.tallerwebi.dominio.Usuario;
 import com.tallerwebi.dominio.excepcion.AccesoDenegado;
 import com.tallerwebi.dominio.excepcion.PublicacionInexistente;
 import com.tallerwebi.dominio.excepcion.UsuarioNoEncontrado;

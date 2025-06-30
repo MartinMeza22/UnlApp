@@ -1,6 +1,5 @@
-package com.tallerwebi.dominio;
+package com.tallerwebi.wrapper;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tallerwebi.dto.MateriasDTO;
 
 import java.util.List;

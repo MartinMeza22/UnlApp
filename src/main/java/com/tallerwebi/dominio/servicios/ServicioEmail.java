@@ -1,5 +1,10 @@
-package com.tallerwebi.dominio;
+package com.tallerwebi.dominio.servicios;
 
+import com.tallerwebi.dominio.CodigoVerificacion;
+import com.tallerwebi.dominio.Usuario;
+import com.tallerwebi.repositorioInterfaz.RepositorioCodigoVerificacion;
+import com.tallerwebi.repositorioInterfaz.RepositorioLogin;
+import com.tallerwebi.repositorioInterfaz.RepositorioUsuario;
 import com.tallerwebi.dominio.excepcion.CodigoVerificacionExpirado;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;

@@ -1,18 +1,22 @@
 package com.tallerwebi.presentacion;
 
+import com.tallerwebi.dominio.servicios.ServicioEmail;
+import com.tallerwebi.dominio.servicios.ServicioMateria;
+import com.tallerwebi.dominio.servicios.ServicioUsuarioMateria;
+import com.tallerwebi.repositorioInterfaz.RepositorioLogin;
+import com.tallerwebi.repositorioInterfaz.RepositorioUsuario;
 import com.tallerwebi.dominio.*;
 import com.tallerwebi.dominio.excepcion.CodigoVerificacionExpirado;
 import com.tallerwebi.dominio.excepcion.CodigoVerificacionIncorrecto;
 import com.tallerwebi.dominio.excepcion.UsuarioExistente;
+import com.tallerwebi.servicioInterfaz.ServicioCarrera;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Controller

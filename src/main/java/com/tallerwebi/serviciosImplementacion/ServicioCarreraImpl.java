@@ -1,5 +1,8 @@
-package com.tallerwebi.dominio;
+package com.tallerwebi.serviciosImplementacion;
 
+import com.tallerwebi.dominio.Carrera;
+import com.tallerwebi.repositorioInterfaz.RepositorioCarrera;
+import com.tallerwebi.servicioInterfaz.ServicioCarrera;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

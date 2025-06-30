@@ -1,5 +1,11 @@
-package com.tallerwebi.dominio;
+package com.tallerwebi.dominio.servicios;
 
+import com.tallerwebi.dominio.Evento;
+import com.tallerwebi.dominio.Materia;
+import com.tallerwebi.dominio.Usuario;
+import com.tallerwebi.repositorioInterfaz.RepositorioEvento;
+import com.tallerwebi.repositorioInterfaz.RepositorioMateria;
+import com.tallerwebi.repositorioInterfaz.RepositorioUsuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -7,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service("servicioEvento")
 @Transactional
