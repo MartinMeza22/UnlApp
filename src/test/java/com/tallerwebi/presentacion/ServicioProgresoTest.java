@@ -94,7 +94,7 @@ public class ServicioProgresoTest {
         assertThat(materiaDTO2.getNombre(), is("Base de datos"));
         assertThat(materiaDTO2.getEstado(), is("CURSANDO"));
         assertThat(materiaDTO2.getCuatrimestre(), is(2));
-        // assertThat(materiaDTO2.getDificultad(), is("Medio")); --> Si esta CURSANDO no tiene dificultad
+        // assertThat(materiaDTO2.getDificultad(), is("Medio")); --> Si esta CURSANDO no tiene dificultadMateria
 
     }
 
