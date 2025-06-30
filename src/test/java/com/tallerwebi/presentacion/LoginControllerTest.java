@@ -82,7 +82,7 @@ public class LoginControllerTest {
 
         ModelAndView mav = controladorLogin.validarLogin(datosLogin, requestMock);
 
-        assertThat(mav.getViewName(), equalToIgnoringCase("/home"));
+        assertThat(mav.getViewName(), equalToIgnoringCase("redirect:/home"));
         verify(sessionMock).setAttribute("ROL", "USER");
         verify(sessionMock).setAttribute("NOMBRE", "Franco");
         verify(sessionMock).setAttribute("ID", 5L);
