@@ -1,7 +1,10 @@
 package com.tallerwebi.presentacion;
 
+import com.tallerwebi.dominio.servicios.ServicioUsuarioMateria;
+import com.tallerwebi.repositorioInterfaz.RepositorioUsuario;
 import com.tallerwebi.dominio.*;
 import com.tallerwebi.dominio.excepcion.UsuarioNoEncontrado;
+import com.tallerwebi.servicioInterfaz.ServicioUsuario;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.servlet.ModelAndView;

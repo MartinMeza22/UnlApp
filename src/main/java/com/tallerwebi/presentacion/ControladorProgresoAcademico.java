@@ -2,6 +2,9 @@ package com.tallerwebi.presentacion;
 
 import com.tallerwebi.dominio.*;
 import com.tallerwebi.dominio.DTO.ProgresoDTO;
+import com.tallerwebi.dominio.servicios.ServicioMateria;
+import com.tallerwebi.dominio.servicios.ServicioProgreso;
+import com.tallerwebi.dominio.servicios.ServicioUsuarioMateria;
 import com.tallerwebi.dto.MateriasDTO;
 import com.tallerwebi.dto.MateriasWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,11 +17,8 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
-import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 public class ControladorProgresoAcademico {

@@ -1,9 +1,9 @@
 package com.tallerwebi.presentacion;
 
 import com.tallerwebi.dominio.DTO.MateriaDTO;
-import com.tallerwebi.dominio.ServicioProgreso;
-import com.tallerwebi.dominio.ServicioResumenInteligente;
-import com.tallerwebi.dominio.ServicioUsuarioMateria;
+import com.tallerwebi.dominio.servicios.ServicioProgreso;
+import com.tallerwebi.dominio.servicios.ServicioResumenInteligente;
+import com.tallerwebi.dominio.servicios.ServicioUsuarioMateria;
 import com.tallerwebi.dominio.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

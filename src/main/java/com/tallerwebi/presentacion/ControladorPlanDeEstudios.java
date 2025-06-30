@@ -1,13 +1,11 @@
 package com.tallerwebi.presentacion;
 
 import com.tallerwebi.dominio.Materia;
-import com.tallerwebi.dominio.ServicioMateria;
-import com.tallerwebi.dominio.ServicioUsuarioMateria;
+import com.tallerwebi.dominio.servicios.ServicioMateria;
+import com.tallerwebi.dominio.servicios.ServicioUsuarioMateria;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;

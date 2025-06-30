@@ -1,7 +1,7 @@
 package com.tallerwebi.infraestructura;
 
 import com.tallerwebi.dominio.CodigoVerificacion;
-import com.tallerwebi.dominio.RepositorioCodigoVerificacion;
+import com.tallerwebi.repositorioInterfaz.RepositorioCodigoVerificacion;
 import com.tallerwebi.dominio.Usuario;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;

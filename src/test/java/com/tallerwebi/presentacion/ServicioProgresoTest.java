@@ -1,5 +1,9 @@
 package com.tallerwebi.presentacion;
 
+import com.tallerwebi.dominio.servicios.ServicioProgreso;
+import com.tallerwebi.repositorioInterfaz.RepositorioMateria;
+import com.tallerwebi.repositorioInterfaz.RepositorioUsuario;
+import com.tallerwebi.repositorioInterfaz.RepositorioUsuarioMateria;
 import com.tallerwebi.dominio.*;
 import com.tallerwebi.dominio.DTO.MateriaDTO;
 import org.junit.jupiter.api.BeforeEach;
