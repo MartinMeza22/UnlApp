@@ -119,20 +119,18 @@ public class ControladorPerfilTest {
         assertThat(mav.getViewName(), is("redirect:/login"));
     }
     @Test
-    public void queSePuedaModificarElNombre() throws UsuarioNoEncontrado {
+    public void queElControladorDelegueLaActualizacionDelNombreAlServicio() throws UsuarioNoEncontrado {
         when(session.getAttribute("ID")).thenReturn(1L);
         when(servicioUsuario.obtenerUsuario(1L)).thenReturn(usuario);
-
 
         ModelAndView mav = controladorPerfil.actualizarPerfil(
                 "NuevoNombre", "Nadal", "franco@test.com", null, request
         );
 
-        assertThat(usuario.getNombre(), is("NuevoNombre"));
         assertThat(mav.getViewName(), is("redirect:/perfil"));
-        verify(servicioUsuario).actualizarPerfil(eq(1L), anyString(), anyString(), anyString(), any());
-
+        verify(servicioUsuario).actualizarPerfil(1L, "NuevoNombre", "Nadal", "franco@test.com", null);
     }
+
 
     @Test
     public void queSePuedaModificarElApellido() throws UsuarioNoEncontrado {
