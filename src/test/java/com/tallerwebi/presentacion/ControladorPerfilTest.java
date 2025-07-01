@@ -133,19 +133,17 @@ public class ControladorPerfilTest {
 
 
     @Test
-    public void queSePuedaModificarElApellido() throws UsuarioNoEncontrado {
+    public void queElControladorDelegueLaActualizacionDelApellidoAlServicio() throws UsuarioNoEncontrado {
         when(session.getAttribute("ID")).thenReturn(1L);
         when(servicioUsuario.obtenerUsuario(1L)).thenReturn(usuario);
-
 
         ModelAndView mav = controladorPerfil.actualizarPerfil(
                 "Franco", "NuevoApellido", "franco@test.com", null, request
         );
 
-        assertThat(usuario.getApellido(), is("NuevoApellido"));
         assertThat(mav.getViewName(), is("redirect:/perfil"));
-        verify(servicioUsuario).actualizarPerfil(eq(1L), anyString(), anyString(), anyString(), any());
-
+        verify(servicioUsuario).actualizarPerfil(1L, "Franco", "NuevoApellido", "franco@test.com", null);
     }
+
 
 }
