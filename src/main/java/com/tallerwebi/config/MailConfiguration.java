@@ -10,8 +10,8 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
 import javax.mail.internet.MimeMessage;
+import javax.mail.*;
 import java.io.InputStream;
 import java.util.Properties;
 
@@ -25,7 +25,7 @@ public class MailConfiguration implements WebMvcConfigurer {
     @Bean
     public JavaMailSender getJavaMailSender() {
         // Para pruebas - solo mostrar emails en consola en lugar de enviarlos
-        boolean useRealEmail = false; // Cambiar a true cuando quieras emails reales
+        boolean useRealEmail = true; // Cambiar a true cuando quieras emails reales
 
         if (!useRealEmail) {
             return new JavaMailSender() {
