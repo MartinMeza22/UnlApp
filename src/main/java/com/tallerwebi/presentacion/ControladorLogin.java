@@ -70,26 +70,52 @@ public class ControladorLogin {
     @RequestMapping(path = "/registrarme", method = RequestMethod.POST)
     public ModelAndView registrarme(@ModelAttribute("usuario") Usuario usuario, HttpServletRequest request) {
         ModelMap model = new ModelMap();
-        try {
-            // --- LÍNEAS PARA DEBUGUEAR ---
-            System.out.println("DEBUG: Usuario.email recibido: " + usuario.getEmail());
-            System.out.println("DEBUG: Usuario.nombre recibido: " + usuario.getNombre());
-            System.out.println("DEBUG: Usuario.apellido recibido: " + usuario.getApellido());
-            System.out.println("DEBUG: Usuario.carreraID recibido: " + usuario.getCarreraID());
-            System.out.println("DEBUG: Usuario.rol recibido: " + usuario.getRol());
-            System.out.println("DEBUG: Usuario.situacionLaboral recibido: " + usuario.getSituacionLaboral());
-            System.out.println("DEBUG: Usuario.disponibilidadHoraria recibido: " + usuario.getDisponibilidadHoraria());
-            // ---------------------------------------------------
 
+        // Validaciones manuales campo por campo
+        if (usuario.getEmail() == null || usuario.getEmail().trim().isEmpty()) {
+            model.put("error", "El email es obligatorio");
+            return new ModelAndView("nuevo-usuario", model);
+        }
+
+        if (usuario.getPassword() == null || usuario.getPassword().trim().isEmpty()) {
+            model.put("error", "La contraseña es obligatoria");
+            return new ModelAndView("nuevo-usuario", model);
+        }
+
+        if (usuario.getNombre() == null || usuario.getNombre().trim().isEmpty()) {
+            model.put("error", "El nombre es obligatorio");
+            return new ModelAndView("nuevo-usuario", model);
+        }
+
+        if (usuario.getApellido() == null || usuario.getApellido().trim().isEmpty()) {
+            model.put("error", "El apellido es obligatorio");
+            return new ModelAndView("nuevo-usuario", model);
+        }
+
+        if (usuario.getCarreraID() == null) {
+            model.put("error", "Debés seleccionar una carrera");
+            return new ModelAndView("nuevo-usuario", model);
+        }
+
+        if (usuario.getSituacionLaboral() == null || usuario.getSituacionLaboral().trim().isEmpty()) {
+            model.put("error", "La situación laboral es obligatoria");
+            return new ModelAndView("nuevo-usuario", model);
+        }
+
+        if (usuario.getDisponibilidadHoraria() == null) {
+            model.put("error", "La disponibilidad horaria es obligatoria");
+            return new ModelAndView("nuevo-usuario", model);
+        }
+
+        try {
             usuario.setActivo(false);
             repositorioLogin.registrar(usuario);
             Usuario usuarioBuscado = repositorioLogin.consultarUsuario(usuario.getEmail(), usuario.getPassword());
-            request.getSession().setAttribute("ID", usuarioBuscado.getId()); // <-- NUEVO
-            System.out.println(usuario);
+            request.getSession().setAttribute("ID", usuarioBuscado.getId());
+
             this.servicioEmail.guardarYEnviarCodigoDeVerificacion(usuario);
             model.put("usuario", usuario);
             return new ModelAndView("verificar-token", model);
-            // return mostrarFormularioDeMaterias(model);
         } catch (UsuarioExistente e) {
             model.put("error", "El usuario ya existe");
             return new ModelAndView("nuevo-usuario", model);
@@ -98,6 +124,7 @@ public class ControladorLogin {
             return new ModelAndView("nuevo-usuario", model);
         }
     }
+
 
     @RequestMapping(path = "/verificar-token", method = RequestMethod.POST)
     public ModelAndView verificarToken(@RequestParam(name = "codigo") String codigo, @RequestParam(name = "idUser") Long idUser) {
