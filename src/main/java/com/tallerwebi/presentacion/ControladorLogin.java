@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Controller
@@ -183,11 +184,13 @@ public class ControladorLogin {
 
     @RequestMapping(path = "/logout", method = RequestMethod.GET)
     public ModelAndView logout(HttpServletRequest request) {
-        if (request.getSession(false) != null) {
-            request.getSession().invalidate();
+        HttpSession session = request.getSession(false);  // Traigo la sesion sin crearla
+        if (session != null) {
+            session.invalidate();  // la invalido si existe
         }
         return new ModelAndView("redirect:/login");
     }
+
 
 }
 
