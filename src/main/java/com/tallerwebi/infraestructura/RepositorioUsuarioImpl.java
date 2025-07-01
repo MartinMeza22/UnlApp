@@ -73,7 +73,8 @@ public class RepositorioUsuarioImpl implements RepositorioUsuario {
                 .executeUpdate();
 
         // Eliminar comentarios de las publicaciones de este usuario
-        String hqlComentarios = "DELETE FROM Comentario c WHERE c.publicacion.usuario.id = :usuarioId";
+        String hqlComentarios = "DELETE FROM Comentario c WHERE c.publicacion.id IN (SELECT p.id FROM Publicacion p WHERE p.usuario.id = :usuarioId)";
+
         session.createQuery(hqlComentarios)
                 .setParameter("usuarioId", usuario.getId())
                 .executeUpdate();
