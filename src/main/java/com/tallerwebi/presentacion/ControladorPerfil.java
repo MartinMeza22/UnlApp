@@ -1,5 +1,6 @@
 package com.tallerwebi.presentacion;
 
+import com.tallerwebi.dominio.excepcion.UsuarioNoEncontrado;
 import com.tallerwebi.dominio.servicios.ServicioUsuarioMateria;
 import com.tallerwebi.repositorioInterfaz.RepositorioUsuario;
 import com.tallerwebi.dominio.*;
@@ -17,14 +18,12 @@ import java.util.stream.Collectors;
 @Controller
 public class ControladorPerfil {
 
-    private ServicioUsuario servicioUsuario;
-    private RepositorioUsuario repositorioUsuario;
-    private ServicioUsuarioMateria servicioUsuarioMateria;
+    private final ServicioUsuario servicioUsuario;
+    private final ServicioUsuarioMateria servicioUsuarioMateria;
 
     @Autowired
-    public ControladorPerfil(ServicioUsuario servicioUsuario, RepositorioUsuario repositorioUsuario,ServicioUsuarioMateria servicioUsuarioMateria) {
+    public ControladorPerfil(ServicioUsuario servicioUsuario, ServicioUsuarioMateria servicioUsuarioMateria) {
         this.servicioUsuario = servicioUsuario;
-        this.repositorioUsuario = repositorioUsuario;
         this.servicioUsuarioMateria = servicioUsuarioMateria;
     }
 
@@ -38,19 +37,22 @@ public class ControladorPerfil {
             return new ModelAndView("redirect:/login");
         }
 
-        Usuario usuario = repositorioUsuario.buscarPorId(usuarioId);
-        if (usuario == null) {
+        Usuario usuario;
+        try {
+            usuario = servicioUsuario.obtenerUsuario(usuarioId);
+        } catch (UsuarioNoEncontrado e) {
             modelo.put("error", "Usuario no encontrado");
             return new ModelAndView("perfil", modelo);
         }
 
         modelo.put("usuario", usuario);
         modelo.put("carrera", usuario.getCarrera());
-        List<UsuarioMateria> materias = servicioUsuarioMateria
-                .mostrarMateriasDeUsuario(
-                        usuario.getCarrera() != null ? usuario.getCarrera().getId().toString() : null,
-                        usuarioId
-                );
+
+        List<UsuarioMateria> materias = servicioUsuarioMateria.mostrarMateriasDeUsuario(
+                usuario.getCarrera() != null ? usuario.getCarrera().getId().toString() : null,
+                usuarioId
+        );
+
         List<UsuarioMateria> materiasAprobadas = materias.stream()
                 .filter(UsuarioMateria::estaAprobada)
                 .collect(Collectors.toList());
@@ -60,35 +62,21 @@ public class ControladorPerfil {
     }
 
     @RequestMapping(path = "/perfil/actualizar", method = RequestMethod.POST)
-    public ModelAndView actualizarPerfil(@RequestParam("nombre") String nombre,
-                                         @RequestParam("apellido") String apellido,
-                                         @RequestParam("email") String email,
-                                         @RequestParam(value = "nuevaPassword", required = false) String nuevaPassword,
+    public ModelAndView actualizarPerfil(@RequestParam String nombre,
+                                         @RequestParam String apellido,
+                                         @RequestParam String email,
+                                         @RequestParam(required = false) String nuevaPassword,
                                          HttpServletRequest request) {
         Long usuarioId = (Long) request.getSession().getAttribute("ID");
         if (usuarioId == null) {
             return new ModelAndView("redirect:/login");
         }
 
-        Usuario usuario = repositorioUsuario.buscarPorId(usuarioId);
-        if (usuario == null) {
-            return new ModelAndView("redirect:/perfil");
-        }
-
         try {
-            usuario.setNombre(nombre);
-            usuario.setApellido(apellido);
-            usuario.setEmail(email);
-
-            // Solo cambiar la contraseña si el campo fue completado
-            if (nuevaPassword != null && !nuevaPassword.trim().isEmpty()) {
-                usuario.setPassword(nuevaPassword);
-            }
-
-            request.getSession().setAttribute("NOMBRE", usuario.getNombre());
-            repositorioUsuario.modificar(usuario);
-        } catch (Exception e) {
-            e.printStackTrace();
+            servicioUsuario.actualizarPerfil(usuarioId, nombre, apellido, email, nuevaPassword);
+            request.getSession().setAttribute("NOMBRE", nombre);
+        } catch (UsuarioNoEncontrado e) {
+            return new ModelAndView("redirect:/perfil");
         }
 
         return new ModelAndView("redirect:/perfil");
@@ -106,8 +94,8 @@ public class ControladorPerfil {
         try {
             servicioUsuario.eliminarUsuario(usuarioId);
             request.getSession().invalidate();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (UsuarioNoEncontrado e) {
+            return new ModelAndView("redirect:/perfil");
         }
 
         return new ModelAndView("redirect:/");
