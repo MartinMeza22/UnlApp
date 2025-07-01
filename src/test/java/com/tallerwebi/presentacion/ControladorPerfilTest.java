@@ -86,20 +86,18 @@ public class ControladorPerfilTest {
     }
 
     @Test
-    public void queSePuedaModificarLaContrasenia() throws UsuarioNoEncontrado {
+    public void queElControladorDelegueLaActualizacionDePasswordAlServicio() throws UsuarioNoEncontrado {
         when(session.getAttribute("ID")).thenReturn(1L);
         when(servicioUsuario.obtenerUsuario(1L)).thenReturn(usuario);
-
 
         ModelAndView mav = controladorPerfil.actualizarPerfil(
                 "Franco", "Nadal", "franco@test.com", "nuevaPassword123", request
         );
 
-        assertThat(usuario.getPassword(), is("nuevaPassword123"));
         assertThat(mav.getViewName(), is("redirect:/perfil"));
-        verify(servicioUsuario).actualizarPerfil(eq(1L), anyString(), anyString(), anyString(), any());
-
+        verify(servicioUsuario).actualizarPerfil(1L, "Franco", "Nadal", "franco@test.com", "nuevaPassword123");
     }
+
 
     @Test
     public void queSePuedaEliminarCuentaSiHaySesionActiva() throws UsuarioNoEncontrado {
