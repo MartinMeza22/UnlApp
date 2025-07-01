@@ -72,6 +72,13 @@ public class RepositorioUsuarioImpl implements RepositorioUsuario {
                 .setParameter("usuarioId", usuario.getId())
                 .executeUpdate();
 
+        // Eliminar publicaciones del usuario
+        String hqlPublicaciones = "DELETE FROM Publicacion p WHERE p.usuario.id = :usuarioId";
+        session.createQuery(hqlPublicaciones)
+                .setParameter("usuarioId", usuario.getId())
+                .executeUpdate();
+
+
         // Ahora sí, eliminar el usuario
         session.delete(session.contains(usuario) ? usuario : session.merge(usuario));
     }
