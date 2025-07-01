@@ -61,8 +61,8 @@ public class RepositorioUsuarioImpl implements RepositorioUsuario {
         Session session = sessionFactory.getCurrentSession();
 
         // Eliminar relaciones usuario_materia antes de eliminar al usuario
-        String hql = "DELETE FROM UsuarioMateria um WHERE um.usuario.id = :usuarioId";
-        session.createQuery(hql)
+        String hqlUM = "DELETE FROM UsuarioMateria um WHERE um.usuario.id = :usuarioId";
+        session.createQuery(hqlUM)
                 .setParameter("usuarioId", usuario.getId())
                 .executeUpdate();
 
@@ -72,16 +72,22 @@ public class RepositorioUsuarioImpl implements RepositorioUsuario {
                 .setParameter("usuarioId", usuario.getId())
                 .executeUpdate();
 
+        // Eliminar comentarios de las publicaciones de este usuario
+        String hqlComentarios = "DELETE FROM Comentario c WHERE c.publicacion.usuario.id = :usuarioId";
+        session.createQuery(hqlComentarios)
+                .setParameter("usuarioId", usuario.getId())
+                .executeUpdate();
+
         // Eliminar publicaciones del usuario
         String hqlPublicaciones = "DELETE FROM Publicacion p WHERE p.usuario.id = :usuarioId";
         session.createQuery(hqlPublicaciones)
                 .setParameter("usuarioId", usuario.getId())
                 .executeUpdate();
 
-
-        // Ahora sí, eliminar el usuario
+        // Finalmente, eliminar al usuario
         session.delete(session.contains(usuario) ? usuario : session.merge(usuario));
     }
+
 
 
 }
