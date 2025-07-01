@@ -46,7 +46,6 @@ public class ControladorLoginTest {
     private ServicioUsuario servicioUsuarioMock;
     private HttpServletRequest requestMock;
     private HttpSession sessionMock;
-    private HttpServletRequest mockHttpServletRequestMock;
     private MockMvc mockMvc;
 
     @BeforeEach
@@ -65,7 +64,6 @@ public class ControladorLoginTest {
 
         requestMock = mock(HttpServletRequest.class);
         sessionMock = mock(HttpSession.class);
-        mockHttpServletRequestMock = mock(HttpServletRequest.class);
     }
 
     @Test
@@ -173,7 +171,7 @@ public class ControladorLoginTest {
     @Test
     public void registrarme_conUsuarioNuevo_redirigeAFormularioDeMaterias() throws UsuarioExistente {
         Usuario usuario = new Usuario();
-        ModelAndView mav = controladorLogin.registrarme(usuario,mockHttpServletRequestMock);
+        ModelAndView mav = controladorLogin.registrarme(usuario,requestMock);
 
         assertThat(mav.getViewName(), equalToIgnoringCase("nuevo-usuario"));
     }
@@ -408,10 +406,12 @@ public class ControladorLoginTest {
         usuario.setCarreraID(1L);
         usuario.setSituacionLaboral("Desempleado");
         usuario.setDisponibilidadHoraria(20);
-        when(mockHttpServletRequestMock.getSession(false)).thenReturn(sessionMock);
 
-        ModelAndView mav = controladorLogin.logout(mockHttpServletRequestMock);
+        when(requestMock.getSession(false)).thenReturn(sessionMock);
 
+        ModelAndView mav = controladorLogin.logout(requestMock);
+
+        verify(sessionMock).invalidate();
         assertThat(mav.getViewName(), is("redirect:/login"));
     }
 
