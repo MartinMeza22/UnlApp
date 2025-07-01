@@ -22,7 +22,6 @@ public class ControladorPerfilTest {
 
     private ServicioUsuario servicioUsuario;
     private ServicioUsuarioMateria servicioUsuarioMateria;
-    private RepositorioUsuario repositorioUsuario;
     private ControladorPerfil controladorPerfil;
 
     private HttpServletRequest request;
@@ -34,8 +33,7 @@ public class ControladorPerfilTest {
     public void setUp() {
         servicioUsuario = mock(ServicioUsuario.class);
         servicioUsuarioMateria = mock(ServicioUsuarioMateria.class);
-        repositorioUsuario = mock(RepositorioUsuario.class);
-        controladorPerfil = new ControladorPerfil(servicioUsuario, repositorioUsuario, servicioUsuarioMateria);
+        controladorPerfil = new ControladorPerfil(servicioUsuario, servicioUsuarioMateria);
 
         request = mock(HttpServletRequest.class);
         session = mock(HttpSession.class);
@@ -50,9 +48,10 @@ public class ControladorPerfilTest {
     }
 
     @Test
-    public void queSePuedaVisualizarElPerfilConSesionActiva() {
+    public void queSePuedaVisualizarElPerfilConSesionActiva() throws UsuarioNoEncontrado {
         when(session.getAttribute("ID")).thenReturn(1L);
-        when(repositorioUsuario.buscarPorId(1L)).thenReturn(usuario);
+        when(servicioUsuario.obtenerUsuario(1L)).thenReturn(usuario);
+
         when(servicioUsuarioMateria.mostrarMateriasDeUsuario(null, 1L)).thenReturn(Collections.emptyList());
 
         ModelAndView mav = controladorPerfil.verPerfil(request);
@@ -71,32 +70,34 @@ public class ControladorPerfilTest {
     }
 
     @Test
-    public void queSePuedaModificarElEmail() {
+    public void queElControladorLlameAlServicioParaActualizarElPerfil() throws UsuarioNoEncontrado {
         when(session.getAttribute("ID")).thenReturn(1L);
-        when(repositorioUsuario.buscarPorId(1L)).thenReturn(usuario);
+        when(servicioUsuario.obtenerUsuario(1L)).thenReturn(usuario);
+
 
         ModelAndView mav = controladorPerfil.actualizarPerfil(
                 "Franco", "Nadal", "nuevo@email.com", "", request
         );
 
-        assertThat(usuario.getEmail(), is("nuevo@email.com"));
         assertThat(mav.getViewName(), is("redirect:/perfil"));
-        verify(repositorioUsuario).modificar(usuario);
+        verify(servicioUsuario).actualizarPerfil(1L, "Franco", "Nadal", "nuevo@email.com", "");
+
+
     }
 
     @Test
-    public void queSePuedaModificarLaContrasenia() {
+    public void queElControladorDelegueLaActualizacionDePasswordAlServicio() throws UsuarioNoEncontrado {
         when(session.getAttribute("ID")).thenReturn(1L);
-        when(repositorioUsuario.buscarPorId(1L)).thenReturn(usuario);
+        when(servicioUsuario.obtenerUsuario(1L)).thenReturn(usuario);
 
         ModelAndView mav = controladorPerfil.actualizarPerfil(
                 "Franco", "Nadal", "franco@test.com", "nuevaPassword123", request
         );
 
-        assertThat(usuario.getPassword(), is("nuevaPassword123"));
         assertThat(mav.getViewName(), is("redirect:/perfil"));
-        verify(repositorioUsuario).modificar(usuario);
+        verify(servicioUsuario).actualizarPerfil(1L, "Franco", "Nadal", "franco@test.com", "nuevaPassword123");
     }
+
 
     @Test
     public void queSePuedaEliminarCuentaSiHaySesionActiva() throws UsuarioNoEncontrado {
@@ -118,31 +119,31 @@ public class ControladorPerfilTest {
         assertThat(mav.getViewName(), is("redirect:/login"));
     }
     @Test
-    public void queSePuedaModificarElNombre() {
+    public void queElControladorDelegueLaActualizacionDelNombreAlServicio() throws UsuarioNoEncontrado {
         when(session.getAttribute("ID")).thenReturn(1L);
-        when(repositorioUsuario.buscarPorId(1L)).thenReturn(usuario);
+        when(servicioUsuario.obtenerUsuario(1L)).thenReturn(usuario);
 
         ModelAndView mav = controladorPerfil.actualizarPerfil(
                 "NuevoNombre", "Nadal", "franco@test.com", null, request
         );
 
-        assertThat(usuario.getNombre(), is("NuevoNombre"));
         assertThat(mav.getViewName(), is("redirect:/perfil"));
-        verify(repositorioUsuario).modificar(usuario);
+        verify(servicioUsuario).actualizarPerfil(1L, "NuevoNombre", "Nadal", "franco@test.com", null);
     }
 
+
     @Test
-    public void queSePuedaModificarElApellido() {
+    public void queElControladorDelegueLaActualizacionDelApellidoAlServicio() throws UsuarioNoEncontrado {
         when(session.getAttribute("ID")).thenReturn(1L);
-        when(repositorioUsuario.buscarPorId(1L)).thenReturn(usuario);
+        when(servicioUsuario.obtenerUsuario(1L)).thenReturn(usuario);
 
         ModelAndView mav = controladorPerfil.actualizarPerfil(
                 "Franco", "NuevoApellido", "franco@test.com", null, request
         );
 
-        assertThat(usuario.getApellido(), is("NuevoApellido"));
         assertThat(mav.getViewName(), is("redirect:/perfil"));
-        verify(repositorioUsuario).modificar(usuario);
+        verify(servicioUsuario).actualizarPerfil(1L, "Franco", "NuevoApellido", "franco@test.com", null);
     }
+
 
 }

@@ -1,5 +1,6 @@
 package com.tallerwebi.dominio.servicios;
 
+import com.tallerwebi.dominio.DTO.MateriaDiagramaDTO;
 import com.tallerwebi.dominio.Materia;
 import com.tallerwebi.dominio.Usuario;
 import com.tallerwebi.dominio.UsuarioMateria;
@@ -306,5 +307,95 @@ public class ServicioProgreso {
 
         Double porcentajeAprobadas = (double) (materiasAprobadas.size() * 100 / materias.size());
         return porcentajeAprobadas;
+    }
+
+    public List<MateriaDiagramaDTO> obtenerMateriasParaDiagrama(String idCarrera, Long idUsuario) {
+        List<Materia> todasLasMaterias = repositorioMateria.obtenerMateriasDeUnaCarrera(idCarrera);
+
+        // Opcional: Obtener el estado del usuario para resaltar si ya aprobó materias
+        List<UsuarioMateria> materiasQueCursoElUsuario = repositorioUsuarioMateria.buscarPorUsuario(idCarrera, idUsuario);
+        Map<Long, UsuarioMateria> materiasCursadasMap = materiasQueCursoElUsuario.stream()
+                .collect(Collectors.toMap(um -> um.getMateria().getId(), um -> um));
+
+        List<MateriaDiagramaDTO> materiasDiagrama = new ArrayList<>();
+        Map<Long, Materia> mapaMaterias = todasLasMaterias.stream()
+                .collect(Collectors.toMap(Materia::getId, m -> m));
+
+        for (Materia materia : todasLasMaterias) {
+            MateriaDiagramaDTO dto = new MateriaDiagramaDTO(materia.getId(), materia.getNombre(), materia.getCuatrimestre());
+
+            // Agrega las correlativas.
+            // Necesitas mapear los nombres de correlativas a sus IDs.
+            // Esto es crucial para que el frontend pueda dibujar las líneas.
+            if (materia.getCorrelativa1() != null && !materia.getCorrelativa1().isEmpty()) {
+                // Aquí necesitarías una forma de obtener el ID de la materia a partir del nombre
+                // dado que tus correlativas son Strings.
+                // UNA SOLUCIÓN MÁS ROBUSTA SERÍA QUE correlativa_1 fuera el ID de la Materia directamente
+                // o que Materia tuviera una lista de Materias como correlativas.
+                // Por ahora, asumimos que 'correlativa_1' es el ID de la materia correlativa.
+                // Si 'correlativa_1' almacena el *nombre* de la materia, necesitarías
+                // un método para buscar el ID de la materia por su nombre.
+                try {
+                    Long idCorrelativa = Long.valueOf(materia.getCorrelativa1());
+                    if (mapaMaterias.containsKey(idCorrelativa)) {
+                        dto.addCorrelativa(idCorrelativa);
+                    }
+                } catch (NumberFormatException e) {
+                    // Manejar error si el String no es un número (ej. si guarda el nombre)
+                    System.err.println("Correlativa1 no es un ID numérico: " + materia.getCorrelativa1());
+                    // Si tus correlativas son nombres, aquí buscarías el ID por nombre
+                    // Ejemplo: Materia correlativaObj = repositorioMateria.buscarPorNombre(materia.getCorrelativa1());
+                    // if (correlativaObj != null) dto.addCorrelativa(correlativaObj.getId());
+                }
+            }
+            if (materia.getCorrelativa2() != null && !materia.getCorrelativa2().isEmpty()) {
+                try {
+                    Long idCorrelativa = Long.valueOf(materia.getCorrelativa2());
+                    if (mapaMaterias.containsKey(idCorrelativa)) {
+                        dto.addCorrelativa(idCorrelativa);
+                    }
+                } catch (NumberFormatException e) {}
+            }
+            if (materia.getCorrelativa3() != null && !materia.getCorrelativa3().isEmpty()) {
+                try {
+                    Long idCorrelativa = Long.valueOf(materia.getCorrelativa3());
+                    if (mapaMaterias.containsKey(idCorrelativa)) {
+                        dto.addCorrelativa(idCorrelativa);
+                    }
+                } catch (NumberFormatException e) {}
+            }
+            if (materia.getCorrelativa4() != null && !materia.getCorrelativa4().isEmpty()) {
+                try {
+                    Long idCorrelativa = Long.valueOf(materia.getCorrelativa4());
+                    if (mapaMaterias.containsKey(idCorrelativa)) {
+                        dto.addCorrelativa(idCorrelativa);
+                    }
+                } catch (NumberFormatException e) {}
+            }
+            if (materia.getCorrelativa5() != null && !materia.getCorrelativa5().isEmpty()) {
+                try {
+                    Long idCorrelativa = Long.valueOf(materia.getCorrelativa5());
+                    if (mapaMaterias.containsKey(idCorrelativa)) {
+                        dto.addCorrelativa(idCorrelativa);
+                    }
+                } catch (NumberFormatException e) {}
+            }
+            if (materia.getCorrelativa6() != null && !materia.getCorrelativa6().isEmpty()) {
+                try {
+                    Long idCorrelativa = Long.valueOf(materia.getCorrelativa6());
+                    if (mapaMaterias.containsKey(idCorrelativa)) {
+                        dto.addCorrelativa(idCorrelativa);
+                    }
+                } catch (NumberFormatException e) {}
+            }
+
+            // Opcional: Agregar información sobre el estado de la materia (aprobada, cursando, etc.)
+            // Puedes agregar un booleano `isAprobada` al DTO si quieres que JavaScript lo use.
+            // UsuarioMateria um = materiasCursadasMap.get(materia.getId());
+            // if (um != null && um.estaAprobada()) { dto.setAprobada(true); }
+
+            materiasDiagrama.add(dto);
+        }
+        return materiasDiagrama;
     }
 }
