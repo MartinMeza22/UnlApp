@@ -54,7 +54,7 @@ public class ControladorForo {
             mav.addObject("publicaciones", servicioPublicacion.buscarPublicaciones(carrera, idMateria, ordenar));
             mav.addObject("materias", servicioMateria.obtenerMateriasPorCarrera(carrera));
             mav.addObject("usuario", usuario); // Contiene carrera y otros datos
-            mav.addObject("carrera", carrera); // Puedes pasar la carrera explícitamente también
+            mav.addObject("carrera", carrera); // pasa la carrera explícitamente también (no carga la carrera del usuario)
             mav.addObject("ordenActual", ordenar);
             mav.addObject("materiaActual", idMateria);
 

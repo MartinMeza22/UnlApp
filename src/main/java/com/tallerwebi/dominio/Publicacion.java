@@ -43,7 +43,7 @@ public class Publicacion {
         this.likes = 0;
     }
 
-    // Getters y Setters
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public Usuario getUsuario() { return usuario; }
@@ -60,7 +60,7 @@ public class Publicacion {
     public List<Comentario> getComentarios() { return comentarios; }
     public void setComentarios(List<Comentario> comentarios) { this.comentarios = comentarios; }
 
-    @Transient // le dice a Hibernate que ignore este metodo para la base de datos
+    @Transient
     public String getFechaCreacionFormateada() {
 
         if (this.fechaCreacion == null) {
