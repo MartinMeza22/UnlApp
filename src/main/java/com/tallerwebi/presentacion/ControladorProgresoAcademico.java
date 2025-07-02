@@ -134,6 +134,12 @@ public class ControladorProgresoAcademico {
         Long usuarioId = (Long) session.getAttribute("ID");
 
         if("guardarCambios".equalsIgnoreCase(action)) {
+
+            if(nota == null || dificultad == null) {
+                redirectAttributes.addFlashAttribute("error", "Los campos no pueden ir vacio");
+                return "redirect:/progreso";
+            }
+
             // Pude haber utilizado el servicio de UsuarioMateria, el metodo modificar, pero le falta le id del usuario al metodo modificar
             this.servicioProgreso.actualizarDatosMateria(usuarioId, idMateria, nota, dificultad);
         } else if("dejarDeCursar".equalsIgnoreCase(action)) {

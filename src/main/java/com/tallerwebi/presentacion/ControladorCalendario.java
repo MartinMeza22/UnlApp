@@ -98,6 +98,16 @@ public class ControladorCalendario {
                 servicioEvento.crearEventoPersonal(titulo, fechaInicio, usuarioId, tipo, notificar);
             }
 
+            String asuntoEmail = "\uD83C\uDF89 Evento confirmado con éxito";
+            String mensajeEmail = "Hola " + usuario.getNombre() + " ,\n" +
+                    "\n" +
+                    "¡Tu evento ha sido creado exitosamente! \uD83C\uDF89 Ya está todo listo para que comiences a organizarte.\n" +
+                    "\n" +
+                    "Detalles del evento: \uD83D\uDDD3\uFE0F Fecha: " + fechaInicio.getDayOfMonth() + "/" + fechaInicio.getMonth() + "/" + fechaInicio.getYear() + " \uD83D\uDD52 Hora: " + fechaInicio.getHour() + fechaInicio.getMinute() + "hs \uD83D\uDCCD Lugar: " + ubicacion + " \uD83D\uDCDD Descripción: " + descripcion + "\n" +
+                    "\n" +
+                    "Si necesitás hacer algún cambio o agregar información adicional, podés hacerlo desde tu panel de eventos en cualquier momento.";
+
+            servicioEmail.enviarEmailAUsuario(usuario.getEmail(), asuntoEmail, mensajeEmail);
             modelo.put("mensaje", "Evento creado exitosamente");
         } catch (Exception e) {
             System.out.println("❌ Error al crear evento: " + e.getMessage());

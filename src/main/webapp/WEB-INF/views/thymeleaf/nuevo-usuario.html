@@ -39,7 +39,7 @@
 
 <main role="main" class="container">
     <div class="mainbox col-md-6 col-sm-10 mx-auto">
-        <form th:action="@{/registrarme}" method="POST" th:object="${usuario}" accept-charset="UTF-8">
+        <form id="registroForm" th:action="@{/registrarme}" method="POST" th:object="${usuario}" accept-charset="UTF-8">
 
             <div class="progress mb-4">
                 <div class="progress-bar progress-bar-striped bg-success" role="progressbar" style="width: 33%;"
@@ -52,9 +52,19 @@
             <hr class="colorgraph">
             <br>
 
+            <p th:if="${error != null}" class="alert alert-danger mt-3" th:text="'Error: ' + ${error}"></p>
+
             <div class="mb-3">
                 <label for="email" class="form-label">Email:</label>
-                <input th:field="*{email}" id="email" class="form-control" required placeholder="tu.email123@alumno.unlam.edu.ar"/>
+                <input
+                        th:field="*{email}"
+                        id="email"
+                        class="form-control"
+                        required
+                        placeholder="tu.email123@alumno.unlam.edu.ar"
+                        pattern="[a-zA-Z0-9._%+-]+@alumno\.unlam\.edu\.ar"
+                        title="El email debe ser una dirección institucional válida (@alumno.unlam.edu.ar)"
+                />
             </div>
 
             <div class="mb-3">
@@ -101,7 +111,6 @@
 
             <button id="btn-registrarme" class="btn btn-primary btn-lg mt-2" type="submit">Siguiente</button>
 
-            <p th:if="${error != null}" class="alert alert-danger mt-3" th:text="'Error: ' + ${error}"></p>
         </form>
     </div>
 </main>
