@@ -44,4 +44,16 @@ public class ControladorResumenInteligente {
 
         return servicioResumenInteligente.generarYGuardarResumen(usuarioId, materias, progreso);
     }
+
+    @GetMapping("/resumen-inteligente-historico")
+    public String generarResumenHistorico(HttpSession session) throws UsuarioNoEncontrado {
+        Long usuarioId = (Long) session.getAttribute("ID");
+
+        if (usuarioId == null) {
+            return "Error: usuario no autenticado.";
+        }
+
+        return servicioResumenInteligente.generarResumenHistorico(usuarioId);
+    }
+
 }

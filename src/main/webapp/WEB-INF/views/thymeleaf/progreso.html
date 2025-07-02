@@ -681,6 +681,7 @@
     </div>
 
     <button id="btnMostrarResumen" class="btn btn-primary">Ver Resumen Inteligente</button>
+    <button id="btnMostrarResumenHistorico" class="btn btn-secondary ms-2">Ver Resumen Histórico</button>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -727,6 +728,7 @@
         const modalBody = document.getElementById('contenidoResumen');
         const resumenModal = new bootstrap.Modal(modalElement);
 
+        // Botón: Ver resumen inteligente
         document.getElementById('btnMostrarResumen').addEventListener('click', function () {
             modalBody.textContent = "Cargando...";
 
@@ -741,8 +743,25 @@
                     resumenModal.show();
                 });
         });
+
+        // resumen historico
+        document.getElementById('btnMostrarResumenHistorico').addEventListener('click', function () {
+            modalBody.textContent = "Cargando resumen histórico...";
+
+            fetch('/tallerwebi-base-1.0-SNAPSHOT/resumen-inteligente-historico')
+                .then(response => response.text())
+                .then(text => {
+                    modalBody.textContent = text;
+                    resumenModal.show();
+                })
+                .catch(err => {
+                    modalBody.textContent = "Error al obtener el resumen histórico.";
+                    resumenModal.show();
+                });
+        });
     });
 </script>
+
 
 
 <div class="modal fade" id="resumenModal" tabindex="-1" aria-labelledby="resumenModalLabel" aria-hidden="true">

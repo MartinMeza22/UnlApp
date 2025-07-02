@@ -122,4 +122,26 @@ public class ServicioResumenInteligente {
         guardarResumen(resumen, usuario);
         return resumen;
     }
+
+    public String generarResumenHistorico(Long usuarioId) throws UsuarioNoEncontrado {
+        Usuario usuario = servicioUsuario.obtenerUsuario(usuarioId);
+        List<ResumenInteligente> resumenes = repositorioResumenInteligente.obtenerPorUsuario(usuario);
+
+        if (resumenes.isEmpty()) {
+            return "Todavía no hay suficientes resúmenes para analizar tu historial.";
+        }
+
+        StringBuilder historial = new StringBuilder("Soy un estudiante universitario. A continuación se listan los resúmenes académicos generados en distintos momentos de mi carrera:\n\n");
+
+        for (ResumenInteligente r : resumenes) {
+            historial.append("- ").append(r.getFechaGeneracion()).append(": ").append(r.getResumen()).append("\n\n");
+        }
+
+        historial.append("Basándote en los resúmenes anteriores, ¿qué podrías decir sobre mi evolución académica, mis patrones de conducta, mis fortalezas y debilidades sostenidas en el tiempo, y qué consejo me darías mirando mi historia como estudiante? Sé concretoy usa un solo párrafo. No agregues más texto que no corresponda al resumen.");
+
+        return generarResumenDesdePrompt(historial.toString());
+    }
+
+
+
 }
