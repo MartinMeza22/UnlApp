@@ -33,12 +33,13 @@ public class ControladorLogin {
     private ServicioCarrera servicioCarrera;
 
     @Autowired
-    public ControladorLogin(RepositorioLogin repositorioLogin, ServicioEmail servicioEmail, RepositorioUsuario repositorioUsuario, ServicioUsuarioMateria servicioUsuarioMateria, ServicioCarrera servicioCarrera) {
+    public ControladorLogin(RepositorioLogin repositorioLogin, ServicioEmail servicioEmail, RepositorioUsuario repositorioUsuario, ServicioUsuarioMateria servicioUsuarioMateria, ServicioCarrera servicioCarrera, ServicioMateria servicioMateriaMock) {
         this.repositorioLogin = repositorioLogin;
         this.servicioEmail = servicioEmail;
         this.repositorioUsuario = repositorioUsuario;
         this.servicioUsuarioMateria = servicioUsuarioMateria;
         this.servicioCarrera = servicioCarrera;
+        this.servicioMateria = servicioMateriaMock;
     }
     //Testeado
     @RequestMapping("/login")

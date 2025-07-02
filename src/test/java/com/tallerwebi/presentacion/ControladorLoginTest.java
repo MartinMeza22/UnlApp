@@ -23,6 +23,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;;
@@ -32,8 +33,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.hamcrest.core.StringContains.containsString;
 import static org.hamcrest.text.IsEqualIgnoringCase.equalToIgnoringCase;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -64,12 +64,12 @@ public class ControladorLoginTest {
         servicioUsuarioMock = mock(ServicioUsuario.class);
         mockMvc = mock(MockMvc.class);
 
-        controladorLogin = new ControladorLogin(repositorioLoginMock, servicioEmailMock, repositorioUsuarioMock, servicioUsuarioMateriaMock, servicioCarreraMock);
+        controladorLogin = new ControladorLogin(repositorioLoginMock, servicioEmailMock, repositorioUsuarioMock, servicioUsuarioMateriaMock, servicioCarreraMock,  servicioMateriaMock);
 
         requestMock = mock(HttpServletRequest.class);
         sessionMock = mock(HttpSession.class);
         when(requestMock.getSession()).thenReturn(sessionMock);
-
+        this.servicioMateriaMock = servicioMateriaMock;
     }
 
     @Test
@@ -553,37 +553,37 @@ public class ControladorLoginTest {
         verify(servicioEmailMock).verificarCodigo(idUsuario, codigo);
     }
 
-//    @Test
-//    public void irAlFormularioDeMaterias() {
-//        // Preparar datos
-//        Long idUsuario = 4L;
-//        Long idCarrera = 1L;
-//        Carrera carrera = new Carrera();
-//        carrera.setId(idCarrera);
-//        carrera.setNombre("Tec");
-//        Usuario usuario = new Usuario();
-//        usuario.setId(idUsuario);
-//        usuario.setCarreraID(idCarrera);
-//
-//        List<Materia> materias = new ArrayList<>();
-//        materias.add(new Materia("Matemática", carrera, 1));
-//        materias.add(new Materia("Programación", carrera, 1));
-//
-//        // Mockear comportamiento de servicios
-//        when(servicioUsuarioMateriaMock.obtenerUsuario(idUsuario)).thenReturn(usuario);
-//        when(servicioMateriaMock.obtenerMateriasPorCarrera(idCarrera.toString())).thenReturn(materias);
-//
-//
-//        ModelMap model = new ModelMap();
-//        ModelAndView mav = controladorLogin.mostrarFormularioDeMaterias(model, idUsuario);
-//
-//        // Verificaciones
-//        assertThat(mav.getViewName(), is("registroMateriasUsuario"));
-//        assertThat(mav.getModel().get("materias"), is(materias));
-//
-//        verify(servicioUsuarioMateriaMock).obtenerUsuario(idUsuario);
-//        verify(servicioMateriaMock).obtenerMateriasPorCarrera(idCarrera.toString());
-//    }
+    @Test
+    public void irAlFormularioDeMaterias() {
+        // Datos de prueba
+        Long idUsuario = 4L;
+        Long idCarrera = 1L;
+
+        Usuario usuarioMock = new Usuario();
+        usuarioMock.setId(idUsuario);
+        usuarioMock.setCarreraID(idCarrera);
+
+        Carrera carreras = new Carrera();
+
+        List<Materia> materiasMock = Arrays.asList(
+                new Materia("Matematica", carreras, 1),
+                new Materia("Programacion", carreras, 1)
+        );
+
+        // Mocks
+        when(servicioUsuarioMateriaMock.obtenerUsuario(idUsuario)).thenReturn(usuarioMock);
+        when(servicioMateriaMock.obtenerMateriasPorCarrera("1")).thenReturn(materiasMock);
+
+        ModelMap model = new ModelMap();
+
+        // Ejecutar
+        ModelAndView mav = controladorLogin.mostrarFormularioDeMaterias(model, idUsuario);
+
+        // Verificar
+        assertEquals("registroMateriasUsuario", mav.getViewName());
+        assertTrue(mav.getModel().containsKey("materias"));
+        assertEquals(materiasMock, mav.getModel().get("materias"));
+    }
 
 }
 
