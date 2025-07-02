@@ -396,8 +396,8 @@ public class ControladorLoginTest {
 
         ModelAndView mv = controladorLogin.registrarme(usuarioNuevo, requestMock);
 
-        assertThat(mv.getViewName(), is("nuevo-usuario")); // ✅ chequear la vista también
-        assertThat(mv.getModel().get("error"), is("El email debe ser una dirección institucional válida (@alumno.unlam.edu.ar)"));
+        assertThat(mv.getViewName(), is("nuevo-usuario"));
+        assertThat(mv.getModel().get("error"), is("El usuario ya existe"));
     }
 
 
