@@ -1,8 +1,10 @@
 package com.tallerwebi.presentacion;
 
 import com.tallerwebi.dominio.DTO.MateriaDTO;
+import com.tallerwebi.dominio.RepositorioResumenInteligente;
 import com.tallerwebi.dominio.ServicioProgreso;
 import com.tallerwebi.dominio.ServicioResumenInteligente;
+import com.tallerwebi.dominio.ServicioUsuario;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -22,21 +24,27 @@ public class ServicioResumenInteligenteTest {
     private ServicioResumenInteligente servicio;
     private RestTemplate restTemplateMock;
     private ServicioProgreso servicioProgresoMock;
+    private ServicioUsuario servicioUsuarioMock;
+    private RepositorioResumenInteligente repositorioResumenMock;
 
     @BeforeEach
     public void init() {
         restTemplateMock = mock(RestTemplate.class);
         servicioProgresoMock = mock(ServicioProgreso.class);
-        servicio = new ServicioResumenInteligente(restTemplateMock, servicioProgresoMock);
+        servicioUsuarioMock = mock(ServicioUsuario.class);
+        repositorioResumenMock = mock(RepositorioResumenInteligente.class);
+
+        servicio = new ServicioResumenInteligente(
+                restTemplateMock,
+                servicioUsuarioMock,
+                repositorioResumenMock
+        );
     }
 
     @Test
     public void queSeGenereUnResumenCorrectamenteDesdeLaApi() {
-        Long usuarioId = 1L;
-
-        // Mockear materias
+        // Arrange
         MateriaDTO materia = new MateriaDTO(1L, "Matemática", "Dificil", "APROBADA", 10, 1, true);
-        when(servicioProgresoMock.materias(anyString(), anyLong())).thenReturn(List.of(materia));
 
         // Simular respuesta de la API
         Map<String, Object> body = new HashMap<>();
@@ -58,5 +66,4 @@ public class ServicioResumenInteligenteTest {
         assertThat(resumen, is(notNullValue()));
         assertThat(resumen.trim(), not(isEmptyString()));
     }
-
 }

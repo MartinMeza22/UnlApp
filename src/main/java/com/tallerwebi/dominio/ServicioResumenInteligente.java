@@ -1,10 +1,13 @@
 package com.tallerwebi.dominio;
 
 import com.tallerwebi.dominio.DTO.MateriaDTO;
+import com.tallerwebi.dominio.excepcion.UsuarioNoEncontrado;
+import com.tallerwebi.infraestructura.RepositorioResumenInteligenteImpl;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDate;
 import java.util.*;
 
 @Service
@@ -13,7 +16,15 @@ public class ServicioResumenInteligente {
     private static final String API_KEY = "AIzaSyAYBb9GvrXAYLcDSRzPRiY2V4Z9XZfjTOE";
     private static final String ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + API_KEY;
 
-    public ServicioResumenInteligente(RestTemplate restTemplateMock, ServicioProgreso servicioProgresoMock) {
+    private final RestTemplate restTemplate;
+    private final ServicioUsuario servicioUsuario;
+    private final RepositorioResumenInteligente repositorioResumenInteligente;
+
+
+    public ServicioResumenInteligente(RestTemplate restTemplate, ServicioUsuario servicioUsuario, RepositorioResumenInteligente repositorioResumenInteligente) {
+        this.restTemplate = restTemplate;
+        this.servicioUsuario = servicioUsuario;
+        this.repositorioResumenInteligente = repositorioResumenInteligente;
     }
 
     public String generarPrompt(List<MateriaDTO> materias, Double progreso) {
@@ -47,14 +58,15 @@ public class ServicioResumenInteligente {
             }
         }
 
-        prompt.append("\nMi progreso total en la carrera es del ").append(String.format(Locale.US, "%.2f", progreso)).append("%.\n\n");
+        prompt.append("\nMi progreso total en la carrera es del ")
+                .append(String.format(Locale.US, "%.2f", progreso)).append("%.\n\n");
         prompt.append("Por favor, generá un resumen académico que incluya:\n")
                 .append("- Mis fortalezas.\n")
                 .append("- Mis debilidades.\n")
                 .append("- Qué tipo de materias me cuestan más.\n")
                 .append("- Qué estrategias me sugerís para mejorar mi rendimiento académico.\n")
                 .append("- Qué materias podría priorizar en el futuro según mis habilidades.\n\n")
-                .append("Sé breve y concreto. Respondeme en un solo párrafo y no hagas listas. No agregues mas texto que no corresponda al resumen");
+                .append("Sé breve y concreto. Respondeme en un solo párrafo y no hagas listas. No agregues más texto que no corresponda al resumen.");
 
         return prompt.toString();
     }
@@ -67,22 +79,21 @@ public class ServicioResumenInteligente {
         content.put("parts", Collections.singletonList(part));
 
         Map<String, Object> requestBody = new HashMap<>();
-        requestBody.put("contents", Collections.singletonList(content)); //lista con un solo elemento
+        requestBody.put("contents", Collections.singletonList(content));
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers); //representa el request
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
 
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<Map> response = restTemplate.postForEntity(ENDPOINT, entity, Map.class); //hace un post al endpoint
+        ResponseEntity<Map> response = restTemplate.postForEntity(ENDPOINT, entity, Map.class);
 
-        if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) { //evalua el codigo de respuesta
+        if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
             return "Error al generar el resumen.";
         }
 
         Map<String, Object> body = response.getBody();
-        List<Map<String, Object>> candidates = (List<Map<String, Object>>) body.get("candidates"); //lista de respuestas que genero Gemini
+        List<Map<String, Object>> candidates = (List<Map<String, Object>>) body.get("candidates");
 
         if (candidates == null || candidates.isEmpty()) {
             return "Error al generar el resumen";
@@ -93,5 +104,22 @@ public class ServicioResumenInteligente {
         List<Map<String, Object>> parts = (List<Map<String, Object>>) contentMap.get("parts");
 
         return (String) parts.get(0).get("text");
+    }
+
+    public void guardarResumen(String resumen, Usuario usuario) {
+        ResumenInteligente entidad = new ResumenInteligente();
+        entidad.setResumen(resumen);
+        entidad.setFechaGeneracion(LocalDate.now());
+        entidad.setUsuario(usuario);
+
+        repositorioResumenInteligente.guardar(entidad);
+    }
+
+    public String generarYGuardarResumen(Long usuarioId, List<MateriaDTO> materias, Double progreso) throws UsuarioNoEncontrado {
+        Usuario usuario = servicioUsuario.obtenerUsuario(usuarioId);
+        String prompt = generarPrompt(materias, progreso);
+        String resumen = generarResumenDesdePrompt(prompt);
+        guardarResumen(resumen, usuario);
+        return resumen;
     }
 }
