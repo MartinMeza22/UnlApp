@@ -1,8 +1,12 @@
 package com.tallerwebi.dominio.servicios;
 
 import com.tallerwebi.dominio.DTO.MateriaDTO;
+import com.tallerwebi.dominio.RepositorioResumenInteligente;
+import com.tallerwebi.dominio.ResumenInteligente;
+import com.tallerwebi.dominio.Usuario;
 import com.tallerwebi.dominio.excepcion.UsuarioNoEncontrado;
 import com.tallerwebi.infraestructura.RepositorioResumenInteligenteImpl;
+import com.tallerwebi.servicioInterfaz.ServicioUsuario;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;

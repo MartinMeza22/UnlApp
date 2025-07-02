@@ -2,9 +2,9 @@ package com.tallerwebi.presentacion;
 
 import com.tallerwebi.dominio.DTO.MateriaDTO;
 import com.tallerwebi.dominio.RepositorioResumenInteligente;
-import com.tallerwebi.dominio.ServicioProgreso;
-import com.tallerwebi.dominio.ServicioResumenInteligente;
-import com.tallerwebi.dominio.ServicioUsuario;
+import com.tallerwebi.dominio.servicios.ServicioProgreso;
+import com.tallerwebi.dominio.servicios.ServicioResumenInteligente;
+import com.tallerwebi.servicioInterfaz.ServicioUsuario;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
