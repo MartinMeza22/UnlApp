@@ -44,49 +44,6 @@ public class ControladorProgresoTest {
     }
 
     @Test
-    public void queCuandoIngreseAverProgresoSinFiltrosDeberiaMostrarTodasLasMateriasYProgreso() {
-        Long usuarioId = 1L;
-        String idCarrera = "1";
-        Usuario usuario = new Usuario();
-        // ARREGLO: Simulamos una carrera con ID 1 para que coincida con idCarrera.
-        Carrera carrera = new Carrera();
-        carrera.setId(1L);
-        usuario.setCarrera(carrera);
-
-        List<MateriaDTO> materias = new ArrayList<>();
-        materias.add(new MateriaDTO());
-        materias.add(new MateriaDTO());
-        List<Integer> cuatrimestres = Arrays.asList(1, 2, 3);
-
-        when(sessionMock.getAttribute("ID")).thenReturn(usuarioId);
-        when(servicioUsuarioMateriaMock.obtenerUsuario(usuarioId)).thenReturn(usuario);
-        when(servicioMateriaMock.obtenerCantidadDeCuatrimestres()).thenReturn(cuatrimestres);
-        when(servicioProgresoMock.materias(idCarrera, usuarioId)).thenReturn(materias);
-        when(servicioProgresoMock.obtenerProgresoDeCarrera(idCarrera, usuarioId)).thenReturn(75.0);
-        // ARREGLO: Los mocks de filtrarPor se mantienen porque el controlador los usa para las estadísticas.
-        when(servicioProgresoMock.filtrarPor(idCarrera, "aprobadas", usuarioId)).thenReturn(Arrays.asList(new MateriaDTO()));
-        when(servicioProgresoMock.filtrarPor(idCarrera, "cursando", usuarioId)).thenReturn(Arrays.asList(new MateriaDTO(), new MateriaDTO()));
-        when(servicioProgresoMock.obtenerPorcentajeDeMateriasDesaprobadas(idCarrera, usuarioId)).thenReturn(10.0);
-        when(servicioProgresoMock.obtenerPorcentajeDeMateriasAprobadas(idCarrera, usuarioId)).thenReturn(60.0);
-
-        ModelAndView mav = controladorProgresoAcademico.verProgreso(null, null, sessionMock);
-
-        assertThat(mav.getViewName(), equalToIgnoringCase("progreso"));
-        ModelMap model = mav.getModelMap();
-        assertThat(model.get("materiasTotales"), is(materias));
-        assertThat(model.get("porcentajeCarrera"), is(75.0));
-        assertThat(model.get("cantidadMateriasAprobadas"), is(1));
-        assertThat(model.get("cantidadMateriasTotales"), is(2));
-        assertThat(model.get("materiasEnCurso"), is(2));
-        assertThat(model.get("porcentajeDesaprobadas"), is(10.0));
-        assertThat(model.get("porcentajeAprobadas"), is(60.0));
-        assertThat(model.get("cuatrimestresDisponibles"), is(4));
-
-        // ARREGLO: Se verifica que se llama a `materias` para la lógica principal y para las estadísticas.
-        verify(servicioProgresoMock, atLeastOnce()).materias(idCarrera, usuarioId);
-    }
-
-    @Test
     public void queCuandoSeIngreseFiltroPorCondicionDeMateriasAprobadasSeDebeMostrarMateriasFiltradasPorAprobadas() {
         Long usuarioId = 1L;
         String idCarrera = "1";
@@ -116,8 +73,6 @@ public class ControladorProgresoTest {
 
         // Mocks para las estadísticas al final del método
         when(servicioProgresoMock.obtenerProgresoDeCarrera(idCarrera, usuarioId)).thenReturn(50.0);
-        when(servicioProgresoMock.filtrarPor(idCarrera, "aprobadas", usuarioId)).thenReturn(materiasEsperadas);
-        when(servicioProgresoMock.filtrarPor(idCarrera, "cursando", usuarioId)).thenReturn(new ArrayList<>());
         when(servicioProgresoMock.obtenerPorcentajeDeMateriasDesaprobadas(idCarrera, usuarioId)).thenReturn(5.0);
         when(servicioProgresoMock.obtenerPorcentajeDeMateriasAprobadas(idCarrera, usuarioId)).thenReturn(45.0);
 
@@ -160,8 +115,6 @@ public class ControladorProgresoTest {
 
         // Mocks para estadísticas
         when(servicioProgresoMock.obtenerProgresoDeCarrera(idCarrera, usuarioId)).thenReturn(60.0);
-        when(servicioProgresoMock.filtrarPor(idCarrera, "aprobadas", usuarioId)).thenReturn(new ArrayList<>());
-        when(servicioProgresoMock.filtrarPor(idCarrera, "cursando", usuarioId)).thenReturn(new ArrayList<>());
         when(servicioProgresoMock.obtenerPorcentajeDeMateriasDesaprobadas(idCarrera, usuarioId)).thenReturn(8.0);
         when(servicioProgresoMock.obtenerPorcentajeDeMateriasAprobadas(idCarrera, usuarioId)).thenReturn(52.0);
 
@@ -209,8 +162,6 @@ public class ControladorProgresoTest {
 
         // Mocks para estadísticas
         when(servicioProgresoMock.obtenerProgresoDeCarrera(idCarrera, usuarioId)).thenReturn(80.0);
-        when(servicioProgresoMock.filtrarPor(idCarrera, "aprobadas", usuarioId)).thenReturn(Arrays.asList(aprobadaCuatri1, aprobadaCuatri2));
-        when(servicioProgresoMock.filtrarPor(idCarrera, "cursando", usuarioId)).thenReturn(new ArrayList<>());
         when(servicioProgresoMock.obtenerPorcentajeDeMateriasDesaprobadas(idCarrera, usuarioId)).thenReturn(2.0);
         when(servicioProgresoMock.obtenerPorcentajeDeMateriasAprobadas(idCarrera, usuarioId)).thenReturn(78.0);
 

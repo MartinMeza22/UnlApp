@@ -80,9 +80,9 @@ public class ControladorProgresoAcademico {
         List<MateriaDTO> materias = filtro.filtrar(idCarrera, usuarioId);
 
         Double porcentajeProgreso = this.servicioProgreso.obtenerProgresoDeCarrera(idCarrera, usuarioId);
-        Integer cantidadDeMateriasAprobadas = this.servicioProgreso.filtrarPor(idCarrera,"aprobadas", usuarioId).size();
-        Integer cantidadMateriasTotal = this.servicioProgreso.materias(idCarrera, usuarioId).size();
-        Integer materiasEnCurso = this.servicioProgreso.filtrarPor(idCarrera,"cursando", usuarioId).size();
+        Integer cantidadDeMateriasAprobadas = (int) materias.stream().filter(m -> m.getNota() != null && m.getNota() >= 4).count();
+        Integer cantidadMateriasTotal = materias.size();
+        Integer materiasEnCurso = (int) materias.stream().filter(m -> "CURSANDO".equalsIgnoreCase(m.getEstado())).count();
         Double procentajeDesaprobadas = this.servicioProgreso.obtenerPorcentajeDeMateriasDesaprobadas(idCarrera, usuarioId);
         Double procentajeAprobadas = this.servicioProgreso.obtenerPorcentajeDeMateriasAprobadas(idCarrera, usuarioId);
 
