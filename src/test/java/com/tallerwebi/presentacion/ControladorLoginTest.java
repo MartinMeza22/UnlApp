@@ -1,5 +1,7 @@
 package com.tallerwebi.presentacion;
-
+import org.springframework.ui.ModelMap;
+import com.tallerwebi.dominio.excepcion.CodigoVerificacionExpirado;
+import com.tallerwebi.dominio.excepcion.CodigoVerificacionIncorrecto;
 import com.tallerwebi.dominio.servicios.ServicioEmail;
 import com.tallerwebi.dominio.servicios.ServicioMateria;
 import com.tallerwebi.dominio.servicios.ServicioUsuarioMateria;
@@ -15,10 +17,12 @@ import org.junit.jupiter.api.Test;
 import org.mockito.internal.matchers.InstanceOf;
 import org.springframework.test.web.servlet.MockMvc;
 
+import org.springframework.ui.ModelMap;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;;
@@ -64,6 +68,8 @@ public class ControladorLoginTest {
 
         requestMock = mock(HttpServletRequest.class);
         sessionMock = mock(HttpSession.class);
+        when(requestMock.getSession()).thenReturn(sessionMock);
+
     }
 
     @Test
@@ -213,6 +219,52 @@ public class ControladorLoginTest {
         assertThat(mav.getViewName(), equalTo("nuevo-usuario"));
         assertThat(mav.getModel().get("error"), is("El email es obligatorio"));
     }
+
+    @Test
+    public void registrarseConEmailInstitucionalEsValido() throws Exception {
+        Usuario usuario = new Usuario();
+        usuario.setEmail("martin@alumno.unlam.edu.ar");
+        usuario.setPassword("1234");
+        usuario.setNombre("Martin");
+        usuario.setApellido("Meza");
+        usuario.setCarreraID(1L);
+        usuario.setSituacionLaboral("Empleado");
+        usuario.setDisponibilidadHoraria(20);
+
+        Usuario usuarioPersistido = new Usuario();
+        usuarioPersistido.setId(1L);
+
+        when(repositorioLoginMock.consultarUsuario(any(), any())).thenReturn(usuarioPersistido);
+        doNothing().when(repositorioLoginMock).registrar(any());
+        doNothing().when(servicioEmailMock).guardarYEnviarCodigoDeVerificacion(any());
+        when(requestMock.getSession()).thenReturn(sessionMock);
+
+        ModelAndView mav = controladorLogin.registrarme(usuario, requestMock);
+
+        assertThat(mav.getViewName(), is("verificar-token"));
+        verify(repositorioLoginMock).registrar(usuario);
+    }
+
+
+    @Test
+    public void registrarseConTodosLosCamposPeroYConUnMailSinLaExtencionAlumnoUnlamEduArDevuelveError() throws Exception{
+        Usuario usuario = new Usuario();
+        usuario.setEmail("martin@gmail.com");
+        usuario.setPassword("1234");
+        usuario.setNombre("Martin");
+        usuario.setApellido("Meza");
+        usuario.setCarreraID(1L);
+        usuario.setSituacionLaboral("Empleado");
+        usuario.setDisponibilidadHoraria(20);
+
+        ModelAndView mav = controladorLogin.registrarme(usuario, requestMock);
+
+        assertThat(mav.getViewName(), is("nuevo-usuario"));
+        assertThat(mav.getModel().get("error"), is("El email debe ser institucional (@alumno.unlam.edu.ar)"));
+
+        // Verificamos que NO se haya intentado registrar
+        verify(repositorioLoginMock, never()).registrar(any());
+    }
     //Register
     @Test
     public void registrarseConTodosLosCamposPeroSinIngresarContraseniaDevuelveError() throws Exception{
@@ -332,7 +384,7 @@ public class ControladorLoginTest {
     public void registrarseConUnMailYaRegistradoDevuelveError() throws UsuarioExistente {
         // Nuevo usuario con mismo mail
         Usuario usuarioNuevo = new Usuario();
-        usuarioNuevo.setEmail("martin@gmail.com");
+        usuarioNuevo.setEmail("mmartin@alumno.unlam.edu.ar");
         usuarioNuevo.setPassword("1234");
         usuarioNuevo.setNombre("Marttin");
         usuarioNuevo.setApellido("Mezza");
@@ -344,40 +396,40 @@ public class ControladorLoginTest {
 
         ModelAndView mv = controladorLogin.registrarme(usuarioNuevo, requestMock);
 
-        assertThat(mv.getViewName(), is("nuevo-usuario")); // ✅ chequear la vista también
-        assertThat(mv.getModel().get("error"), is("El email debe ser una dirección institucional válida (@alumno.unlam.edu.ar)"));
+        assertThat(mv.getViewName(), is("nuevo-usuario"));
+        assertThat(mv.getModel().get("error"), is("El usuario ya existe"));
     }
 
 
-//    @Test
-//    public void elCodigoDeVerificacionSeEnviaCorrectamente() throws UsuarioExistente {
-//        Usuario usuario = new Usuario();
-//        usuario.setEmail("martin@gmail.com");
-//        usuario.setPassword("1234");
-//        usuario.setNombre("Martín");
-//        usuario.setApellido("Meza");
-//        usuario.setCarreraID(1L);
-//        usuario.setSituacionLaboral("Estudiante");
-//        usuario.setDisponibilidadHoraria(20);
-//
-//        Usuario usuarioPersistido = new Usuario();
-//        usuarioPersistido.setId(1L);
-//
-//        // Simular comportamiento
-//        doNothing().when(repositorioLoginMock).registrar(any());
-//        when(repositorioLoginMock.consultarUsuario("martin@gmail.com", "1234")).thenReturn(usuarioPersistido);
-//        doNothing().when(servicioEmailMock).guardarYEnviarCodigoDeVerificacion(any());
-//
-//        ModelAndView mv = controladorLogin.registrarme(usuario, requestMock);
-//
-//        // Verificaciones
-//        verify(repositorioLoginMock).registrar(usuario);
-//        verify(repositorioLoginMock).consultarUsuario("martin@gmail.com", "1234");
-//        verify(servicioEmailMock).guardarYEnviarCodigoDeVerificacion(usuario);
-//
-//        assertThat(mv.getViewName(), is("verificar-token"));
-//    }
-//FALTA VERIFICAR TODA LA RUTA DEL TOKEN
+    @Test
+    public void elCodigoDeVerificacionSeEnviaCorrectamente() throws UsuarioExistente {
+        Usuario usuario = new Usuario();
+        usuario.setEmail("martin@alumno.unlam.edu.ar");
+        usuario.setPassword("1234");
+        usuario.setNombre("Martín");
+        usuario.setApellido("Meza");
+        usuario.setCarreraID(1L);
+        usuario.setSituacionLaboral("Estudiante");
+        usuario.setDisponibilidadHoraria(20);
+
+        Usuario usuarioPersistido = new Usuario();
+        usuarioPersistido.setId(1L);
+
+        //comportamiento
+        doNothing().when(repositorioLoginMock).registrar(any());//doNothing?
+        when(repositorioLoginMock.consultarUsuario("martin@alumno.unlam.edu.ar", "1234")).thenReturn(usuarioPersistido);
+        doNothing().when(servicioEmailMock).guardarYEnviarCodigoDeVerificacion(any());
+
+        ModelAndView mv = controladorLogin.registrarme(usuario, requestMock);
+
+
+        verify(repositorioLoginMock).registrar(usuario);
+        verify(repositorioLoginMock).consultarUsuario("martin@alumno.unlam.edu.ar", "1234");
+        verify(servicioEmailMock).guardarYEnviarCodigoDeVerificacion(usuario);
+
+        assertThat(mv.getViewName(), is("verificar-token"));
+    }
+
 
     @Test
     public void cuandoSeCreaElUSuarioElMismoTieneAccesoATodasLasMateriasDeLaCarrera(){
@@ -401,7 +453,7 @@ public class ControladorLoginTest {
         usuario.setId(4L);
         usuario.setApellido("Meza");
         usuario.setNombre("Martin");
-        usuario.setEmail("martin@gmail.com");
+        usuario.setEmail("martin@alumno.unlam.edu.ar");
         usuario.setPassword("1234");
         usuario.setCarreraID(1L);
         usuario.setSituacionLaboral("Desempleado");
@@ -414,6 +466,124 @@ public class ControladorLoginTest {
         verify(sessionMock).invalidate();
         assertThat(mav.getViewName(), is("redirect:/login"));
     }
+
+    @Test
+    public void cuandoSeVerificaElTokenMeRedirijeAElPaso2Materias(){
+        Usuario usuario = new Usuario();
+        usuario.setId(4L);
+        String codigo = servicioEmailMock.generarCodigoVerificacion();
+
+        when(servicioEmailMock.generarCodigoVerificacion()).thenReturn(codigo);
+
+        ModelAndView mav = controladorLogin.verificarToken(codigo, usuario.getId());
+        assertThat(mav.getViewName(), is("redirect:/registrarme/paso2"));
+        assertThat(mav.getModel().get("idUser"), is(usuario.getId()));
+        verify(servicioEmailMock).verificarCodigo(usuario.getId(), codigo);
+    }
+
+    @Test
+    public void cuandoSeVerificaElTokenYEsIncorrectoMeDevuelveError() throws CodigoVerificacionIncorrecto{
+        Long idUsuario = 4L;
+        String codigo = "codigoIncorrecto";
+
+        // Simulamos que el servicio lanza la excepción cuando se verifica un código inválido
+        doThrow(new CodigoVerificacionIncorrecto("El código ingresado es incorrecto"))
+                .when(servicioEmailMock).verificarCodigo(idUsuario, codigo);
+
+
+        Usuario usuario = new Usuario();
+        usuario.setId(idUsuario);
+        when(servicioUsuarioMateriaMock.obtenerUsuario(idUsuario)).thenReturn(usuario);
+
+        ModelAndView mav = controladorLogin.verificarToken(codigo, idUsuario);
+
+        assertThat(mav.getViewName(), is("verificar-token"));
+        assertThat(mav.getModel().get("error"), is("El código ingresado es incorrecto"));
+        assertThat(((Usuario) mav.getModel().get("usuario")).getId(), is(idUsuario));
+
+        // Verificar si se llamó al metodo
+        verify(servicioEmailMock).verificarCodigo(idUsuario, codigo);
+    }
+
+    @Test
+    public void cuandoSeVerificaElTokenYYaExpiroMeDevuelveError() throws CodigoVerificacionExpirado{
+        Long idUsuario = 4L;
+        String codigo = "codigoExpirado";
+
+        // Simulamos que el servicio lanza la excepción cuando se verifica un código inválido
+        doThrow(new CodigoVerificacionExpirado("El código ya expiró"))
+                .when(servicioEmailMock).verificarCodigo(idUsuario, codigo);
+
+
+        Usuario usuario = new Usuario();
+        usuario.setId(idUsuario);
+        when(servicioUsuarioMateriaMock.obtenerUsuario(idUsuario)).thenReturn(usuario);
+
+        ModelAndView mav = controladorLogin.verificarToken(codigo, idUsuario);
+
+        assertThat(mav.getViewName(), is("nuevo-usuario"));
+        assertThat(mav.getModel().get("error"), is("El código ya expiró"));
+        assertThat(((Usuario) mav.getModel().get("usuario")).getId(), is(idUsuario));
+
+        // Verificar si se llamó al metodo
+        verify(servicioEmailMock).verificarCodigo(idUsuario, codigo);
+    }
+
+    @Test
+    public void cuandoSeVerificaElTokenHayUnErrorDeVerificacionYDevuelveError() throws Exception {
+        Long idUsuario = 4L;
+        String codigo = "codigoIncorrecto";
+
+        // Simulamos que el servicio lanza la excepción cuando se verifica un código inválido
+        doThrow(new CodigoVerificacionIncorrecto("Error de verificación"))
+                .when(servicioEmailMock).verificarCodigo(idUsuario, codigo);
+
+
+        Usuario usuario = new Usuario();
+        usuario.setId(idUsuario);
+        when(servicioUsuarioMateriaMock.obtenerUsuario(idUsuario)).thenReturn(usuario);
+
+        ModelAndView mav = controladorLogin.verificarToken(codigo, idUsuario);
+
+        assertThat(mav.getViewName(), is("verificar-token"));
+        assertThat(mav.getModel().get("error"), is("Error de verificación"));
+        assertThat(((Usuario) mav.getModel().get("usuario")).getId(), is(idUsuario));
+
+        // Verificar si se llamó al metodo
+        verify(servicioEmailMock).verificarCodigo(idUsuario, codigo);
+    }
+
+//    @Test
+//    public void irAlFormularioDeMaterias() {
+//        // Preparar datos
+//        Long idUsuario = 4L;
+//        Long idCarrera = 1L;
+//        Carrera carrera = new Carrera();
+//        carrera.setId(idCarrera);
+//        carrera.setNombre("Tec");
+//        Usuario usuario = new Usuario();
+//        usuario.setId(idUsuario);
+//        usuario.setCarreraID(idCarrera);
+//
+//        List<Materia> materias = new ArrayList<>();
+//        materias.add(new Materia("Matemática", carrera, 1));
+//        materias.add(new Materia("Programación", carrera, 1));
+//
+//        // Mockear comportamiento de servicios
+//        when(servicioUsuarioMateriaMock.obtenerUsuario(idUsuario)).thenReturn(usuario);
+//        when(servicioMateriaMock.obtenerMateriasPorCarrera(idCarrera.toString())).thenReturn(materias);
+//
+//
+//        ModelMap model = new ModelMap();
+//        ModelAndView mav = controladorLogin.mostrarFormularioDeMaterias(model, idUsuario);
+//
+//        // Verificaciones
+//        assertThat(mav.getViewName(), is("registroMateriasUsuario"));
+//        assertThat(mav.getModel().get("materias"), is(materias));
+//
+//        verify(servicioUsuarioMateriaMock).obtenerUsuario(idUsuario);
+//        verify(servicioMateriaMock).obtenerMateriasPorCarrera(idCarrera.toString());
+//    }
 
 }
 
