@@ -103,7 +103,7 @@ public class ControladorCalendario {
                     "\n" +
                     "¡Tu evento ha sido creado exitosamente! \uD83C\uDF89 Ya está todo listo para que comiences a organizarte.\n" +
                     "\n" +
-                    "Detalles del evento: \uD83D\uDDD3\uFE0F Fecha: " + fechaInicio.getDayOfMonth() + "/" + fechaInicio.getMonth() + "/" + fechaInicio.getYear() +  " \uD83D\uDD52 Hora: " + fechaInicio.getHour() + "hs \uD83D\uDCCD Lugar: " + ubicacion + " \uD83D\uDCDD Descripción: " + descripcion + "\n" +
+                    "Detalles del evento: \uD83D\uDDD3\uFE0F Fecha: " + fechaInicio.getDayOfMonth() + "/" + fechaInicio.getMonth() + "/" + fechaInicio.getYear() +  " \uD83D\uDD52 Hora: " + fechaInicio.getHour() + "hs mvn\uD83D\uDCCD Lugar: " + ubicacion + " \uD83D\uDCDD Descripción: " + descripcion + "\n" +
                     "\n" +
                     "Si necesitás hacer algún cambio o agregar información adicional, podés hacerlo desde tu panel de eventos en cualquier momento.";
 
