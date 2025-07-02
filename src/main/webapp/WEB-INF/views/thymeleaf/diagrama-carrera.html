@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diagrama de Carrera - <span th:text="${carrera.getNombre()}"></span></title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css" rel="stylesheet" type="text/css" />
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f4f7f6;
+      color: #333;
+    }
+
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 25px;
+      font-weight: 600;
+    }
+
+    #mainContainer {
+      display: flex;
+      gap: 20px;
+      min-height: 700px;
+    }
+
+    #network {
+      flex-grow: 1;
+      height: 700px;
+      border: 1px solid #e0e0e0;
+      background-color: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    #infoPanel {
+      width: 300px;
+      background-color: #ffffff;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      display: none;
+      height: fit-content;
+      max-height: 700px;
+      overflow-y: auto;
+    }
+
+    #infoPanel h3 {
+      margin-top: 0;
+      color: #2c3e50;
+      border-bottom: 1px solid #ebf0f0;
+      padding-bottom: 10px;
+      margin-bottom: 15px;
+      font-size: 1.3em;
+      font-weight: 600;
+    }
+
+    #infoPanel ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    #infoPanel li {
+      padding: 8px 0;
+      color: #555;
+      font-size: 0.95em;
+      border-bottom: 1px dashed #f5f5f5;
+    }
+
+    #infoPanel li:last-child {
+      border-bottom: none;
+    }
+
+    #infoPanel .empty-message {
+      color: #888;
+      font-style: italic;
+      font-size: 0.9em;
+      padding: 8px 0;
+    }
+
+    .section-title {
+      font-weight: bold;
+      margin-top: 10px;
+      margin-bottom: 8px;
+      color: #333;
+      font-size: 1em;
+      border-bottom: 1px solid #f0f0f0;
+      padding-bottom: 5px;
+    }
+
+    /* --- Estilos para los nodos Vis.js --- */
+    .selected-materia {
+      background-color: #28a745 !important;
+      border-color: #155724 !important;
+      border-width: 3px !important;
+      opacity: 1 !important;
+      box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.3) !important;
+    }
+
+    .habilitated-materia {
+      background-color: #17a2b8 !important;
+      border-color: #138496 !important;
+      border-width: 3px !important;
+      opacity: 1 !important;
+    }
+
+    .disabled-materia {
+      background-color: #e9ecef !important;
+      border-color: #adb5bd !important;
+      border-width: 1px !important;
+      opacity: 0.7 !important;
+    }
+
+    .habilitated-materia:hover,
+    .selected-materia:hover {
+      transform: scale(1.05) !important;
+      transition: transform 0.2s ease !important;
+    }
+
+    /* --- Estilos para la leyenda (NUEVO) --- */
+    #leyenda h3 {
+      font-size: 1.3em;
+      font-weight: 600;
+      margin-bottom: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #ebf0f0;
+    }
+
+    .leyenda-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .leyenda-list li {
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 0.9em;
+      color: #555;
+      border: none !important; /* Evita heredar estilos de borde */
+    }
+
+    .leyenda-list .color-box {
+      width: 18px;
+      height: 18px;
+      display: inline-block;
+      margin-right: 10px;
+      border-radius: 4px;
+    }
+
+    .leyenda-list .arrow-line {
+      width: 18px;
+      height: 4px; /* Más fina para simular una línea */
+      display: inline-block;
+      margin-right: 10px;
+      border-radius: 2px;
+    }
+  </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top px-3">
+  <a class="navbar-brand" th:href="@{/home}">UnlApp</a>
+
+  <div class="ms-auto pe-3">
+    <form th:action="@{/logout}" method="get" class="d-flex">
+      <button class="btn btn-outline-light" type="submit">Cerrar sesión</button>
+    </form>
+  </div>
+</nav>
+<h1>Diagrama de Carrera: <span th:text="${carrera.getNombre()}"></span></h1>
+
+<div id="mainContainer">
+  <div id="network"></div>
+
+  <div id="infoPanel">
+    <h3>Información de Materias</h3>
+    <div class="section-title">Materias seleccionadas del cuatrimestre:</div>
+    <ul id="selectedCuatrimestreMateriasList">
+      <li class="empty-message">Haz clic en una materia para ver su cuatrimestre.</li>
+    </ul>
+
+    <div class="section-title">Materias que podrás cursar:</div>
+    <ul id="habilitatedMateriasList">
+      <li class="empty-message">Selecciona materias para ver las que se habilitan.</li>
+    </ul>
+
+    <div id="leyenda" style="margin-top: 20px;">
+      <h3>Referencias</h3>
+      <div class="section-title" style="margin-top: 15px;">Flechas</div>
+      <ul class="leyenda-list">
+        <li><span class="arrow-line" style="background-color: #28a745;"></span> Correlatividad cumplida</li>
+        <li><span class="arrow-line" style="background-color: #17a2b8;"></span> Habilita una materia</li>
+        <li><span class="arrow-line" style="background-color: #888;"></span> Correlatividad pendiente</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
+
+<script th:inline="javascript">
+  const materiasData = /*[[${materiasJson}]]*/ [];
+
+  const nodes = [];
+  const edges = [];
+
+  const materiaMap = new Map();
+  const initialMaterias = new Set();
+  const cuatrimestreYPosCounter = new Map();
+
+
+  const verticalSpacing = 120;
+  materiasData.forEach(m => {
+    materiaMap.set(m.id, m);
+
+    if (!m.correlativas || m.correlativas.length === 0) {
+      initialMaterias.add(m.id);
+    }
+
+    const xPos = (m.cuatrimestre - 1) * 500;
+
+    let currentYCount = cuatrimestreYPosCounter.get(m.cuatrimestre) || 0;
+    const yPos = currentYCount * verticalSpacing;
+    cuatrimestreYPosCounter.set(m.cuatrimestre, currentYCount + 1);
+
+    nodes.push({
+      id: m.id,
+      label: m.nombre,
+      group: m.cuatrimestre,
+      x: xPos,
+      y: yPos,
+      fixed: { x: true, y: true },
+      shape: 'box',
+      title: `<b>${m.nombre}</b><br>Cuatrimestre: ${m.cuatrimestre}`,
+      clicable: false,
+      className: 'disabled-materia',
+      widthConstraint: { minimum: 180, maximum: 220 },
+      heightConstraint: { minimum: 60, maximum: 80 }
+    });
+
+    m.correlativas.forEach(correlativaId => {
+      edges.push({
+        from: correlativaId,
+        to: m.id,
+        arrows: 'to',
+        color: { color: '#888' },
+        width: 2
+      });
+    });
+  });
+
+  const container = document.getElementById('network');
+  const data = {
+    nodes: new vis.DataSet(nodes),
+    edges: new vis.DataSet(edges)
+  };
+
+  const options = {
+    physics: {
+      enabled: true,
+      solver: 'forceAtlas2Based',
+      forceAtlas2Based: {
+        gravitationalConstant: -80,
+        centralGravity: 0.01,
+        springLength: 150,
+        springConstant: 0.06,
+        damping: 0.4,
+        avoidOverlap: 1
+      },
+      maxVelocity: 5,
+      minVelocity: 0.75
+    },
+    edges: {
+      smooth: {
+        enabled: true,
+        type: 'cubicBezier',
+        forceDirection: 'horizontal',
+        roundness: 0.5
+      },
+      color: { inherit: 'from' },
+      arrows: {
+        to: { enabled: true, scaleFactor: 0.8 }
+      },
+      width: 2
+    },
+    nodes: {
+      shape: 'box',
+      font: {
+        size: 14,
+        face: 'Arial, sans-serif',
+        align: 'center',
+        multi: 'html'
+      },
+      color: {
+        border: '#adb5bd',
+        background: '#e9ecef',
+      },
+      margin: 10,
+      borderWidth: 2,
+      borderWidthSelected: 4,
+      widthConstraint: { minimum: 160, maximum: 200 },
+      heightConstraint: { minimum: 60, maximum: 80 }
+    },
+    interaction: {
+      hover: false, // Deshabilitamos el hover por defecto
+      selectConnectedEdges: false,
+      zoomView: true,
+      dragNodes: false,
+      hoverConnectedEdges: false,
+      multiselect: false
+    }
+  };
+
+  const network = new vis.Network(container, data, options);
+
+  network.once('stabilizationIterationsDone', function () {
+    network.fit();
+    highlightCorrelatives();
+    document.getElementById('infoPanel').style.display = 'flex';
+  });
+
+  let selectedNodes = new Set();
+  let lastClickedCuatrimestre = null;
+
+  network.on("click", function (params) {
+    if (params.nodes.length > 0) {
+      network.unselectAll();
+    }
+
+    const nodeId = params.nodes[0];
+    if (nodeId) {
+      const clickedNodeData = data.nodes.get(nodeId);
+
+      if (clickedNodeData && clickedNodeData.clicable) {
+        const materiaOriginal = materiaMap.get(nodeId);
+        if (materiaOriginal) {
+          lastClickedCuatrimestre = materiaOriginal.cuatrimestre;
+        }
+
+        if (selectedNodes.has(nodeId)) {
+          selectedNodes.delete(nodeId);
+        } else {
+          selectedNodes.add(nodeId);
+        }
+        highlightCorrelatives();
+        updateInfoPanel();
+      } else if (clickedNodeData) {
+        console.log(`La materia "${clickedNodeData.label.split('<br>')[0]}" no está habilitada para ser seleccionada.`);
+      }
+    } else {
+      selectedNodes.clear();
+      lastClickedCuatrimestre = null;
+      highlightCorrelatives();
+      updateInfoPanel();
+    }
+  });
+
+  function highlightCorrelatives() {
+    const currentlyClicableNodes = new Set();
+
+    materiasData.forEach(materia => {
+      if (!materia.correlativas || materia.correlativas.length === 0) {
+        currentlyClicableNodes.add(materia.id);
+      } else {
+        const allPrerequisitesMet = materia.correlativas.every(prereqId => selectedNodes.has(prereqId));
+        if (allPrerequisitesMet) {
+          currentlyClicableNodes.add(materia.id);
+        }
+      }
+    });
+
+    const nodesToUpdate = [];
+    data.nodes.forEach(node => {
+      let newClassName = 'disabled-materia';
+      let isClicable = false;
+      let newFont = { color: '#6c757d', face: 'Arial, sans-serif', size: 18, weight: 'normal' };
+      let newBorderWidth = 2;
+
+      if (selectedNodes.has(node.id)) {
+        newClassName = 'selected-materia';
+        isClicable = true;
+        newFont = { color: '#000000', size: 22, weight: 'bold'};
+        newBorderWidth = 5;
+      } else if (currentlyClicableNodes.has(node.id)) {
+        newClassName = 'habilitated-materia';
+        isClicable = true;
+        newFont = { color: '#000000', face: 'Segoe UI, sans-serif', size: 20, weight: 'bold' };
+      }
+
+      if (node.className !== newClassName || node.clicable !== isClicable) {
+        nodesToUpdate.push({
+          id: node.id,
+          className: newClassName,
+          clicable: isClicable,
+          font: newFont,
+          borderWidth: newBorderWidth
+        });
+      }
+    });
+
+    if (nodesToUpdate.length > 0) {
+      data.nodes.update(nodesToUpdate);
+    }
+
+    data.edges.forEach(edge => {
+      const fromNodeId = edge.from;
+      const toNodeId = edge.to;
+
+      let edgeColor = '#888';
+      let edgeWidth = 2;
+
+      if (selectedNodes.has(fromNodeId) && (selectedNodes.has(toNodeId) || currentlyClicableNodes.has(toNodeId))) {
+        edgeColor = '#28a745';
+        edgeWidth = 4;
+      } else if (selectedNodes.has(fromNodeId) || selectedNodes.has(toNodeId)) {
+        edgeColor = '#17a2b8';
+        edgeWidth = 3;
+      }
+
+      data.edges.update({
+        id: edge.id,
+        color: { color: edgeColor },
+        width: edgeWidth
+      });
+    });
+
+    updateInfoPanel();
+  }
+
+  function updateInfoPanel() {
+    const selectedCuatrimestreList = document.getElementById('selectedCuatrimestreMateriasList');
+    const habilitatedMateriasList = document.getElementById('habilitatedMateriasList');
+
+    selectedCuatrimestreList.innerHTML = '';
+    habilitatedMateriasList.innerHTML = '';
+
+    if (lastClickedCuatrimestre !== null) {
+      const materiasInCuatrimestre = materiasData.filter(m =>
+              m.cuatrimestre === lastClickedCuatrimestre && selectedNodes.has(m.id)
+      ).map(m => m.nombre);
+
+      if (materiasInCuatrimestre.length > 0) {
+        materiasInCuatrimestre.forEach(nombre => {
+          const li = document.createElement('li');
+          li.textContent = nombre;
+          selectedCuatrimestreList.appendChild(li);
+        });
+      } else {
+        const li = document.createElement('li');
+        li.className = 'empty-message';
+        li.textContent = `No hay materias seleccionadas en el cuatrimestre ${lastClickedCuatrimestre}.`;
+        selectedCuatrimestreList.appendChild(li);
+      }
+    } else {
+      const li = document.createElement('li');
+      li.className = 'empty-message';
+      li.textContent = 'Haz clic en una materia para ver su cuatrimestre.';
+      selectedCuatrimestreList.appendChild(li);
+    }
+
+    const habilitatedMateriasForList = new Set();
+    materiasData.forEach(materia => {
+      if (!selectedNodes.has(materia.id)) {
+        if (!materia.correlativas || materia.correlativas.length === 0) {
+          habilitatedMateriasForList.add(materia.id);
+        } else {
+          const allPrerequisitesMet = materia.correlativas.every(prereqId => selectedNodes.has(prereqId));
+          if (allPrerequisitesMet) {
+            habilitatedMateriasForList.add(materia.id);
+          }
+        }
+      }
+    });
+
+    const habilitatedMateriasNames = Array.from(habilitatedMateriasForList).map(nodeId => {
+      const materia = materiaMap.get(nodeId);
+      return materia ? materia.nombre : 'Materia Desconocida';
+    }).sort();
+
+    if (habilitatedMateriasNames.length > 0) {
+      habilitatedMateriasNames.forEach(nombre => {
+        const li = document.createElement('li');
+        li.textContent = nombre;
+        habilitatedMateriasList.appendChild(li);
+      });
+    } else {
+      const li = document.createElement('li');
+      li.className = 'empty-message';
+      li.textContent = 'No hay nuevas materias habilitadas con tu selección actual.';
+      habilitatedMateriasList.appendChild(li);
+    }
+  }
+</script>
+</body>
+</html>

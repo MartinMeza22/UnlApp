@@ -10,7 +10,8 @@ RUN apt-get update && apt-get install -y wget && \
     mkdir -p $JETTY_HOME && \
     wget https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/${JETTY_VERSION}/jetty-distribution-${JETTY_VERSION}.tar.gz && \
     tar -xzvf jetty-distribution-${JETTY_VERSION}.tar.gz -C $JETTY_HOME --strip-components=1 && \
-    rm jetty-distribution-${JETTY_VERSION}.tar.gz
+    rm jetty-distribution-${JETTY_VERSION}.tar.gz && \
+    rm -rf $JETTY_HOME/lib/mail
 
 # Copia el archivo WAR al directorio webapps de Jetty
 COPY target/tallerwebi-base-1.0-SNAPSHOT.war $JETTY_HOME/webapps/

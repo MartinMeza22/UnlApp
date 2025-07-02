@@ -48,8 +48,8 @@ public class ControladorProgresoAcademico {
 
         Long usuarioId = (Long) session.getAttribute("ID");
         // Para obtener el id de la carrera
-        String idCarrera = this.servicioUsuarioMateria.obtenerUsuario(usuarioId).getCarreraID().toString();
-
+        Carrera carrera = this.servicioUsuarioMateria.obtenerUsuario(usuarioId).getCarrera();
+        String idCarrera = carrera.getId().toString();
         List<MateriaDTO> materias = new ArrayList<>();
 
         if(condicion != null && !condicion.isEmpty() && cuatrimestre != null) {
@@ -68,9 +68,6 @@ public class ControladorProgresoAcademico {
         Integer materiasEnCurso = this.servicioProgreso.filtrarPor(idCarrera,"cursando", usuarioId).size();
         Double procentajeDesaprobadas = this.servicioProgreso.obtenerPorcentajeDeMateriasDesaprobadas(idCarrera, usuarioId);
         Double procentajeAprobadas = this.servicioProgreso.obtenerPorcentajeDeMateriasAprobadas(idCarrera, usuarioId);
-
-        Carrera carrera = new Carrera();
-        carrera.setNombre("Desarrollo Web");
 
 //        List<Materia> materias = this.servicioMateria.obtenerTodasLasMaterias();
 
@@ -137,6 +134,12 @@ public class ControladorProgresoAcademico {
         Long usuarioId = (Long) session.getAttribute("ID");
 
         if("guardarCambios".equalsIgnoreCase(action)) {
+
+            if(nota == null || dificultad == null) {
+                redirectAttributes.addFlashAttribute("error", "Los campos no pueden ir vacio");
+                return "redirect:/progreso";
+            }
+
             // Pude haber utilizado el servicio de UsuarioMateria, el metodo modificar, pero le falta le id del usuario al metodo modificar
             this.servicioProgreso.actualizarDatosMateria(usuarioId, idMateria, nota, dificultad);
         } else if("dejarDeCursar".equalsIgnoreCase(action)) {

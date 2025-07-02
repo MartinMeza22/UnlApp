@@ -557,6 +557,9 @@
         </div>
     </div>
 
+    <a th:href="@{|/carrera/${carrera.getId()}/diagrama|}">Ver digarama </a>
+    <p th:if="${error != null}" class="alert alert-danger mt-3" th:text="'Error: ' + ${error}"></p>
+
     <div class="list-header">
         <h2 class="list-title">Lista de materias</h2>
         <div class="filter-search-container">
