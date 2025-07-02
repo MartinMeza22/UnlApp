@@ -59,4 +59,5 @@ public class RepositorioComentarioTest {
         // Validación
         verify(sessionMock, times(1)).delete(comentarioAEliminar);
     }
+
 }
