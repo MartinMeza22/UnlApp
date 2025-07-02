@@ -88,6 +88,11 @@ public class ControladorLogin {
             return new ModelAndView("nuevo-usuario", model);
         }
 
+        if(!usuario.getEmail().endsWith("@alumno.unlam.edu.ar")){
+            model.put("error", "El email debe ser una dirección institucional válida (@alumno.unlam.edu.ar)");
+            return new ModelAndView("nuevo-usuario", model);
+        }
+
         if (usuario.getApellido() == null || usuario.getApellido().trim().isEmpty()) {
             model.put("error", "El apellido es obligatorio");
             return new ModelAndView("nuevo-usuario", model);

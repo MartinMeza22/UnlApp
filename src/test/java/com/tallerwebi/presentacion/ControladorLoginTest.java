@@ -138,7 +138,7 @@ public class ControladorLoginTest {
     @Test
     public void registrarmeExitosamente() throws UsuarioExistente, UsuarioNoEncontrado {
         Usuario usuario = new Usuario();
-        usuario.setEmail("martin@gmail.com");
+        usuario.setEmail("martin@alumno.unlam.edu.ar");
         usuario.setPassword("1234");
         usuario.setNombre("Martin");
         usuario.setApellido("Meza");
@@ -148,10 +148,10 @@ public class ControladorLoginTest {
 
         Usuario usuarioGuardado = new Usuario();
         usuarioGuardado.setId(4L);
-        usuarioGuardado.setEmail("martin@gmail.com");
+        usuarioGuardado.setEmail("martin@alumno.unlam.edu.ar");
 
         when(servicioUsuarioMock.obtenerUsuario(4L)).thenReturn(usuarioGuardado);
-        when(repositorioLoginMock.consultarUsuario("martin@gmail.com", "1234")).thenReturn(usuarioGuardado);
+        when(repositorioLoginMock.consultarUsuario("martin@alumno.unlam.edu.ar", "1234")).thenReturn(usuarioGuardado);
         when(requestMock.getSession()).thenReturn(sessionMock);
 
         ModelAndView mav = controladorLogin.registrarme(usuario, requestMock);
@@ -179,7 +179,7 @@ public class ControladorLoginTest {
     @Test
     public void registrarme_conUsuarioExistente_redirigeANuevoUsuarioConError() throws UsuarioExistente {
         Usuario usuario = new Usuario();
-        usuario.setEmail("test@unlam.com");
+        usuario.setEmail("martin@alumno.unlam.edu.ar");
         usuario.setPassword("1234");
         usuario.setNombre("Martin");
         usuario.setApellido("Meza");
@@ -217,7 +217,7 @@ public class ControladorLoginTest {
     @Test
     public void registrarseConTodosLosCamposPeroSinIngresarContraseniaDevuelveError() throws Exception{
         Usuario usuario = new Usuario();
-        usuario.setEmail("martin@gmail.com");
+        usuario.setEmail("martin@alumno.unlam.edu.ar");
         usuario.setNombre("Martin");
         usuario.setApellido("Meza");
         usuario.setCarreraID(1L);
@@ -236,7 +236,7 @@ public class ControladorLoginTest {
     public void registrarseConTodosLosCamposPeroSinIngresarNombreDevuelveError() throws Exception{
         Usuario usuario = new Usuario();
 
-        usuario.setEmail("martin@gmail.com");
+        usuario.setEmail("martin@alumno.unlam.edu.ar");
         usuario.setPassword("1234");
         usuario.setApellido("Meza");
         usuario.setCarreraID(1L);
@@ -256,7 +256,7 @@ public class ControladorLoginTest {
         Usuario usuario = new Usuario();
 
         usuario.setNombre("Martin");
-        usuario.setEmail("martin@gmail.com");
+        usuario.setEmail("martin@alumno.unlam.edu.ar");
         usuario.setPassword("1234");
         usuario.setCarreraID(1L);
         usuario.setSituacionLaboral("Empleado");
@@ -276,7 +276,7 @@ public class ControladorLoginTest {
 
         usuario.setApellido("Meza");
         usuario.setNombre("Martin");
-        usuario.setEmail("martin@gmail.com");
+        usuario.setEmail("martin@alumno.unlam.edu.ar");
         usuario.setPassword("1234");
         usuario.setCarreraID(1L);
         usuario.setDisponibilidadHoraria(20);
@@ -295,7 +295,7 @@ public class ControladorLoginTest {
 
         usuario.setApellido("Meza");
         usuario.setNombre("Martin");
-        usuario.setEmail("martin@gmail.com");
+        usuario.setEmail("martin@alumno.unlam.edu.ar");
         usuario.setPassword("1234");
         usuario.setSituacionLaboral("Empleado");
         usuario.setDisponibilidadHoraria(20);
@@ -314,7 +314,7 @@ public class ControladorLoginTest {
 
         usuario.setApellido("Meza");
         usuario.setNombre("Martin");
-        usuario.setEmail("martin@gmail.com");
+        usuario.setEmail("martin@alumno.unlam.edu.ar");
         usuario.setPassword("1234");
         usuario.setCarreraID(1L);
         usuario.setSituacionLaboral("Empleado");
@@ -345,7 +345,7 @@ public class ControladorLoginTest {
         ModelAndView mv = controladorLogin.registrarme(usuarioNuevo, requestMock);
 
         assertThat(mv.getViewName(), is("nuevo-usuario")); // ✅ chequear la vista también
-        assertThat(mv.getModel().get("error"), is("El usuario ya existe"));
+        assertThat(mv.getModel().get("error"), is("El email debe ser una dirección institucional válida (@alumno.unlam.edu.ar)"));
     }
 
 
