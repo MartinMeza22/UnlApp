@@ -1,12 +1,14 @@
 package com.tallerwebi.presentacion;
 
 import com.tallerwebi.dominio.DTO.MateriaDTO;
-import com.tallerwebi.dominio.ServicioProgreso;
-import com.tallerwebi.dominio.ServicioResumenInteligente;
-import com.tallerwebi.dominio.ServicioUsuarioMateria;
 import com.tallerwebi.dominio.excepcion.UsuarioNoEncontrado;
+import com.tallerwebi.dominio.servicios.ServicioProgreso;
+import com.tallerwebi.dominio.servicios.ServicioResumenInteligente;
+import com.tallerwebi.dominio.servicios.ServicioUsuarioMateria;
+import com.tallerwebi.dominio.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
@@ -54,6 +56,13 @@ public class ControladorResumenInteligente {
         }
 
         return servicioResumenInteligente.generarResumenHistorico(usuarioId);
+    }
+
+    @GetMapping("/nombre-usuario")
+    @ResponseBody
+    public String obtenerNombreUsuario(HttpSession session) {
+        Usuario usuario = servicioUsuarioMateria.obtenerUsuario((Long) session.getAttribute("ID"));
+        return usuario.getNombre();
     }
 
 }

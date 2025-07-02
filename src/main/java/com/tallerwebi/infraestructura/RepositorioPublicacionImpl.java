@@ -3,7 +3,7 @@ package com.tallerwebi.infraestructura;
 import com.tallerwebi.dominio.Carrera;
 import com.tallerwebi.dominio.Materia;
 import com.tallerwebi.dominio.Publicacion;
-import com.tallerwebi.dominio.RepositorioPublicacion;
+import com.tallerwebi.repositorioInterfaz.RepositorioPublicacion;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
 import org.hibernate.Session;

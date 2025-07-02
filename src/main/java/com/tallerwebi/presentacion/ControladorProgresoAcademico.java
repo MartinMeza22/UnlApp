@@ -2,6 +2,9 @@ package com.tallerwebi.presentacion;
 
 import com.tallerwebi.dominio.*;
 import com.tallerwebi.dominio.DTO.ProgresoDTO;
+import com.tallerwebi.dominio.servicios.ServicioMateria;
+import com.tallerwebi.dominio.servicios.ServicioProgreso;
+import com.tallerwebi.dominio.servicios.ServicioUsuarioMateria;
 import com.tallerwebi.dto.MateriasDTO;
 import com.tallerwebi.dto.MateriasWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,11 +17,8 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
-import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 public class ControladorProgresoAcademico {
@@ -48,8 +48,8 @@ public class ControladorProgresoAcademico {
 
         Long usuarioId = (Long) session.getAttribute("ID");
         // Para obtener el id de la carrera
-        String idCarrera = this.servicioUsuarioMateria.obtenerUsuario(usuarioId).getCarreraID().toString();
-
+        Carrera carrera = this.servicioUsuarioMateria.obtenerUsuario(usuarioId).getCarrera();
+        String idCarrera = carrera.getId().toString();
         List<MateriaDTO> materias = new ArrayList<>();
 
         if(condicion != null && !condicion.isEmpty() && cuatrimestre != null) {
@@ -68,9 +68,6 @@ public class ControladorProgresoAcademico {
         Integer materiasEnCurso = this.servicioProgreso.filtrarPor(idCarrera,"cursando", usuarioId).size();
         Double procentajeDesaprobadas = this.servicioProgreso.obtenerPorcentajeDeMateriasDesaprobadas(idCarrera, usuarioId);
         Double procentajeAprobadas = this.servicioProgreso.obtenerPorcentajeDeMateriasAprobadas(idCarrera, usuarioId);
-
-        Carrera carrera = new Carrera();
-        carrera.setNombre("Desarrollo Web");
 
 //        List<Materia> materias = this.servicioMateria.obtenerTodasLasMaterias();
 

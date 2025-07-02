@@ -557,6 +557,8 @@
         </div>
     </div>
 
+    <a th:href="@{|/carrera/${carrera.getId()}/diagrama|}">Ver digarama </a>
+
     <div class="list-header">
         <h2 class="list-title">Lista de materias</h2>
         <div class="filter-search-container">
@@ -721,22 +723,34 @@
         }
     }
 </script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const modalElement = document.getElementById('resumenModal');
         const modalBody = document.getElementById('contenidoResumen');
         const resumenModal = new bootstrap.Modal(modalElement);
+        const btnDescargar = document.getElementById('btnDescargarResumen');
 
-        // Botón: Ver resumen inteligente
+        let nombreUsuario = "Estudiante";
+
+        // Obtener nombre de usuario desde backend
+        fetch('/tallerwebi-base-1.0-SNAPSHOT/nombre-usuario')
+            .then(res => res.text())
+            .then(nombre => {
+                nombreUsuario = nombre;
+            });
+
+        // ver resumen inteligente
         document.getElementById('btnMostrarResumen').addEventListener('click', function () {
             modalBody.textContent = "Cargando...";
+            btnDescargar.style.display = 'none';
 
             fetch('/tallerwebi-base-1.0-SNAPSHOT/resumen-inteligente')
                 .then(response => response.text())
                 .then(text => {
                     modalBody.textContent = text;
                     resumenModal.show();
+                    btnDescargar.style.display = 'inline-block';
                 })
                 .catch(err => {
                     modalBody.textContent = "Error al obtener el resumen.";
@@ -759,6 +773,34 @@
                     resumenModal.show();
                 });
         });
+
+        btnDescargar.addEventListener('click', async () => {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            const fecha = new Date().toLocaleDateString('es-AR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+
+            const texto = modalBody.textContent;
+            const marginLeft = 10;
+            const marginTop = 40;
+
+            // Título
+            doc.setFontSize(14);
+            doc.text(`Resumen Académico de ${nombreUsuario}`, marginLeft, 15);
+            doc.setFontSize(10);
+            doc.text(`Fecha: ${fecha}`, marginLeft, 25);
+
+            // Contenido
+            doc.setFontSize(12);
+            const lines = doc.splitTextToSize(texto, 180);
+            doc.text(lines, marginLeft, marginTop);
+
+            doc.save(`Resumen_${nombreUsuario.replace(/\s+/g, '_')}.pdf`);
+        });
     });
 </script>
 
@@ -774,8 +816,16 @@
             <div class="modal-body" id="contenidoResumen">
                 <p>Cargando...</p>
             </div>
+            <div class="modal-footer">
+                <button id="btnDescargarResumen" class="btn btn-success">Descargar como PDF</button>
+            </div>
+
         </div>
     </div>
 </div>
+
+
+
+
 </body>
 </html>

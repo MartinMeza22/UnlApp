@@ -1,5 +1,9 @@
 package com.tallerwebi.presentacion;
 
+import com.tallerwebi.dominio.servicios.ServicioUsuarioMateria;
+import com.tallerwebi.repositorioInterfaz.RepositorioMateria;
+import com.tallerwebi.repositorioInterfaz.RepositorioUsuario;
+import com.tallerwebi.repositorioInterfaz.RepositorioUsuarioMateria;
 import com.tallerwebi.dominio.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

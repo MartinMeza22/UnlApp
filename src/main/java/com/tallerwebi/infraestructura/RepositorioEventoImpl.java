@@ -2,7 +2,7 @@ package com.tallerwebi.infraestructura;
 
 import com.tallerwebi.dominio.Evento;
 import com.tallerwebi.dominio.Materia;
-import com.tallerwebi.dominio.RepositorioEvento;
+import com.tallerwebi.repositorioInterfaz.RepositorioEvento;
 import com.tallerwebi.dominio.Usuario;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
