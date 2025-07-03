@@ -51,7 +51,7 @@ public class ServicioEvento {
     }
 
     // Crear eventos específicos
-    public Evento crearExamen(String titulo, LocalDateTime fecha, Long usuarioId, Long materiaId, Boolean notificarRecordatorio) {
+    public void crearExamen(String titulo, LocalDateTime fecha, Long usuarioId, Long materiaId, Boolean notificarRecordatorio) {
         Usuario usuario = repositorioUsuario.buscarPorId(usuarioId);
         if (usuario == null) {
             throw new IllegalArgumentException("Usuario no encontrado con ID: " + usuarioId);
@@ -67,10 +67,9 @@ public class ServicioEvento {
         examen.setDescripcion("Examen de " + materia.getNombre());
         examen.setNotificarRecordatorio(notificarRecordatorio);
         crearEvento(examen);
-        return examen;
     }
 
-    public Evento crearTarea(String titulo, LocalDateTime fechaEntrega, Long usuarioId, Long materiaId, String descripcion, Boolean notificarRecordatorio) {
+    public void crearTarea(String titulo, LocalDateTime fechaEntrega, Long usuarioId, Long materiaId, String descripcion, Boolean notificarRecordatorio) {
         Usuario usuario = repositorioUsuario.buscarPorId(usuarioId);
         if (usuario == null) {
             throw new IllegalArgumentException("Usuario no encontrado con ID: " + usuarioId);
@@ -86,10 +85,9 @@ public class ServicioEvento {
         tarea.setDescripcion(descripcion);
         tarea.setNotificarRecordatorio(notificarRecordatorio);
         crearEvento(tarea);
-        return tarea;
     }
 
-    public Evento crearSesionEstudio(String titulo, LocalDateTime fechaInicio, LocalDateTime fechaFin, Long usuarioId, Long materiaId, Boolean notificarRecordatorio) {
+    public void crearSesionEstudio(String titulo, LocalDateTime fechaInicio, LocalDateTime fechaFin, Long usuarioId, Long materiaId, Boolean notificarRecordatorio) {
         Usuario usuario = repositorioUsuario.buscarPorId(usuarioId);
         if (usuario == null) {
             throw new IllegalArgumentException("Usuario no encontrado con ID: " + usuarioId);
@@ -106,7 +104,6 @@ public class ServicioEvento {
         sesion.setDescripcion("Sesión de estudio para " + materia.getNombre());
         sesion.setNotificarRecordatorio(notificarRecordatorio);
         crearEvento(sesion);
-        return sesion;
     }
 
     public Evento crearEventoPersonal(String titulo, LocalDateTime fecha, Long usuarioId, String tipo, Boolean notificarRecordatorio) {
@@ -122,69 +119,9 @@ public class ServicioEvento {
         return evento;
     }
 
-    // Búsquedas por usuario
-    public List<Evento> obtenerEventosDeUsuario(Long usuarioId) {
-        return repositorioEvento.buscarPorUsuarioId(usuarioId);
-    }
-
-    public List<Evento> obtenerEventosAcademicos(Long usuarioId) {
-        return repositorioEvento.buscarEventosAcademicos(usuarioId);
-    }
-
-    public List<Evento> obtenerEventosPersonales(Long usuarioId) {
-        return repositorioEvento.buscarEventosPersonales(usuarioId);
-    }
-
     // Búsquedas por fecha
     public List<Evento> obtenerEventosHoy(Long usuarioId) {
         return repositorioEvento.buscarEventosHoy(usuarioId);
-    }
-
-    public List<Evento> obtenerEventosSemana(Long usuarioId) {
-        return repositorioEvento.buscarEventosSemana(usuarioId);
-    }
-
-    public List<Evento> obtenerEventosMes(Long usuarioId, int mes, int año) {
-        return repositorioEvento.buscarEventosMes(usuarioId, mes, año);
-    }
-
-    public List<Evento> obtenerEventosPorFecha(Long usuarioId, LocalDate fecha) {
-        return repositorioEvento.buscarPorFecha(usuarioId, fecha);
-    }
-
-    public List<Evento> obtenerEventosPorRango(Long usuarioId, LocalDateTime fechaInicio, LocalDateTime fechaFin) {
-        return repositorioEvento.buscarPorRangoFechas(usuarioId, fechaInicio, fechaFin);
-    }
-
-    // Búsquedas por estado
-    public List<Evento> obtenerEventosPendientes(Long usuarioId) {
-        return repositorioEvento.buscarEventosPendientes(usuarioId);
-    }
-
-    public List<Evento> obtenerEventosCompletados(Long usuarioId) {
-        return repositorioEvento.buscarEventosCompletados(usuarioId);
-    }
-
-    public List<Evento> obtenerEventosVencidos(Long usuarioId) {
-        return repositorioEvento.buscarEventosVencidos(usuarioId);
-    }
-
-    // Búsquedas por materia
-    public List<Evento> obtenerEventosPorMateria(Long usuarioId, Long materiaId) {
-        return repositorioEvento.buscarPorUsuarioYMateria(usuarioId, materiaId);
-    }
-
-    // Búsquedas por tipo
-    public List<Evento> obtenerExamenes(Long usuarioId) {
-        return repositorioEvento.buscarExamenes(usuarioId);
-    }
-
-    public List<Evento> obtenerTareas(Long usuarioId) {
-        return repositorioEvento.buscarTareas(usuarioId);
-    }
-
-    public List<Evento> obtenerSesionesEstudio(Long usuarioId) {
-        return repositorioEvento.buscarPorTipo(usuarioId, "ESTUDIO");
     }
 
     // Próximos eventos
@@ -199,27 +136,6 @@ public class ServicioEvento {
             evento.marcarComoCompletado();
             repositorioEvento.actualizar(evento);
         }
-    }
-
-    public void marcarComoIncompleto(Long eventoId) {
-        Evento evento = repositorioEvento.buscarPorId(eventoId);
-        if (evento != null) {
-            evento.marcarComoIncompleto();
-            repositorioEvento.actualizar(evento);
-        }
-    }
-
-    // Estadísticas
-    public Long contarEventos(Long usuarioId) {
-        return repositorioEvento.contarEventosPorUsuario(usuarioId);
-    }
-
-    public Long contarEventosCompletados(Long usuarioId) {
-        return repositorioEvento.contarEventosCompletados(usuarioId);
-    }
-
-    public Long contarEventosPendientes(Long usuarioId) {
-        return repositorioEvento.contarEventosPendientes(usuarioId);
     }
 
     // Resumen del día
