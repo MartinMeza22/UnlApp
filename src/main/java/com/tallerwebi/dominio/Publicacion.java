@@ -37,6 +37,8 @@ public class Publicacion {
     )
     private Set<Usuario> usuariosQueDieronLike = new HashSet<>();
 
+    @Column(nullable = true)
+    private String nombreArchivo;
 
     public Publicacion() {
         this.fechaCreacion = LocalDateTime.now();
@@ -59,7 +61,8 @@ public class Publicacion {
     public void setLikes(Integer likes) { this.likes = likes; }
     public List<Comentario> getComentarios() { return comentarios; }
     public void setComentarios(List<Comentario> comentarios) { this.comentarios = comentarios; }
-
+    public String getNombreArchivo() { return nombreArchivo; }
+    public void setNombreArchivo(String nombreArchivo) { this.nombreArchivo = nombreArchivo; }
     @Transient
     public String getFechaCreacionFormateada() {
 
@@ -82,4 +85,30 @@ public class Publicacion {
     public Set<Usuario> getUsuariosQueDieronLike() {return usuariosQueDieronLike;}
 
     public void setUsuariosQueDieronLike(Set<Usuario> usuariosQueDieronLike){this.usuariosQueDieronLike = usuariosQueDieronLike;}
+
+    @Transient
+    public boolean isImagen() {
+        if (nombreArchivo == null) return false;
+        String lowerCase = nombreArchivo.toLowerCase();
+        return lowerCase.endsWith(".jpg") || lowerCase.endsWith(".jpeg") || lowerCase.endsWith(".png");
+    }
+
+    @Transient
+    public boolean isVideo() {
+        if (nombreArchivo == null) return false;
+        return nombreArchivo.toLowerCase().endsWith(".mp4") || nombreArchivo.toLowerCase().endsWith(".mov");
+    }
+
+    @Transient
+    public boolean isPdf() {
+        if (nombreArchivo == null) return false;
+        return nombreArchivo.toLowerCase().endsWith(".pdf");
+    }
+
+    @Transient
+    public boolean isPpt() {
+        if (nombreArchivo == null) return false;
+        return nombreArchivo.toLowerCase().endsWith(".ppt") || nombreArchivo.toLowerCase().endsWith(".pptx");
+    }
+
 }
