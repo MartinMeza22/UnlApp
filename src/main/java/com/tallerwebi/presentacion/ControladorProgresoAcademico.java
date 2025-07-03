@@ -6,6 +6,7 @@ import com.tallerwebi.dominio.decorator.FiltroBaseMaterias;
 import com.tallerwebi.dominio.decorator.FiltroMaterias;
 import com.tallerwebi.dominio.decorator.FiltroPorCondicionDecorator;
 import com.tallerwebi.dominio.decorator.FiltroPorCuatrimestreDecorator;
+import com.tallerwebi.dominio.excepcion.CorrelatividadInvalidaException;
 import com.tallerwebi.dominio.servicios.ServicioMateria;
 import com.tallerwebi.dominio.servicios.ServicioProgreso;
 import com.tallerwebi.dominio.servicios.ServicioUsuarioMateria;
@@ -47,7 +48,7 @@ public class ControladorProgresoAcademico {
         List<Integer> cuatrimestresDisponibles = servicioMateria.obtenerCantidadDeCuatrimestres();
         Integer cuatri = 0;
         for (Integer i : cuatrimestresDisponibles) {
-            cuatri = i+1;
+            cuatri = i + 1;
         }
 
         Long usuarioId = (Long) session.getAttribute("ID");
@@ -73,7 +74,7 @@ public class ControladorProgresoAcademico {
             filtro = new FiltroPorCuatrimestreDecorator(filtro, cuatrimestre);
         }
 
-        if(condicion != null && !condicion.isEmpty() && !condicion.equalsIgnoreCase("todas")) {
+        if (condicion != null && !condicion.isEmpty() && !condicion.equalsIgnoreCase("todas")) {
             filtro = new FiltroPorCondicionDecorator(filtro, condicion);
         }
 
@@ -94,8 +95,8 @@ public class ControladorProgresoAcademico {
         model.put("materiasTotales", materias);
         model.put("selectedCondicion", condicion);
         model.put("porcentajeCarrera", porcentajeProgreso);
-        model.put("porcentajeDesaprobadas",  procentajeDesaprobadas);
-        model.put("porcentajeAprobadas",  procentajeAprobadas);
+        model.put("porcentajeDesaprobadas", procentajeDesaprobadas);
+        model.put("porcentajeAprobadas", procentajeAprobadas);
         model.put("materiasEnCurso", materiasEnCurso);
         model.put("cantidadMateriasTotales", cantidadMateriasTotal);
         model.put("cantidadMateriasAprobadas", cantidadDeMateriasAprobadas);
@@ -129,13 +130,13 @@ public class ControladorProgresoAcademico {
                                        @ModelAttribute("datosLogin") DatosLogin datosLogin,
                                        HttpSession session) {
         Long usuarioId = (Long) session.getAttribute("ID");
-            for( MateriasDTO materias : listadoMaterias.getMaterias()) {
-                if(materias.getNota() != null && materias.getDificultad() != null) {
-                    servicioUsuarioMateria.asignarMateria(usuarioId, materias.getId(), materias.getNota(), materias.getDificultad(), materias.getEstado());
-                }else if(materias.getEstado() == 2){ //estado == 2 (cursando)
-                    servicioUsuarioMateria.asignarMateria(usuarioId, materias.getId(), materias.getEstado());
-                }
+        for (MateriasDTO materias : listadoMaterias.getMaterias()) {
+            if (materias.getNota() != null && materias.getDificultad() != null) {
+                servicioUsuarioMateria.asignarMateria(usuarioId, materias.getId(), materias.getNota(), materias.getDificultad(), materias.getEstado());
+            } else if (materias.getEstado() == 2) { //estado == 2 (cursando)
+                servicioUsuarioMateria.asignarMateria(usuarioId, materias.getId(), materias.getEstado());
             }
+        }
         return new ModelAndView("login");
     }
 
@@ -150,18 +151,30 @@ public class ControladorProgresoAcademico {
     ) {
         Long usuarioId = (Long) session.getAttribute("ID");
 
-        if("guardarCambios".equalsIgnoreCase(action)) {
+        try {
+            if ("guardarCambios".equalsIgnoreCase(action)) {
 
-            if(nota == null || dificultad == null) {
-                redirectAttributes.addFlashAttribute("error", "Los campos no pueden ir vacio");
-                return "redirect:/progreso";
+                this.servicioProgreso.actualizarDatosMateria(usuarioId, idMateria, nota, dificultad);
+            } else if ("dejarDeCursar".equalsIgnoreCase(action)) {
+                this.servicioProgreso.marcarMateriaComoPendiente(idMateria, usuarioId);
             }
-
-            // Pude haber utilizado el servicio de UsuarioMateria, el metodo modificar, pero le falta le id del usuario al metodo modificar
-            this.servicioProgreso.actualizarDatosMateria(usuarioId, idMateria, nota, dificultad);
-        } else if("dejarDeCursar".equalsIgnoreCase(action)) {
-            this.servicioProgreso.marcarMateriaComoPendiente(idMateria, usuarioId);
+        } catch (CorrelatividadInvalidaException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Ocurrio un error inesperado");
         }
+//        if("guardarCambios".equalsIgnoreCase(action)) {
+//
+//            if(nota == null || dificultad == null) {
+//                redirectAttributes.addFlashAttribute("error", "Los campos no pueden ir vacio");
+//                return "redirect:/progreso";
+//            }
+//
+//            // Pude haber utilizado el servicio de UsuarioMateria, el metodo modificar, pero le falta le id del usuario al metodo modificar
+//            this.servicioProgreso.actualizarDatosMateria(usuarioId, idMateria, nota, dificultad);
+//        } else if("dejarDeCursar".equalsIgnoreCase(action)) {
+//            this.servicioProgreso.marcarMateriaComoPendiente(idMateria, usuarioId);
+//        }
 
         return "redirect:/progreso";
     }
@@ -173,7 +186,7 @@ public class ControladorProgresoAcademico {
         return "redirect:/progreso";
     }
 
-//    @PostMapping(path = "/") //METODO PARA UTILIZAR API DE GRAFICOS SE ENCARGA MARTÍN
+    //    @PostMapping(path = "/") //METODO PARA UTILIZAR API DE GRAFICOS SE ENCARGA MARTÍN
 //
 //    public String estadisticasPersonales(@RequestParam(name = "materiaId") Long idMateria,
 //                                         HttpSession session) {
@@ -186,7 +199,7 @@ public class ControladorProgresoAcademico {
     public String mostrarGrafico(Model model, HttpSession session) {
         Long usuarioId = (Long) session.getAttribute("ID");
         Long idMateria = 6L;
-        ProgresoDTO progreso = servicioUsuarioMateria.obtenerEstadisticaPorUsuario(usuarioId,idMateria);
+        ProgresoDTO progreso = servicioUsuarioMateria.obtenerEstadisticaPorUsuario(usuarioId, idMateria);
         System.out.println("DTO: " + progreso);
 
         model.addAttribute("progreso", progreso);

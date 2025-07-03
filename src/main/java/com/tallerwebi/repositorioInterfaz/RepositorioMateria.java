@@ -27,4 +27,6 @@ public interface RepositorioMateria {
     public List<Integer> obtenerCantidadDeCuatrimestres();
 
     Long obtenerCantidadDeMateriasDeLaCarrera();
+
+    List<Materia> buscarMateriasQueTienenComoCorrelativas(Long idMateria);
 }
