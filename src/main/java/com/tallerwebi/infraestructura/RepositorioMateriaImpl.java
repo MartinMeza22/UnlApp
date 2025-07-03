@@ -89,4 +89,16 @@ public class RepositorioMateriaImpl implements RepositorioMateria {
         return (Long) sessionFactory.getCurrentSession().createQuery(hql).uniqueResult();
     }
 
+    @Override
+    public List<Materia> buscarMateriasQueTienenComoCorrelativas(Long idMateria) {
+        String idMateriaStr = String.valueOf(idMateria);
+        String query = "FROM Materia m WHERE m.correlativa1 = :id OR m.correlativa2 = :id OR " +
+                "m.correlativa3 = :id OR m.correlativa4 = :id OR " +
+                "m.correlativa5 = :id OR m.correlativa6 = :id";
+        return this.sessionFactory.getCurrentSession()
+                .createQuery(query, Materia.class)
+                .setParameter("id", idMateriaStr)
+                .getResultList();
+    }
+
 }

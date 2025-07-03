@@ -4,6 +4,7 @@ import com.tallerwebi.dominio.DTO.MateriaDiagramaDTO;
 import com.tallerwebi.dominio.Materia;
 import com.tallerwebi.dominio.Usuario;
 import com.tallerwebi.dominio.UsuarioMateria;
+import com.tallerwebi.dominio.excepcion.CorrelatividadInvalidaException;
 import com.tallerwebi.repositorioInterfaz.RepositorioMateria;
 import com.tallerwebi.repositorioInterfaz.RepositorioUsuario;
 import com.tallerwebi.repositorioInterfaz.RepositorioUsuarioMateria;
@@ -227,7 +228,32 @@ public class ServicioProgreso {
 //        return materias;
 //    }
 
-    public Boolean actualizarDatosMateria(Long usuarioId, Long idMateria, Integer nota, Integer dificultad) {
+    public Boolean actualizarDatosMateria(Long usuarioId, Long idMateria, Integer nota, Integer dificultad) throws CorrelatividadInvalidaException {
+
+        if(nota != null && nota < 4){
+            List<Materia> materiasDependientes = this.repositorioMateria.buscarMateriasQueTienenComoCorrelativas(idMateria);
+
+            if(!materiasDependientes.isEmpty()){
+                Usuario usuario = this.repositorioUsuario.buscarPorId(usuarioId);
+                List<UsuarioMateria> materiasCursadasPorUsuario = this.repositorioUsuarioMateria.buscarPorUsuario(usuario.getCarreraID().toString(), usuarioId);
+
+                Set<Long> idsMateriasCursadasAprobadas = materiasCursadasPorUsuario.stream()
+                        .filter(um -> um.estaAprobada())
+                        .map(um -> um.getMateria().getId())
+                        .collect(Collectors.toSet());
+
+                List<String> conflictos = new ArrayList<>();
+                for(Materia dependiente : materiasDependientes){
+                    if(idsMateriasCursadasAprobadas.contains(dependiente.getId())){
+                        conflictos.add(dependiente.getNombre());
+                    }
+                }
+
+                if(!conflictos.isEmpty()){
+                    throw new CorrelatividadInvalidaException("No se puede desaprobar. Las siguiente materias dependen de ella: \n" + String.join(" - ", conflictos));
+                }
+            }
+        }
 
         Boolean pudoActualizar = false;
 
