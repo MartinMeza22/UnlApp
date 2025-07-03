@@ -4,9 +4,8 @@ import com.tallerwebi.dominio.servicios.ServicioEmail;
 import com.tallerwebi.dominio.servicios.ServicioEvento;
 import com.tallerwebi.dominio.servicios.ServicioMateria;
 import com.tallerwebi.dominio.servicios.ServicioUsuarioMateria;
-import com.tallerwebi.repositorioInterfaz.RepositorioMateria;
-import com.tallerwebi.repositorioInterfaz.RepositorioUsuario;
 import com.tallerwebi.dominio.*;
+import com.tallerwebi.servicioInterfaz.ServicioUsuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
@@ -24,16 +23,15 @@ public class ControladorCalendario {
     private ServicioEvento servicioEvento;
     private ServicioMateria servicioMateria;
     private ServicioUsuarioMateria servicioUsuarioMateria;
-    private RepositorioUsuario repositorioUsuario;
+    private ServicioUsuario servicioUsuario;
     private ServicioEmail servicioEmail;
-    private RepositorioMateria repositorioMateria;
 
     @Autowired
-    public ControladorCalendario(ServicioEvento servicioEvento, ServicioMateria servicioMateria, ServicioUsuarioMateria servicioUsuarioMateria, RepositorioUsuario repositorioUsuario, ServicioEmail servicioEmail) {
+    public ControladorCalendario(ServicioEvento servicioEvento, ServicioMateria servicioMateria, ServicioUsuarioMateria servicioUsuarioMateria, ServicioUsuario servicioUsuario, ServicioEmail servicioEmail) {
         this.servicioEvento = servicioEvento;
         this.servicioMateria = servicioMateria;
         this.servicioUsuarioMateria = servicioUsuarioMateria;
-        this.repositorioUsuario = repositorioUsuario;
+        this.servicioUsuario = servicioUsuario;
         this.servicioEmail = servicioEmail;
     }
 
@@ -78,11 +76,10 @@ public class ControladorCalendario {
 
         Long usuarioId = (Long) request.getSession().getAttribute("ID");
 
-        Usuario usuario = this.repositorioUsuario.buscarPorId(usuarioId);
-        Materia materia = this.servicioMateria.buscarMateriaPorId(materiaId);
 
 
         try {
+            Usuario usuario = this.servicioUsuario.obtenerUsuario(usuarioId);
             // Crear el evento usando el servicio
             if (materiaId != null && materiaId > 0) {
                 // Evento académico
@@ -116,17 +113,6 @@ public class ControladorCalendario {
             // Fallback: crear evento básico directamente
             try {
                 System.out.println("Intentando crear evento básico...");
-                if (usuario != null) {
-                    Evento eventoBasico = new Evento(titulo, fechaInicio, usuario);
-                    eventoBasico.setTipo(tipo);
-                    if (descripcion != null) eventoBasico.setDescripcion(descripcion);
-                    if (ubicacion != null) eventoBasico.setUbicacion(ubicacion);
-                    eventoBasico.setNotificarRecordatorio(notificar);
-                    servicioEvento.crearEvento(eventoBasico);
-                    System.out.println("✅ Evento básico creado exitosamente");
-                } else {
-                    modelo.put("error", "Usuario no encontrado");
-                }
             } catch (Exception e2) {
                 System.out.println("Error en fallback: " + e2.getMessage());
                 modelo.put("error", "Error al crear el evento: " + e.getMessage());
@@ -196,7 +182,7 @@ public class ControladorCalendario {
                 servicioEvento.marcarComoCompletado(id);
             }
         } catch (Exception e) {
-            // Log error
+            // handle error
         }
 
         return new ModelAndView("redirect:/calendario");
@@ -213,7 +199,7 @@ public class ControladorCalendario {
                 servicioEvento.eliminarEvento(id);
             }
         } catch (Exception e) {
-            // Log error
+            // handle error
         }
 
         return new ModelAndView("redirect:/calendario");

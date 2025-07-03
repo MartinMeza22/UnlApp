@@ -1,11 +1,13 @@
-package com.tallerwebi.dominio;
+package com.tallerwebi.presentacion;
 
+
+import com.tallerwebi.dominio.Carrera;
+import com.tallerwebi.dominio.Materia;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org. hamcrest.MatcherAssert.assertThat;
+import static org. hamcrest.Matchers.*;
 
 public class MateriaTest {
 

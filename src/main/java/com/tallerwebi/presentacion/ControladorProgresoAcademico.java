@@ -2,6 +2,10 @@ package com.tallerwebi.presentacion;
 
 import com.tallerwebi.dominio.*;
 import com.tallerwebi.dominio.DTO.ProgresoDTO;
+import com.tallerwebi.dominio.decorator.FiltroBaseMaterias;
+import com.tallerwebi.dominio.decorator.FiltroMaterias;
+import com.tallerwebi.dominio.decorator.FiltroPorCondicionDecorator;
+import com.tallerwebi.dominio.decorator.FiltroPorCuatrimestreDecorator;
 import com.tallerwebi.dominio.servicios.ServicioMateria;
 import com.tallerwebi.dominio.servicios.ServicioProgreso;
 import com.tallerwebi.dominio.servicios.ServicioUsuarioMateria;
@@ -50,22 +54,35 @@ public class ControladorProgresoAcademico {
         // Para obtener el id de la carrera
         Carrera carrera = this.servicioUsuarioMateria.obtenerUsuario(usuarioId).getCarrera();
         String idCarrera = carrera.getId().toString();
-        List<MateriaDTO> materias = new ArrayList<>();
+//        List<MateriaDTO> materias = new ArrayList<>();
+//
+//        if(condicion != null && !condicion.isEmpty() && cuatrimestre != null) {
+//            materias = this.servicioProgreso.filtrarPorCuatrimestreYEstado(idCarrera, cuatrimestre, condicion, usuarioId);
+//        }else if (condicion != null && !condicion.isEmpty()) {
+//            materias = this.servicioProgreso.filtrarPor(idCarrera, condicion, usuarioId);
+//        } else if (cuatrimestre != null) {
+//            materias = this.servicioProgreso.filtrarPorCuatrimestre(idCarrera, cuatrimestre, usuarioId);
+//        }else {
+//            materias = this.servicioProgreso.materias(idCarrera, usuarioId);
+//        }
 
-        if(condicion != null && !condicion.isEmpty() && cuatrimestre != null) {
-            materias = this.servicioProgreso.filtrarPorCuatrimestreYEstado(idCarrera, cuatrimestre, condicion, usuarioId);
-        }else if (condicion != null && !condicion.isEmpty()) {
-            materias = this.servicioProgreso.filtrarPor(idCarrera, condicion, usuarioId);
-        } else if (cuatrimestre != null) {
-            materias = this.servicioProgreso.filtrarPorCuatrimestre(idCarrera, cuatrimestre, usuarioId);
-        }else {
-            materias = this.servicioProgreso.materias(idCarrera, usuarioId);
+        // DECORATOR
+        FiltroMaterias filtro = new FiltroBaseMaterias(this.servicioProgreso);
+
+        if (cuatrimestre != null && cuatrimestre > 0) {
+            filtro = new FiltroPorCuatrimestreDecorator(filtro, cuatrimestre);
         }
 
+        if(condicion != null && !condicion.isEmpty() && !condicion.equalsIgnoreCase("todas")) {
+            filtro = new FiltroPorCondicionDecorator(filtro, condicion);
+        }
+
+        List<MateriaDTO> materias = filtro.filtrar(idCarrera, usuarioId);
+
         Double porcentajeProgreso = this.servicioProgreso.obtenerProgresoDeCarrera(idCarrera, usuarioId);
-        Integer cantidadDeMateriasAprobadas = this.servicioProgreso.filtrarPor(idCarrera,"aprobadas", usuarioId).size();
-        Integer cantidadMateriasTotal = this.servicioProgreso.materias(idCarrera, usuarioId).size();
-        Integer materiasEnCurso = this.servicioProgreso.filtrarPor(idCarrera,"cursando", usuarioId).size();
+        Integer cantidadDeMateriasAprobadas = (int) materias.stream().filter(m -> m.getNota() != null && m.getNota() >= 4).count();
+        Integer cantidadMateriasTotal = materias.size();
+        Integer materiasEnCurso = (int) materias.stream().filter(m -> "CURSANDO".equalsIgnoreCase(m.getEstado())).count();
         Double procentajeDesaprobadas = this.servicioProgreso.obtenerPorcentajeDeMateriasDesaprobadas(idCarrera, usuarioId);
         Double procentajeAprobadas = this.servicioProgreso.obtenerPorcentajeDeMateriasAprobadas(idCarrera, usuarioId);
 

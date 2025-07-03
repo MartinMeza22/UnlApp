@@ -152,80 +152,80 @@ public class ServicioProgreso {
         return dificultadMat;
     }
 
-    public List<MateriaDTO> filtrarPor(String idCarrera, String condicion, Long usuarioId) {
-        List<MateriaDTO> materias = this.materias(idCarrera, usuarioId);
+//    public List<MateriaDTO> filtrarPor(String idCarrera, String condicion, Long usuarioId) {
+//        List<MateriaDTO> materias = this.materias(idCarrera, usuarioId);
+//
+//        if (condicion == null || condicion.isEmpty() || condicion.equalsIgnoreCase("todas")) {
+//            return materias;
+//        }
+//
+//        if (condicion.equalsIgnoreCase("aprobadas")) {
+//            materias = materias.stream()
+//                    .filter(materia -> materia.getNota() != null && materia.getNota() >= 4)
+//                    .collect(Collectors.toList());
+//        } else if (condicion.equalsIgnoreCase("desaprobadas")) {
+//            materias = materias.stream()
+//                    .filter(materia -> materia.getNota() != null && materia.getNota() < 4)
+//                    .collect(Collectors.toList());
+//        } else if (condicion.equalsIgnoreCase("cursando")) {
+//            materias = materias.stream()
+//                    .filter(materia -> "CURSANDO".equalsIgnoreCase(materia.getEstado()))
+//                    .collect(Collectors.toList());
+//        } else if (condicion.equalsIgnoreCase("pendientes")) {
+//            materias = materias.stream()
+//                    .filter(materia -> "PENDIENTE".equalsIgnoreCase(materia.getEstado()))
+//                    .collect(Collectors.toList());
+//        }
+//        return materias;
+//    }
 
-        if (condicion == null || condicion.isEmpty() || condicion.equalsIgnoreCase("todas")) {
-            return materias;
-        }
+//    public List<MateriaDTO> filtrarPorCuatrimestre(String idCarrera, Integer cuatrimestre, Long usuarioId) {
+//        List<MateriaDTO> materias = this.materias(idCarrera, usuarioId);
+//
+//
+//        if (cuatrimestre == null || cuatrimestre.equals(0)) {
+//            return materias;
+//        }
+//
+//        if (cuatrimestre.equals(1)) {
+//            materias = materias.stream().filter(materia -> materia.getCuatrimestre() != null && materia.getCuatrimestre() == 1).collect(Collectors.toList());
+//        } else if (cuatrimestre.equals(2)) {
+//            materias = materias.stream().filter(materia -> materia.getCuatrimestre() != null && materia.getCuatrimestre() == 2).collect(Collectors.toList());
+//        } else if (cuatrimestre.equals(3)) {
+//            materias = materias.stream().filter(materia -> materia.getCuatrimestre() != null && materia.getCuatrimestre() == 3).collect(Collectors.toList());
+//        } else if (cuatrimestre.equals(4)) {
+//            materias = materias.stream().filter(materia -> materia.getCuatrimestre() != null && materia.getCuatrimestre() == 4).collect(Collectors.toList());
+//        } else if (cuatrimestre.equals(5)) {
+//            materias = materias.stream().filter(materia -> materia.getCuatrimestre() != null && materia.getCuatrimestre() == 5).collect(Collectors.toList());
+//        } else if (cuatrimestre.equals(6)) {
+//            materias = materias.stream().filter(materia -> materia.getCuatrimestre() != null && materia.getCuatrimestre() == 6).collect(Collectors.toList());
+//        } else if (cuatrimestre.equals(7)) {
+//            materias = materias.stream().filter(materia -> materia.getCuatrimestre() != null && materia.getCuatrimestre() == 7).collect(Collectors.toList());
+//        } else if (cuatrimestre.equals(8)) {
+//            materias = materias.stream().filter(materia -> materia.getCuatrimestre() != null && materia.getCuatrimestre() == 8).collect(Collectors.toList());
+//        } else if (cuatrimestre.equals(9)) {
+//            materias = materias.stream().filter(materia -> materia.getCuatrimestre() != null && materia.getCuatrimestre() == 9).collect(Collectors.toList());
+//        } else if (cuatrimestre.equals(10)) {
+//            materias = materias.stream().filter(materia -> materia.getCuatrimestre() != null && materia.getCuatrimestre() == 10).collect(Collectors.toList());
+//        }
+//
+//        return materias;
+//    }
 
-        if (condicion.equalsIgnoreCase("aprobadas")) {
-            materias = materias.stream()
-                    .filter(materia -> materia.getNota() != null && materia.getNota() >= 4)
-                    .collect(Collectors.toList());
-        } else if (condicion.equalsIgnoreCase("desaprobadas")) {
-            materias = materias.stream()
-                    .filter(materia -> materia.getNota() != null && materia.getNota() < 4)
-                    .collect(Collectors.toList());
-        } else if (condicion.equalsIgnoreCase("cursando")) {
-            materias = materias.stream()
-                    .filter(materia -> "CURSANDO".equalsIgnoreCase(materia.getEstado()))
-                    .collect(Collectors.toList());
-        } else if (condicion.equalsIgnoreCase("pendientes")) {
-            materias = materias.stream()
-                    .filter(materia -> "PENDIENTE".equalsIgnoreCase(materia.getEstado()))
-                    .collect(Collectors.toList());
-        }
-        return materias;
-    }
-
-    public List<MateriaDTO> filtrarPorCuatrimestre(String idCarrera, Integer cuatrimestre, Long usuarioId) {
-        List<MateriaDTO> materias = this.materias(idCarrera, usuarioId);
-
-
-        if (cuatrimestre == null || cuatrimestre.equals(0)) {
-            return materias;
-        }
-
-        if (cuatrimestre.equals(1)) {
-            materias = materias.stream().filter(materia -> materia.getCuatrimestre() != null && materia.getCuatrimestre() == 1).collect(Collectors.toList());
-        } else if (cuatrimestre.equals(2)) {
-            materias = materias.stream().filter(materia -> materia.getCuatrimestre() != null && materia.getCuatrimestre() == 2).collect(Collectors.toList());
-        } else if (cuatrimestre.equals(3)) {
-            materias = materias.stream().filter(materia -> materia.getCuatrimestre() != null && materia.getCuatrimestre() == 3).collect(Collectors.toList());
-        } else if (cuatrimestre.equals(4)) {
-            materias = materias.stream().filter(materia -> materia.getCuatrimestre() != null && materia.getCuatrimestre() == 4).collect(Collectors.toList());
-        } else if (cuatrimestre.equals(5)) {
-            materias = materias.stream().filter(materia -> materia.getCuatrimestre() != null && materia.getCuatrimestre() == 5).collect(Collectors.toList());
-        } else if (cuatrimestre.equals(6)) {
-            materias = materias.stream().filter(materia -> materia.getCuatrimestre() != null && materia.getCuatrimestre() == 6).collect(Collectors.toList());
-        } else if (cuatrimestre.equals(7)) {
-            materias = materias.stream().filter(materia -> materia.getCuatrimestre() != null && materia.getCuatrimestre() == 7).collect(Collectors.toList());
-        } else if (cuatrimestre.equals(8)) {
-            materias = materias.stream().filter(materia -> materia.getCuatrimestre() != null && materia.getCuatrimestre() == 8).collect(Collectors.toList());
-        } else if (cuatrimestre.equals(9)) {
-            materias = materias.stream().filter(materia -> materia.getCuatrimestre() != null && materia.getCuatrimestre() == 9).collect(Collectors.toList());
-        } else if (cuatrimestre.equals(10)) {
-            materias = materias.stream().filter(materia -> materia.getCuatrimestre() != null && materia.getCuatrimestre() == 10).collect(Collectors.toList());
-        }
-
-        return materias;
-    }
-
-    public List<MateriaDTO> filtrarPorCuatrimestreYEstado(String idCarrera, Integer cuatrimestre, String condicion, Long usuarioId) {
-        List<MateriaDTO> materias = this.materias(idCarrera, usuarioId);
-
-        if (condicion != null && !condicion.equalsIgnoreCase("todas")) {
-            materias = filtrarPor(idCarrera, condicion, usuarioId);
-        }
-
-        if (cuatrimestre != null && cuatrimestre > 0) {
-            final int cuatri = cuatrimestre;
-            materias = materias.stream().filter(materia -> materia.getCuatrimestre() != null
-                    && materia.getCuatrimestre() == cuatri).collect(Collectors.toList());
-        }
-        return materias;
-    }
+//    public List<MateriaDTO> filtrarPorCuatrimestreYEstado(String idCarrera, Integer cuatrimestre, String condicion, Long usuarioId) {
+//        List<MateriaDTO> materias = this.materias(idCarrera, usuarioId);
+//
+//        if (condicion != null && !condicion.equalsIgnoreCase("todas")) {
+//            materias = filtrarPor(idCarrera, condicion, usuarioId);
+//        }
+//
+//        if (cuatrimestre != null && cuatrimestre > 0) {
+//            final int cuatri = cuatrimestre;
+//            materias = materias.stream().filter(materia -> materia.getCuatrimestre() != null
+//                    && materia.getCuatrimestre() == cuatri).collect(Collectors.toList());
+//        }
+//        return materias;
+//    }
 
     public Boolean actualizarDatosMateria(Long usuarioId, Long idMateria, Integer nota, Integer dificultad) {
 
@@ -264,9 +264,16 @@ public class ServicioProgreso {
     public Double obtenerProgresoDeCarrera(String idCarrera, Long usuarioId) {
 
         List<MateriaDTO> todasLasMaterias = this.materias(idCarrera, usuarioId);
-        List<MateriaDTO> materiasAprobadas = this.filtrarPor(idCarrera, "aprobadas", usuarioId);
+        //List<MateriaDTO> materiasAprobadas = this.filtrarPor(idCarrera, "aprobadas", usuarioId);
 
-        return (double) ((materiasAprobadas.size() * 100) / todasLasMaterias.size());
+        if(todasLasMaterias.isEmpty()){
+            return 0.0;
+        }
+        Long cantidadAprobadas = todasLasMaterias.stream()
+                .filter(materia -> materia.getNota() != null && materia.getNota() >= 4)
+                .count();
+
+        return (double) (cantidadAprobadas * 100) / todasLasMaterias.size();
 
     }
 
@@ -283,30 +290,24 @@ public class ServicioProgreso {
 
     public Double obtenerPorcentajeDeMateriasDesaprobadas(String idCarrera, Long usuarioId) {
         List<MateriaDTO> materias = this.materias(idCarrera, usuarioId);
-        List<MateriaDTO> materiasDesaprobadas = new ArrayList<>();
-
-        for (MateriaDTO materia : materias) {
-            if (materia.getNota() != null && materia.getNota() < 4) {
-                materiasDesaprobadas.add(materia);
-            }
+        if (materias.isEmpty()) {
+            return 0.0;
         }
-
-        Double porcentajeDesaprobadas = (double) (materiasDesaprobadas.size() * 100 / materias.size());
-        return porcentajeDesaprobadas;
+        long cantidadDesaprobadas = materias.stream()
+                .filter(m -> m.getNota() != null && m.getNota() < 4)
+                .count();
+        return (double) (cantidadDesaprobadas * 100) / materias.size();
     }
 
     public Double obtenerPorcentajeDeMateriasAprobadas(String idCarrera, Long usuarioId) {
         List<MateriaDTO> materias = this.materias(idCarrera, usuarioId);
-        List<MateriaDTO> materiasAprobadas = new ArrayList<>();
-
-        for (MateriaDTO materia : materias) {
-            if (materia.getNota() != null && materia.getNota() > 4) {
-                materiasAprobadas.add(materia);
-            }
+        if (materias.isEmpty()) {
+            return 0.0;
         }
-
-        Double porcentajeAprobadas = (double) (materiasAprobadas.size() * 100 / materias.size());
-        return porcentajeAprobadas;
+        long cantidadAprobadas = materias.stream()
+                .filter(m -> m.getNota() != null && m.getNota() > 4)
+                .count();
+        return (double) (cantidadAprobadas * 100) / materias.size();
     }
 
     public List<MateriaDiagramaDTO> obtenerMateriasParaDiagrama(String idCarrera, Long idUsuario) {

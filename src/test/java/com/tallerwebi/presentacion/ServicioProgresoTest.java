@@ -1,220 +1,165 @@
-package com.tallerwebi.presentacion;
+package com.tallerwebi.presentacion; // O el paquete donde tengas tus tests
 
+import com.tallerwebi.dominio.Carrera;
+import com.tallerwebi.dominio.DTO.MateriaDTO;
+import com.tallerwebi.dominio.Materia;
+import com.tallerwebi.dominio.Usuario;
+import com.tallerwebi.dominio.UsuarioMateria;
 import com.tallerwebi.dominio.servicios.ServicioProgreso;
 import com.tallerwebi.repositorioInterfaz.RepositorioMateria;
 import com.tallerwebi.repositorioInterfaz.RepositorioUsuario;
 import com.tallerwebi.repositorioInterfaz.RepositorioUsuarioMateria;
-import com.tallerwebi.dominio.*;
-import com.tallerwebi.dominio.DTO.MateriaDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class ServicioProgresoTest {
 
-
     private ServicioProgreso servicioProgreso;
+    private RepositorioUsuarioMateria repositorioUsuarioMateriaMock;
+    private RepositorioMateria repositorioMateriaMock;
+    private RepositorioUsuario repositorioUsuarioMock;
 
-    private RepositorioUsuarioMateria mockRepositorioUsuarioMateria;
-    private RepositorioMateria mockRepositorioMateria;
-    private RepositorioUsuario mockRepositorioUsuario;
-
-    private Usuario usuario;
-    private Materia materia1;
-    private Materia materia2;
-    private Materia materia3;
-    private UsuarioMateria usuarioMateria1;
-    private UsuarioMateria usuarioMateria2;
-    private String idCarrera = "1";
+    private final Long ID_USUARIO = 1L;
+    private final String ID_CARRERA_STRING = "1";
+    private final Long ID_CARRERA_LONG = 1L;
+    private Carrera carreraDePrueba;
 
     @BeforeEach
     public void init() {
-        mockRepositorioUsuarioMateria = mock(RepositorioUsuarioMateria.class);
-        mockRepositorioMateria = mock(RepositorioMateria.class);
-        mockRepositorioUsuario = mock(RepositorioUsuario.class);
+        repositorioUsuarioMateriaMock = mock(RepositorioUsuarioMateria.class);
+        repositorioMateriaMock = mock(RepositorioMateria.class);
+        repositorioUsuarioMock = mock(RepositorioUsuario.class);
 
-        servicioProgreso = new ServicioProgreso(mockRepositorioUsuarioMateria, mockRepositorioMateria, mockRepositorioUsuario);
+        servicioProgreso = new ServicioProgreso(repositorioUsuarioMateriaMock, repositorioMateriaMock, repositorioUsuarioMock);
 
-        usuario = new Usuario();
-        usuario.setId(1L);
-        usuario.setEmail("test@test.com");
-
-        materia1 = new Materia();
-        materia1.setId(101L);
-        materia1.setNombre("Matematicas");
-        materia1.setCuatrimestre(1);
-
-        materia2 = new Materia();
-        materia2.setId(102L);
-        materia2.setNombre("Base de datos");
-        materia2.setCuatrimestre(2);
-        materia2.setCorrelativa1("101");
-
-        materia3 = new Materia();
-        materia3.setId(103L);
-        materia3.setNombre("Base de datos 2");
-        materia3.setCuatrimestre(3);
-        materia3.setCorrelativa2("102");
-
-        usuarioMateria1 = new UsuarioMateria(usuario, materia1, 7);
-        usuarioMateria1.setDificultad(1);
-
-        usuarioMateria2 = new UsuarioMateria(usuario, materia2, null);
-        usuarioMateria2.setDificultad(5);
+        carreraDePrueba = new Carrera();
+        carreraDePrueba.setId(ID_CARRERA_LONG);
+        carreraDePrueba.setNombre("Sistemas");
     }
 
     @Test
-    public void queAlPedirTodasLasMateriasSeDevuelvanCorrectamenteConSuEstadoYDatos() {
-        List<Materia> todasLasMaterias = Arrays.asList(materia1, materia2, materia3);
-        List<UsuarioMateria> materiasCursadas = Arrays.asList(usuarioMateria1, usuarioMateria2);
+    public void queAlPedirMateriasSeConstruyaElDTOCombinandoDatosDeRepositorios() {
+        Materia materia1 = new Materia();
+        materia1.setId(101L);
+        materia1.setNombre("Matemática");
+        materia1.setCuatrimestre(1);
+        materia1.setCarrera(carreraDePrueba);
 
-        when(mockRepositorioMateria.obtenerMateriasDeUnaCarrera(idCarrera)).thenReturn(todasLasMaterias);
-        when(mockRepositorioUsuarioMateria.buscarPorUsuario(idCarrera, usuario.getId())).thenReturn(materiasCursadas);
+        Materia materia2 = new Materia();
+        materia2.setId(102L);
+        materia2.setNombre("Programación");
+        materia2.setCuatrimestre(1);
+        materia2.setCorrelativa1("101");
+        materia2.setCarrera(carreraDePrueba);
 
-        List<MateriaDTO> resultado = this.servicioProgreso.materias(idCarrera, usuario.getId());
+        Materia materia3 = new Materia();
+        materia3.setId(103L);
+        materia3.setNombre("Laboratorio");
+        materia3.setCuatrimestre(2);
+        materia3.setCarrera(carreraDePrueba);
+
+        List<Materia> todasLasMateriasDeCarrera = Arrays.asList(materia1, materia2, materia3);
+
+        Usuario usuario = new Usuario();
+        UsuarioMateria usuarioMateria1 = new UsuarioMateria(usuario, materia1, 8);
+        List<UsuarioMateria> materiasDelUsuario = Collections.singletonList(usuarioMateria1);
+
+        when(repositorioMateriaMock.obtenerMateriasDeUnaCarrera(ID_CARRERA_STRING)).thenReturn(todasLasMateriasDeCarrera);
+        when(repositorioUsuarioMateriaMock.buscarPorUsuario(ID_CARRERA_STRING, ID_USUARIO)).thenReturn(materiasDelUsuario);
+
+        List<MateriaDTO> resultado = servicioProgreso.materias(ID_CARRERA_STRING, ID_USUARIO);
 
         assertThat(resultado, hasSize(3));
+        MateriaDTO dtoMatematica = resultado.get(0);
+        assertThat(dtoMatematica.getNombre(), equalTo("Matemática"));
+        assertThat(dtoMatematica.getEstado(), equalTo("APROBADA"));
+        assertThat(dtoMatematica.getEsCursable(), is(true));
 
-        // Asserts para materia1
-        MateriaDTO materiaDTO1 = resultado.stream().filter(mat -> mat.getId().equals(materia1.getId())).findFirst().orElse(null);
-        assertThat(materiaDTO1, is(notNullValue()));
-        assertThat(materiaDTO1.getNombre(), is("Matematicas"));
-        assertThat(materiaDTO1.getEstado(), is("APROBADA"));
-        assertThat(materiaDTO1.getCuatrimestre(), is(1));
-        assertThat(materiaDTO1.getDificultad(), is("Facil"));
-
-        // Asserts para materia2
-        MateriaDTO materiaDTO2 = resultado.stream().filter(mat -> mat.getId().equals(materia2.getId())).findFirst().orElse(null);
-        assertThat(materiaDTO2, is(notNullValue()));
-        assertThat(materiaDTO2.getNombre(), is("Base de datos"));
-        assertThat(materiaDTO2.getEstado(), is("CURSANDO"));
-        assertThat(materiaDTO2.getCuatrimestre(), is(2));
-        // assertThat(materiaDTO2.getDificultad(), is("Medio")); --> Si esta CURSANDO no tiene dificultadMateria
-
+        MateriaDTO dtoProgramacion = resultado.get(1);
+        assertThat(dtoProgramacion.getNombre(), equalTo("Programación"));
+        assertThat(dtoProgramacion.getEstado(), equalTo("PENDIENTE"));
+        assertThat(dtoProgramacion.getEsCursable(), is(true));
     }
 
     @Test
-    public void queAlFiltrarPorAprobadasSeDevuelvanSoloLasMateriasAprobadas() {
-        List<Materia> todasLasMaterias = Arrays.asList(materia1, materia2, materia3);
-        usuarioMateria2.setNota(8);
-        List<UsuarioMateria> materiasCursadas = Arrays.asList(usuarioMateria1, usuarioMateria2);
+    public void queUnaMateriaNoSeaCursableSiSuCorrelativaNoEstaAprobada() {
+        Materia materia1 = new Materia();
+        materia1.setId(101L);
+        materia1.setNombre("Matemática");
+        materia1.setCarrera(carreraDePrueba);
 
-        when(mockRepositorioMateria.obtenerMateriasDeUnaCarrera(idCarrera)).thenReturn(todasLasMaterias);
-        when(mockRepositorioUsuarioMateria.buscarPorUsuario(idCarrera, usuario.getId())).thenReturn(materiasCursadas);
+        Materia materia2 = new Materia();
+        materia2.setId(102L);
+        materia2.setNombre("Programación");
+        materia2.setCorrelativa1("101");
+        materia2.setCarrera(carreraDePrueba);
 
-        List<MateriaDTO> materiasAprobadas = this.servicioProgreso.filtrarPor(idCarrera, "APROBADAS", usuario.getId());
+        Usuario usuario = new Usuario();
+        UsuarioMateria usuarioMateria1 = new UsuarioMateria(usuario, materia1, 3); // Desaprobada
 
-        assertThat(materiasAprobadas, hasSize(2));
-        assertThat(materiasAprobadas.get(1).getNota(), is(8));
+        when(repositorioMateriaMock.obtenerMateriasDeUnaCarrera(ID_CARRERA_STRING)).thenReturn(Arrays.asList(materia1, materia2));
+        when(repositorioUsuarioMateriaMock.buscarPorUsuario(ID_CARRERA_STRING, ID_USUARIO)).thenReturn(Collections.singletonList(usuarioMateria1));
 
-        assertTrue(materiasAprobadas.stream().allMatch(mat -> mat.getNota() != null && mat.getNota() >= 4));
+        List<MateriaDTO> resultado = servicioProgreso.materias(ID_CARRERA_STRING, ID_USUARIO);
 
+        MateriaDTO dtoProgramacion = resultado.get(1);
+        assertThat(dtoProgramacion.getEsCursable(), is(false));
     }
 
     @Test
-    public void queAlActualizarDatosDeMateriaExistenteSeActualiceCorrectamente() {
-        Integer nuevaNota = 1;
-        Integer nivelDificultad = 1;
+    public void queAlObtenerProgresoDeCarreraCalculeElPorcentajeCorrectoDeAprobadas() {
+        Materia materia1 = new Materia();
+        materia1.setId(101L);
+        Materia materia2 = new Materia();
+        materia2.setId(102L);
+        Materia materia3 = new Materia();
+        materia3.setId(103L);
+        Materia materia4 = new Materia();
+        materia4.setId(104L);
 
-        when(mockRepositorioUsuarioMateria.existe(usuario.getId(), materia1.getId())).thenReturn(true);
-        when(mockRepositorioUsuarioMateria.buscarPorUsuarioYMateria(usuario.getId(), materia1.getId())).thenReturn(usuarioMateria1);
+        Usuario usuario = new Usuario();
+        UsuarioMateria usuarioMateria1 = new UsuarioMateria(usuario, materia1, 7);
 
-        Boolean resultado = this.servicioProgreso.actualizarDatosMateria(usuario.getId(), materia1.getId(), nuevaNota, nivelDificultad);
+        when(repositorioMateriaMock.obtenerMateriasDeUnaCarrera(ID_CARRERA_STRING)).thenReturn(Arrays.asList(materia1, materia2, materia3, materia4));
+        when(repositorioUsuarioMateriaMock.buscarPorUsuario(ID_CARRERA_STRING, ID_USUARIO)).thenReturn(Collections.singletonList(usuarioMateria1));
 
-        assertTrue(resultado);
-        assertThat(usuarioMateria1.getNota(), is(nuevaNota));
-        assertThat(usuarioMateria1.getDificultad(), is(nivelDificultad));
+        Double progreso = servicioProgreso.obtenerProgresoDeCarrera(ID_CARRERA_STRING, ID_USUARIO);
+
+        assertThat(progreso, equalTo(25.0));
     }
 
     @Test
-    public void queAlActualizarDatosDeMateriaNoExistenteSeGuardeNuevaEntrada() {
-        Integer nuevaNota = 6;
-        Integer nivelDificultad = 1;
+    public void queSePuedaMarcarMateriaComoCursandoSiCumpleCorrelativas() {
+        Usuario usuario = new Usuario();
+        usuario.setId(ID_USUARIO);
+        usuario.setCarrera(carreraDePrueba);
 
-        when(mockRepositorioUsuarioMateria.existe(usuario.getId(), materia3.getId())).thenReturn(false);
-        when(mockRepositorioUsuario.buscarPorId(usuario.getId())).thenReturn(usuario);
-        when(mockRepositorioMateria.buscarPorId(materia3.getId())).thenReturn(materia3);
+        Materia correlativa = new Materia();
+        correlativa.setId(101L);
+        correlativa.setCarrera(carreraDePrueba);
 
-        Boolean resultado = this.servicioProgreso.actualizarDatosMateria(usuario.getId(), materia3.getId(), nuevaNota, nivelDificultad);
+        Materia aCursar = new Materia();
+        aCursar.setId(102L);
+        aCursar.setCorrelativa1("101");
+        aCursar.setCarrera(carreraDePrueba);
 
-        assertTrue(resultado);
+        UsuarioMateria correlativaAprobada = new UsuarioMateria(usuario, correlativa, 9);
+
+        when(repositorioUsuarioMock.buscarPorId(ID_USUARIO)).thenReturn(usuario);
+        when(repositorioMateriaMock.buscarPorId(aCursar.getId())).thenReturn(aCursar);
+        when(repositorioUsuarioMateriaMock.buscarPorUsuarioYMateria(ID_USUARIO, aCursar.getId())).thenReturn(null);
+        when(repositorioUsuarioMateriaMock.buscarPorUsuario(ID_CARRERA_STRING, ID_USUARIO)).thenReturn(Collections.singletonList(correlativaAprobada));
+
+        boolean resultado = servicioProgreso.marcarMateriaComoCursando(ID_USUARIO, aCursar.getId());
+
+        assertThat(resultado, is(true));
     }
-
-    @Test
-    public void queAlFiltrarPorCursandoSeDevuelvanSoloLasMateriasCursando(){
-        List<Materia> todasLasMaterias = Arrays.asList(materia1, materia2, materia3);
-        List<UsuarioMateria> materiasCursadas = Arrays.asList(usuarioMateria1, usuarioMateria2);
-
-        when(mockRepositorioMateria.obtenerMateriasDeUnaCarrera(idCarrera)).thenReturn(todasLasMaterias);
-        when(mockRepositorioUsuarioMateria.buscarPorUsuario(idCarrera, usuario.getId())).thenReturn(materiasCursadas);
-
-        List<MateriaDTO> materiasCursando = this.servicioProgreso.filtrarPor(idCarrera, "CURSANDO", usuario.getId());
-
-        assertThat(materiasCursando, hasSize(1));
-        assertThat(materiasCursando.get(0).getNota(), is(nullValue()));
-    }
-
-//    queAlFiltrarPorPendientesSeDevuelvanSoloLasMateriasPendientes
-
-    @Test
-    public void queAlFiltrarPorPendientesSeDevuelvanSoloLasMateriasPendientes(){
-        List<Materia> todasLasMaterias = Arrays.asList(materia1, materia2, materia3);
-        List<UsuarioMateria> materiasCursadas = Arrays.asList(usuarioMateria1, usuarioMateria2);
-
-        when(mockRepositorioMateria.obtenerMateriasDeUnaCarrera(idCarrera)).thenReturn(todasLasMaterias);
-        when(mockRepositorioUsuarioMateria.buscarPorUsuario(idCarrera, usuario.getId())).thenReturn(materiasCursadas);
-
-        List<MateriaDTO> materiasPendientes = this.servicioProgreso.filtrarPor(idCarrera ,"PENDIENTES", usuario.getId());
-
-        assertThat(materiasPendientes, hasSize(1));
-        assertThat(materiasPendientes.get(0).getNota(), is(nullValue()));
-        assertThat(materiasPendientes.get(0).getNombre(), is("Base de datos 2"));
-    }
-
-//            queAlFiltrarPorTodassSeDevuelvanTodasLasMaterias
-
-    @Test
-    public void queAlFiltrarPorTodassSeDevuelvanTodasLasMaterias(){
-        List<Materia> todasLasMaterias = Arrays.asList(materia1, materia2, materia3);
-        List<UsuarioMateria> materiasCursadas = Arrays.asList(usuarioMateria1, usuarioMateria2);
-
-        when(mockRepositorioMateria.obtenerMateriasDeUnaCarrera(idCarrera)).thenReturn(todasLasMaterias);
-        when(mockRepositorioUsuarioMateria.buscarPorUsuario(idCarrera, usuario.getId())).thenReturn(materiasCursadas);
-
-        List<MateriaDTO> todas = this.servicioProgreso.filtrarPor(idCarrera, "TODAS", usuario.getId());
-
-        assertThat(todas, hasSize(3));
-        assertThat(todas.get(0).getNombre(), is("Matematicas"));
-    }
-
-//    queAlActualizarDatosDeMateriaNoExistenteSeGuardeNuevaEntrada
-
-    @Test
-    public void queUnaMateriaSinCorrelativasSeConsidereCursable(){
-
-    }
-
-//            queUnaMateriaSinCorrelativasSeConsidereCursable
-//    queUnaMateriaConCorrelativaAprobadaSeConsidereCursable
-//            queUnaMateriaConCorrelativaPendienteSeConsiderePendiente
-//    queUnaMateriaConMultiplesCorrelativasAprobadasSeConsidereCursable
-//            queUnaMateriaConUnaCorrelativaPendienteEntreVariasSeConsiderePendiente
-//    queVerificarDificultadDevuelvaFacilParaDificultadUno
-//            queVerificarDificultadDevuelvaMedioParaDificultadCinco
-//    queVerificarDificultadDevuelvaDificilParaDificultadDiez
-//            queVerificarDificultadDevuelvaNullParaDificultadInvalida
-//    queActualizarDatosMateriaLanceExcepcionSiAlgoFallaAlActualizar
-//            queActualizarDatosMateriaLanceExcepcionSiAlgoFallaAlGuardar
-//    queMateriasRetorneListaVaciaSiNoHayMateriasEnRepositorio
-//            queMateriasRetorneSoloMateriasDelUsuarioSiExisten
-
 }
