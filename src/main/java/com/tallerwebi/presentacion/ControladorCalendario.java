@@ -79,7 +79,6 @@ public class ControladorCalendario {
         Long usuarioId = (Long) request.getSession().getAttribute("ID");
 
         Usuario usuario = this.repositorioUsuario.buscarPorId(usuarioId);
-        Materia materia = this.servicioMateria.buscarMateriaPorId(materiaId);
 
 
         try {
