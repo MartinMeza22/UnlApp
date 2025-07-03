@@ -210,6 +210,8 @@
 <script th:inline="javascript">
   const materiasData = /*[[${materiasJson}]]*/ [];
 
+  let selectedNodes = new Set();
+
   const nodes = [];
   const edges = [];
 
@@ -221,6 +223,10 @@
   const verticalSpacing = 120;
   materiasData.forEach(m => {
     materiaMap.set(m.id, m);
+
+    if(m.aprobada){
+      selectedNodes.add(m.id);
+    }
 
     if (!m.correlativas || m.correlativas.length === 0) {
       initialMaterias.add(m.id);
@@ -325,10 +331,10 @@
   network.once('stabilizationIterationsDone', function () {
     network.fit();
     highlightCorrelatives();
+    updateInfoPanel();
     document.getElementById('infoPanel').style.display = 'flex';
   });
 
-  let selectedNodes = new Set();
   let lastClickedCuatrimestre = null;
 
   network.on("click", function (params) {
