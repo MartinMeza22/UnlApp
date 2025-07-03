@@ -22,6 +22,10 @@ public class RepositorioResumenInteligenteImpl implements RepositorioResumenInte
         sessionFactory.getCurrentSession().save(resumen);
     }
 
+    public void setSessionFactory(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
+
     @Override
     public List<ResumenInteligente> obtenerPorUsuario(Usuario usuario) {
         return sessionFactory.getCurrentSession()
