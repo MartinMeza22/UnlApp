@@ -2,12 +2,14 @@ package com.tallerwebi.presentacion;
 
 import com.tallerwebi.dominio.DTO.MateriaDTO;
 import com.tallerwebi.dominio.RepositorioResumenInteligente;
+import com.tallerwebi.dominio.ResumenInteligente;
+import com.tallerwebi.dominio.Usuario;
+import com.tallerwebi.dominio.excepcion.UsuarioNoEncontrado;
 import com.tallerwebi.dominio.servicios.ServicioProgreso;
 import com.tallerwebi.dominio.servicios.ServicioResumenInteligente;
 import com.tallerwebi.servicioInterfaz.ServicioUsuario;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -66,4 +68,18 @@ public class ServicioResumenInteligenteTest {
         assertThat(resumen, is(notNullValue()));
         assertThat(resumen.trim(), not(isEmptyString()));
     }
+
+    @Test
+    public void queSeGuardeElResumenCorrectamente() throws UsuarioNoEncontrado {
+        Usuario usuario = new Usuario();
+        usuario.setId(1L);
+        usuario.setNombre("Agustín");
+
+        when(servicioUsuarioMock.obtenerUsuario(anyLong())).thenReturn(usuario);
+
+        servicio.guardarResumen("Este es un resumen guardado", usuario);
+
+        verify(repositorioResumenMock).guardar(org.mockito.ArgumentMatchers.any(ResumenInteligente.class));    }
+
+
 }
