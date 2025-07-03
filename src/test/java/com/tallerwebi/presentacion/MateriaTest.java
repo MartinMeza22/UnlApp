@@ -1,5 +1,8 @@
-package com.tallerwebi.dominio;
+package com.tallerwebi.presentacion;
 
+
+import com.tallerwebi.dominio.Carrera;
+import com.tallerwebi.dominio.Materia;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
