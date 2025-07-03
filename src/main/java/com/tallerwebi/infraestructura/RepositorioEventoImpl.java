@@ -1,6 +1,7 @@
 package com.tallerwebi.infraestructura;
 
 import com.tallerwebi.dominio.Evento;
+import com.tallerwebi.dominio.Materia;
 import com.tallerwebi.repositorioInterfaz.RepositorioEvento;
 import com.tallerwebi.dominio.Usuario;
 import org.hibernate.SessionFactory;
