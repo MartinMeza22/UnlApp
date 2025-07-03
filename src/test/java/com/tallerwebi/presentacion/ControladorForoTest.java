@@ -11,10 +11,13 @@ import com.tallerwebi.servicioInterfaz.ServicioPublicacion;
 import com.tallerwebi.servicioInterfaz.ServicioUsuario;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributesModelMap;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 import java.util.Collections;
 
@@ -32,32 +35,41 @@ public class ControladorForoTest {
     private ServicioPublicacion servicioPublicacionMock;
     private ServicioComentario servicioComentarioMock;
     private ServicioMateria servicioMateriaMock;
+    private ServletContext servletContextMock;
     private ControladorForo controladorForo;
-
     private HttpSession sessionMock;
     private Usuario usuarioMock;
     private Carrera carreraMock;
     private RedirectAttributes redirectAttributes;
     private final Long ID_USUARIO = 1L;
+    private MultipartFile archivoMock;
+
 
     @BeforeEach
-    void init() {
+    void init() throws UsuarioNoEncontrado {
         servicioUsuarioMock = mock(ServicioUsuario.class);
         servicioPublicacionMock = mock(ServicioPublicacion.class);
         servicioComentarioMock = mock(ServicioComentario.class);
         servicioMateriaMock = mock(ServicioMateria.class);
+        servletContextMock = mock(ServletContext.class);
         sessionMock = mock(HttpSession.class);
         usuarioMock = mock(Usuario.class);
         carreraMock = mock(Carrera.class);
         redirectAttributes = new RedirectAttributesModelMap();
 
-        controladorForo = new ControladorForo(servicioUsuarioMock, servicioPublicacionMock, servicioComentarioMock, servicioMateriaMock);
+        archivoMock = new MockMultipartFile(
+                "archivo",
+                "test-file.png",
+                "image/png",
+                "Este es el contenido del archivo".getBytes()
+        );
+
+        controladorForo = new ControladorForo(servicioUsuarioMock, servicioPublicacionMock, servicioComentarioMock, servicioMateriaMock, servletContextMock);
 
         when(sessionMock.getAttribute("ID")).thenReturn(ID_USUARIO);
         when(usuarioMock.getCarrera()).thenReturn(carreraMock);
-        try {
-            when(servicioUsuarioMock.obtenerUsuario(ID_USUARIO)).thenReturn(usuarioMock);
-        } catch (UsuarioNoEncontrado ignored) {}
+        when(servicioUsuarioMock.obtenerUsuario(ID_USUARIO)).thenReturn(usuarioMock);
+        when(servletContextMock.getRealPath(anyString())).thenReturn("src/main/webapp/uploads");
     }
 
     @Test
@@ -93,21 +105,23 @@ public class ControladorForoTest {
 
     @Test
     public void siFallaCreacionDePublicacionRedirigeAForoConMensajeDeError() throws Exception {
-        doThrow(new RuntimeException("Error de BD")).when(servicioPublicacionMock).crearPublicacion(anyString(), anyString(), any(Usuario.class), anyLong());
+        doThrow(new RuntimeException("Error de BD")).when(servicioPublicacionMock).crearPublicacion(anyString(), anyString(), any(Usuario.class), anyLong(), anyString());
 
-        ModelAndView mav = controladorForo.crearPublicacion("Titulo", "Desc", 1L, sessionMock, redirectAttributes);
+        ModelAndView mav = controladorForo.crearPublicacion("Titulo", "Desc", 1L, archivoMock, sessionMock, redirectAttributes);
 
         assertThat(mav.getViewName(), equalTo("redirect:/foro"));
         assertThat(redirectAttributes.getFlashAttributes().get("error"), notNullValue());
     }
+
     @Test
     public void alCrearPublicacionCorrectamenteRedirigeAForoConMensajeDeExito() throws Exception {
-        ModelAndView mav = controladorForo.crearPublicacion("Titulo", "Desc", 1L, sessionMock, redirectAttributes);
+        ModelAndView mav = controladorForo.crearPublicacion("Titulo", "Desc", 1L, archivoMock, sessionMock, redirectAttributes);
 
         assertThat(mav.getViewName(), equalTo("redirect:/foro"));
         assertThat(redirectAttributes.getFlashAttributes().get("exito"), notNullValue());
-        verify(servicioPublicacionMock, times(1)).crearPublicacion(eq("Titulo"), eq("Desc"), eq(usuarioMock), eq(1L));
+        verify(servicioPublicacionMock, times(1)).crearPublicacion(eq("Titulo"), eq("Desc"), eq(usuarioMock), eq(1L), eq(archivoMock.getOriginalFilename()));
     }
+
     @Test
     public void alEliminarPublicacionPropiaRedirigeAForoConMensajeDeExito() throws PublicacionInexistente, AccesoDenegado {
         Long idPublicacion = 1L;
@@ -185,6 +199,7 @@ public class ControladorForoTest {
         assertThat(mav.getViewName(), equalTo("redirect:/foro"));
         assertThat(redirectAttributes.getFlashAttributes().get("error").toString(), containsString(mensajeError));
     }
+
 
     @Test
     public void alAccederANuevaPublicacionSinEstarLogueadoRedirigeALogin() {

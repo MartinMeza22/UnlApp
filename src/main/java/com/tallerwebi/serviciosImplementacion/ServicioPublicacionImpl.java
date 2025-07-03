@@ -40,13 +40,16 @@ public class ServicioPublicacionImpl implements ServicioPublicacion {
     }
 
     @Override
-    public void crearPublicacion(String titulo, String descripcion, Usuario usuario, Long idMateria) {
+    public void crearPublicacion(String titulo, String descripcion, Usuario usuario, Long idMateria, String nombreArchivo) {
         Materia materia = repositorioMateria.buscarPorId(idMateria);
         Publicacion nuevaPublicacion = new Publicacion();
         nuevaPublicacion.setTitulo(titulo);
         nuevaPublicacion.setDescripcion(descripcion);
         nuevaPublicacion.setUsuario(usuario);
         nuevaPublicacion.setMateria(materia);
+        if (nombreArchivo != null && !nombreArchivo.isEmpty()) {
+            nuevaPublicacion.setNombreArchivo(nombreArchivo);
+        }
         repositorioPublicacion.guardar(nuevaPublicacion);
     }
 
