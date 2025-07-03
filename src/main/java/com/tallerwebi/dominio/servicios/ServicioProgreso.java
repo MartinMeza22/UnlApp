@@ -230,7 +230,7 @@ public class ServicioProgreso {
 
     public Boolean actualizarDatosMateria(Long usuarioId, Long idMateria, Integer nota, Integer dificultad) throws CorrelatividadInvalidaException {
 
-        if(nota != null && nota < 4){
+        if(nota != null  && nota < 4){
             List<Materia> materiasDependientes = this.repositorioMateria.buscarMateriasQueTienenComoCorrelativas(idMateria);
 
             if(!materiasDependientes.isEmpty()){
@@ -351,28 +351,14 @@ public class ServicioProgreso {
         for (Materia materia : todasLasMaterias) {
             MateriaDiagramaDTO dto = new MateriaDiagramaDTO(materia.getId(), materia.getNombre(), materia.getCuatrimestre());
 
-            // Agrega las correlativas.
-            // Necesitas mapear los nombres de correlativas a sus IDs.
-            // Esto es crucial para que el frontend pueda dibujar las líneas.
             if (materia.getCorrelativa1() != null && !materia.getCorrelativa1().isEmpty()) {
-                // Aquí necesitarías una forma de obtener el ID de la materia a partir del nombre
-                // dado que tus correlativas son Strings.
-                // UNA SOLUCIÓN MÁS ROBUSTA SERÍA QUE correlativa_1 fuera el ID de la Materia directamente
-                // o que Materia tuviera una lista de Materias como correlativas.
-                // Por ahora, asumimos que 'correlativa_1' es el ID de la materia correlativa.
-                // Si 'correlativa_1' almacena el *nombre* de la materia, necesitarías
-                // un método para buscar el ID de la materia por su nombre.
                 try {
                     Long idCorrelativa = Long.valueOf(materia.getCorrelativa1());
                     if (mapaMaterias.containsKey(idCorrelativa)) {
                         dto.addCorrelativa(idCorrelativa);
                     }
                 } catch (NumberFormatException e) {
-                    // Manejar error si el String no es un número (ej. si guarda el nombre)
                     System.err.println("Correlativa1 no es un ID numérico: " + materia.getCorrelativa1());
-                    // Si tus correlativas son nombres, aquí buscarías el ID por nombre
-                    // Ejemplo: Materia correlativaObj = repositorioMateria.buscarPorNombre(materia.getCorrelativa1());
-                    // if (correlativaObj != null) dto.addCorrelativa(correlativaObj.getId());
                 }
             }
             if (materia.getCorrelativa2() != null && !materia.getCorrelativa2().isEmpty()) {
@@ -416,12 +402,21 @@ public class ServicioProgreso {
                 } catch (NumberFormatException e) {}
             }
 
+            UsuarioMateria um = materiasCursadasMap.get(materia.getId());
+            if(um != null && "APROBADA".equalsIgnoreCase(um.getEstadoo())){
+                dto.setAprobada(true);
+            }
+
             // Opcional: Agregar información sobre el estado de la materia (aprobada, cursando, etc.)
             // Puedes agregar un booleano `isAprobada` al DTO si quieres que JavaScript lo use.
             // UsuarioMateria um = materiasCursadasMap.get(materia.getId());
             // if (um != null && um.estaAprobada()) { dto.setAprobada(true); }
 
             materiasDiagrama.add(dto);
+
+            for(MateriaDiagramaDTO mat : materiasDiagrama){
+                System.out.println(mat.toString());
+            }
         }
         return materiasDiagrama;
     }

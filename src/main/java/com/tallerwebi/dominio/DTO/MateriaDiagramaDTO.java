@@ -7,7 +7,9 @@ public class MateriaDiagramaDTO {
     private Long id;
     private String nombre;
     private Integer cuatrimestre;
-    private List<Long> correlativas; // IDs de las materias correlativas
+    private List<Long> correlativas;
+    private String estado;
+    private Boolean aprobada;
 
     // Constructor
     public MateriaDiagramaDTO(Long id, String nombre, Integer cuatrimestre) {
@@ -15,6 +17,8 @@ public class MateriaDiagramaDTO {
         this.nombre = nombre;
         this.cuatrimestre = cuatrimestre;
         this.correlativas = new ArrayList<>();
+        this.estado = "PENDIENTE";
+        this.aprobada = false;
     }
 
     // Getters and Setters
@@ -54,4 +58,30 @@ public class MateriaDiagramaDTO {
         this.correlativas.add(idCorrelativa);
     }
 
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public Boolean getAprobada() {
+        return aprobada;
+    }
+
+    public void setAprobada(Boolean aprobada) {
+        this.aprobada = aprobada;
+    }
+
+    @Override
+    public String toString() {
+        return "MateriaDiagramaDTO{" +
+                "id=" + id +
+                ", nombre='" + nombre + '\'' +
+                ", cuatrimestre=" + cuatrimestre +
+                ", correlativas=" + correlativas +
+                ", estado='" + estado + '\'' +
+                '}';
+    }
 }
