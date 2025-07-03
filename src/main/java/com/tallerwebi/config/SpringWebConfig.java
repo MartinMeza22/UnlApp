@@ -33,6 +33,11 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 @EnableScheduling
 public class SpringWebConfig implements WebMvcConfigurer {
 
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
+
     // Spring + Thymeleaf need this
     @Autowired
     private ApplicationContext applicationContext;
@@ -127,10 +132,5 @@ public class SpringWebConfig implements WebMvcConfigurer {
         scheduler.setThreadNamePrefix("my-scheduled-task-pool-");
         scheduler.initialize();
         return scheduler;
-    }
-
-    @Bean
-    public RestTemplate restTemplate() {
-        return new RestTemplate();
     }
 }

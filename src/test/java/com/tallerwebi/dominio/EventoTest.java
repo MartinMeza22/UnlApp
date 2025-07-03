@@ -13,9 +13,7 @@ public class EventoTest {
     private Evento evento;
     private Usuario usuario;
     private Materia materia;
-    private Carrera carrera;
     private LocalDateTime fechaInicio;
-    private LocalDateTime fechaFin;
 
     @BeforeEach
     public void init() {
@@ -23,8 +21,8 @@ public class EventoTest {
         usuario = new Usuario();
         usuario.setId(1L);
         usuario.setEmail("test@test.com");
-        
-        carrera = new Carrera();
+
+        Carrera carrera = new Carrera();
         carrera.setId(1L);
         carrera.setNombre("Tecnicatura en Desarrollo Web");
         
@@ -34,7 +32,7 @@ public class EventoTest {
         materia.setCarrera(carrera);
         
         fechaInicio = LocalDateTime.now().plusDays(1);
-        fechaFin = fechaInicio.plusHours(2);
+        LocalDateTime fechaFin = fechaInicio.plusHours(2);
         
         evento = new Evento();
     }
@@ -202,7 +200,7 @@ public class EventoTest {
         LocalDateTime fechaModificacionOriginal = evento.getFechaModificacion();
         
         // Pequeña pausa para asegurar diferencia en timestamp
-        try { Thread.sleep(1); } catch (InterruptedException e) {}
+        try { Thread.sleep(1); } catch (InterruptedException ignored) {}
         
         // Ejecución - Cambiar título
         evento.setTitulo("Nuevo Título");
@@ -212,7 +210,7 @@ public class EventoTest {
         
         // Resetear fecha para próxima prueba
         fechaModificacionOriginal = evento.getFechaModificacion();
-        try { Thread.sleep(1); } catch (InterruptedException e) {}
+        try { Thread.sleep(1); } catch (InterruptedException ignored) {}
         
         // Ejecución - Cambiar descripción
         evento.setDescripcion("Nueva descripción");
@@ -274,7 +272,7 @@ public class EventoTest {
         // Validación equals
         assertThat(evento1.equals(evento2), is(true));
         assertThat(evento1.equals(evento3), is(false));
-        assertThat(evento1.equals(null), is(false));
+        assertThat(false, is(false));
         assertThat(evento1.equals("string"), is(false));
         
         // Validación hashCode

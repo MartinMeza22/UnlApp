@@ -33,14 +33,15 @@ public class ControladorLogin {
     private ServicioCarrera servicioCarrera;
 
     @Autowired
-    public ControladorLogin(RepositorioLogin repositorioLogin, ServicioEmail servicioEmail, RepositorioUsuario repositorioUsuario, ServicioUsuarioMateria servicioUsuarioMateria, ServicioCarrera servicioCarrera) {
+    public ControladorLogin(RepositorioLogin repositorioLogin, ServicioEmail servicioEmail, RepositorioUsuario repositorioUsuario, ServicioUsuarioMateria servicioUsuarioMateria, ServicioCarrera servicioCarrera, ServicioMateria servicioMateriaMock) {
         this.repositorioLogin = repositorioLogin;
         this.servicioEmail = servicioEmail;
         this.repositorioUsuario = repositorioUsuario;
         this.servicioUsuarioMateria = servicioUsuarioMateria;
         this.servicioCarrera = servicioCarrera;
+        this.servicioMateria = servicioMateriaMock;
     }
-
+    //Testeado
     @RequestMapping("/login")
     public ModelAndView irALogin() {
 
@@ -48,7 +49,7 @@ public class ControladorLogin {
         modelo.put("datosLogin", new DatosLogin());
         return new ModelAndView("login", modelo);
     }
-
+    //Testeado
     @RequestMapping(path = "/validar-login", method = RequestMethod.POST)
     public ModelAndView validarLogin(@ModelAttribute("datosLogin") DatosLogin datosLogin, HttpServletRequest request) {
         ModelMap model = new ModelMap();
@@ -67,7 +68,7 @@ public class ControladorLogin {
         return new ModelAndView("login", model);
 
     }
-
+    //Testeado
     @RequestMapping(path = "/registrarme", method = RequestMethod.POST)
     public ModelAndView registrarme(@ModelAttribute("usuario") Usuario usuario, HttpServletRequest request) {
         ModelMap model = new ModelMap();
@@ -77,7 +78,10 @@ public class ControladorLogin {
             model.put("error", "El email es obligatorio");
             return new ModelAndView("nuevo-usuario", model);
         }
-
+        if (!usuario.getEmail().endsWith("@alumno.unlam.edu.ar")) {
+            model.put("error", "El email debe ser institucional (@alumno.unlam.edu.ar)");
+            return new ModelAndView("nuevo-usuario", model);
+        }
         if (usuario.getPassword() == null || usuario.getPassword().trim().isEmpty()) {
             model.put("error", "La contraseña es obligatoria");
             return new ModelAndView("nuevo-usuario", model);
@@ -88,10 +92,6 @@ public class ControladorLogin {
             return new ModelAndView("nuevo-usuario", model);
         }
 
-        if(!usuario.getEmail().endsWith("@alumno.unlam.edu.ar")){
-            model.put("error", "El email debe ser una dirección institucional válida (@alumno.unlam.edu.ar)");
-            return new ModelAndView("nuevo-usuario", model);
-        }
 
         if (usuario.getApellido() == null || usuario.getApellido().trim().isEmpty()) {
             model.put("error", "El apellido es obligatorio");
@@ -131,7 +131,7 @@ public class ControladorLogin {
         }
     }
 
-
+    //Testeado
     @RequestMapping(path = "/verificar-token", method = RequestMethod.POST)
     public ModelAndView verificarToken(@RequestParam(name = "codigo") String codigo, @RequestParam(name = "idUser") Long idUser) {
         ModelMap model = new ModelMap();
@@ -150,8 +150,9 @@ public class ControladorLogin {
             return new ModelAndView("verificar-token", model);
 
         } catch (CodigoVerificacionExpirado e) {
-
             model.put("error", e.getMessage());
+            Usuario usuario = this.servicioUsuarioMateria.obtenerUsuario(idUser);
+            model.put("usuario", usuario);
             return new ModelAndView("nuevo-usuario", model);
 
         } catch (Exception e) {
@@ -163,7 +164,7 @@ public class ControladorLogin {
 
         }
     }
-
+    //Testeado
     @RequestMapping(path = "/nuevo-usuario", method = RequestMethod.GET)
     public ModelAndView nuevoUsuario() {
         ModelMap model = new ModelMap();//key / value
@@ -172,7 +173,7 @@ public class ControladorLogin {
         model.put("carreras", carreras);
         return new ModelAndView("nuevo-usuario", model);
     }
-
+    //Testeado
     @RequestMapping(path = "/", method = RequestMethod.GET)
     public ModelAndView inicio() {
         return new ModelAndView("redirect:/login");
@@ -187,6 +188,7 @@ public class ControladorLogin {
         return new ModelAndView("registroMateriasUsuario", model);
     }
 
+    //Testeado
     @RequestMapping(path = "/logout", method = RequestMethod.GET)
     public ModelAndView logout(HttpServletRequest request) {
         HttpSession session = request.getSession(false);  // Traigo la sesion sin crearla

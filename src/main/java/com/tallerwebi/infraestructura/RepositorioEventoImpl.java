@@ -48,15 +48,6 @@ public class RepositorioEventoImpl implements RepositorioEvento {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<Evento> buscarTodos() {
-        return sessionFactory.getCurrentSession()
-                .createCriteria(Evento.class)
-                .add(Restrictions.eq("activo", true))
-                .list();
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
     public List<Evento> buscarPorUsuario(Usuario usuario) {
         return sessionFactory.getCurrentSession()
                 .createCriteria(Evento.class)
@@ -65,56 +56,6 @@ public class RepositorioEventoImpl implements RepositorioEvento {
                 .list();
     }
 
-    @Override
-    @SuppressWarnings("unchecked")
-    public List<Evento> buscarPorUsuarioId(Long usuarioId) {
-        return sessionFactory.getCurrentSession()
-                .createQuery("SELECT DISTINCT e FROM Evento e LEFT JOIN FETCH e.materia WHERE e.usuario.id = :usuarioId AND e.activo = true")
-                .setParameter("usuarioId", usuarioId)
-                .list();
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public List<Evento> buscarPorMateria(Materia materia) {
-        return sessionFactory.getCurrentSession()
-                .createCriteria(Evento.class)
-                .add(Restrictions.eq("materia", materia))
-                .add(Restrictions.eq("activo", true))
-                .list();
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public List<Evento> buscarPorMateriaId(Long materiaId) {
-        return sessionFactory.getCurrentSession()
-                .createCriteria(Evento.class)
-                .add(Restrictions.eq("materia.id", materiaId))
-                .add(Restrictions.eq("activo", true))
-                .list();
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public List<Evento> buscarEventosAcademicos(Long usuarioId) {
-        return sessionFactory.getCurrentSession()
-                .createCriteria(Evento.class)
-                .add(Restrictions.eq("usuario.id", usuarioId))
-                .add(Restrictions.isNotNull("materia"))
-                .add(Restrictions.eq("activo", true))
-                .list();
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public List<Evento> buscarEventosPersonales(Long usuarioId) {
-        return sessionFactory.getCurrentSession()
-                .createCriteria(Evento.class)
-                .add(Restrictions.eq("usuario.id", usuarioId))
-                .add(Restrictions.isNull("materia"))
-                .add(Restrictions.eq("activo", true))
-                .list();
-    }
 
     @Override
     @SuppressWarnings("unchecked")
@@ -148,92 +89,6 @@ public class RepositorioEventoImpl implements RepositorioEvento {
     }
 
     @Override
-    public List<Evento> buscarEventosSemana(Long usuarioId) {
-        LocalDate hoy = LocalDate.now();
-        LocalDate inicioSemana = hoy.minusDays(hoy.getDayOfWeek().getValue() - 1);
-        LocalDate finSemana = inicioSemana.plusDays(6);
-        
-        return buscarPorRangoFechas(usuarioId, 
-                inicioSemana.atStartOfDay(), 
-                finSemana.atTime(23, 59, 59));
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public List<Evento> buscarEventosMes(Long usuarioId, int mes, int año) {
-        LocalDateTime inicioMes = LocalDateTime.of(año, mes, 1, 0, 0);
-        LocalDateTime finMes = inicioMes.plusMonths(1).minusSeconds(1);
-        
-        return buscarPorRangoFechas(usuarioId, inicioMes, finMes);
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public List<Evento> buscarEventosPendientes(Long usuarioId) {
-        return sessionFactory.getCurrentSession()
-                .createCriteria(Evento.class)
-                .add(Restrictions.eq("usuario.id", usuarioId))
-                .add(Restrictions.eq("completado", false))
-                .add(Restrictions.eq("activo", true))
-                .list();
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public List<Evento> buscarEventosCompletados(Long usuarioId) {
-        return sessionFactory.getCurrentSession()
-                .createCriteria(Evento.class)
-                .add(Restrictions.eq("usuario.id", usuarioId))
-                .add(Restrictions.eq("completado", true))
-                .add(Restrictions.eq("activo", true))
-                .list();
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public List<Evento> buscarEventosVencidos(Long usuarioId) {
-        return sessionFactory.getCurrentSession()
-                .createCriteria(Evento.class)
-                .add(Restrictions.eq("usuario.id", usuarioId))
-                .add(Restrictions.lt("fechaInicio", LocalDateTime.now()))
-                .add(Restrictions.eq("completado", false))
-                .add(Restrictions.eq("activo", true))
-                .list();
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public List<Evento> buscarPorTipo(Long usuarioId, String tipo) {
-        return sessionFactory.getCurrentSession()
-                .createCriteria(Evento.class)
-                .add(Restrictions.eq("usuario.id", usuarioId))
-                .add(Restrictions.eq("tipo", tipo))
-                .add(Restrictions.eq("activo", true))
-                .list();
-    }
-
-    @Override
-    public List<Evento> buscarExamenes(Long usuarioId) {
-        return buscarPorTipo(usuarioId, "EXAMEN");
-    }
-
-    @Override
-    public List<Evento> buscarTareas(Long usuarioId) {
-        return buscarPorTipo(usuarioId, "TAREA");
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public List<Evento> buscarPorUsuarioYMateria(Long usuarioId, Long materiaId) {
-        return sessionFactory.getCurrentSession()
-                .createCriteria(Evento.class)
-                .add(Restrictions.eq("usuario.id", usuarioId))
-                .add(Restrictions.eq("materia.id", materiaId))
-                .add(Restrictions.eq("activo", true))
-                .list();
-    }
-
-    @Override
     @SuppressWarnings("unchecked")
     public List<Evento> buscarProximosEventos(Long usuarioId, int cantidad) {
         return sessionFactory.getCurrentSession()
@@ -242,38 +97,6 @@ public class RepositorioEventoImpl implements RepositorioEvento {
                 .setParameter("ahora", LocalDateTime.now())
                 .setMaxResults(cantidad)
                 .list();
-    }
-
-    @Override
-    public Long contarEventosPorUsuario(Long usuarioId) {
-        return (Long) sessionFactory.getCurrentSession()
-                .createCriteria(Evento.class)
-                .add(Restrictions.eq("usuario.id", usuarioId))
-                .add(Restrictions.eq("activo", true))
-                .setProjection(org.hibernate.criterion.Projections.rowCount())
-                .uniqueResult();
-    }
-
-    @Override
-    public Long contarEventosCompletados(Long usuarioId) {
-        return (Long) sessionFactory.getCurrentSession()
-                .createCriteria(Evento.class)
-                .add(Restrictions.eq("usuario.id", usuarioId))
-                .add(Restrictions.eq("completado", true))
-                .add(Restrictions.eq("activo", true))
-                .setProjection(org.hibernate.criterion.Projections.rowCount())
-                .uniqueResult();
-    }
-
-    @Override
-    public Long contarEventosPendientes(Long usuarioId) {
-        return (Long) sessionFactory.getCurrentSession()
-                .createCriteria(Evento.class)
-                .add(Restrictions.eq("usuario.id", usuarioId))
-                .add(Restrictions.eq("completado", false))
-                .add(Restrictions.eq("activo", true))
-                .setProjection(org.hibernate.criterion.Projections.rowCount())
-                .uniqueResult();
     }
 
     @Override
