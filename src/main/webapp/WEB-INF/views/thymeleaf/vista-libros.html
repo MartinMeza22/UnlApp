@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biblioteca Digital | UnlApp</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #212529; /* Fondo oscuro principal */
+        }
+
+        .navbar-brand {
+            font-weight: 600;
+        }
+
+        .card {
+            border: none; /* Quitamos los bordes de las tarjetas */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background-color: #343a40; /* Fondo de la tarjeta más claro que el body */
+        }
+
+        /* Solo aplica el hover a las tarjetas que son clickeables */
+        a .card:hover {
+            transform: translateY(-10px); /* Efecto de elevación al pasar el mouse */
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+        }
+
+        .card-img-top {
+            width: 100%;
+            height: 400px; /* Altura fija para consistencia */
+            object-fit: cover; /* Asegura que la imagen cubra el espacio sin deformarse */
+            border-radius: 0.375rem 0.375rem 0 0; /* Bordes redondeados solo arriba */
+        }
+
+        .card-title {
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .card-text {
+            color: #adb5bd; /* Color de texto secundario más suave */
+        }
+
+        a.card-link-wrapper {
+            text-decoration: none; /* Quita el subrayado del enlace */
+        }
+
+        .display-4 {
+            font-weight: 600;
+        }
+
+        .alert-warning {
+            background-color: #493c20;
+            border-color: #c9a63f;
+            color: #ffdead;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+    <div class="container-fluid">
+        <a class="navbar-brand d-flex align-items-center" th:href="@{/home}">
+            <svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd; height:1.2em; width:auto; margin-right: 0.5rem;" viewBox="0 0 2048 2048"><defs><style>.fil9{fill:#7eb45e}.fil7{fill:#9ccc65}.fil5{fill:#d47c0f}.fil4{fill:#d49144}.fil13{fill:#ef6713}.fil11{fill:#f57f17}.fil2{fill:#ff9100}.fil1{fill:#ffab40}</style></defs><g id="Layer_x0020_1"><rect x="256" y="320" width="416" height="1408" rx="27" ry="27" style="fill:#3e2723"/><path class="fil1" d="M256 565h416v53H256zM256 1404h416v53H256zM256 1298h416v53H256z"/><circle class="fil2" cx="464" cy="892" r="103"/><path class="fil2" d="M353 1024h223v14H353z"/><path d="M283 320h181v1408H283c-15 0-27-12-27-27V348c0-15 12-27 27-27z" style="fill:#38262c"/><path class="fil4" d="M256 565h208v53H256zM256 1404h208v53H256zM256 1298h208v53H256z"/><path class="fil5" d="M464 789v205c-57 0-103-46-103-103s46-103 103-103zM353 1024h111v14H353z"/><g id="_220504008"><rect x="731" y="320" width="416" height="1408" rx="27" ry="27" style="fill:#33691e"/><path class="fil7" d="M731 565h416v53H731zM731 1404h416v53H731zM731 1298h416v53H731z"/><circle class="fil7" cx="939" cy="892" r="103"/><path class="fil7" d="M828 1024h223v14H828z"/></g><g id="_220502880"><path d="M759 320h181v1408H759c-15 0-27-12-27-27V348c0-15 12-27 27-27z" style="fill:#296424"/><path class="fil9" d="M731 565h208v53H731zM731 1404h208v53H731zM731 1298h208v53H731zM939 789v205c-57 0-103-46-103-103s46-103 103-103zM828 1024h111v14H828z"/></g><g id="_220502088"><rect transform="matrix(.9092 -.1167 .1167 .9092 1203.38 352.215)" width="454" height="1536" rx="27" ry="27" style="fill:#e65100"/><path class="fil11" transform="matrix(.9092 -.1167 .1167 .9092 1234.52 594.83)" d="M0 0h454v58H0z"/><path class="fil11" transform="matrix(.9092 -.1167 .1167 .9092 1341.42 1427.67)" d="M0 0h454v58H0z"/><path class="fil11" transform="matrix(.9092 -.1167 .1167 .9092 1327.93 1322.54)" d="M0 0h454v58H0z"/><circle class="fil11" transform="matrix(.9092 -.1167 .1167 .9092 1482.52 893.067)" r="112"/><path class="fil11" transform="matrix(.9092 -.1167 .1167 .9092 1388.97 1038.16)" d="M0 0h243v15H0z"/></g><g id="_220500816"><path d="m1231 349 180-23 179 1397-179 23c-15 2-29-9-31-24L1208 380c-2-15 9-29 24-31z" style="fill:#e34200"/><path class="fil13" d="m1235 595 207-27 6 53-207 26zM1341 1428l207-27 7 53-207 26zM1328 1323l207-27 6 53-206 26zM1469 791h1l26 204h-1c-56 7-108-33-115-89s33-108 89-115zM1389 1038l111-14 2 13-111 15z"/></g><path style="fill:none" d="M0 0h2048v2048H0z"/></g></svg>
+            <span>Biblioteca UnlApp</span>
+        </a>
+    </div>
+</nav>
+
+<div class="container my-5">
+    <header class="text-center mb-5">
+        <h1 class="display-4">Bienvenido a nuestra Biblioteca Digital</h1>
+        <p class="lead text-muted">Explora nuestra colección de libros disponibles para ti.</p>
+    </header>
+
+    <hr class="mb-5" style="border-top: 1px solid #495057;">
+
+    <div th:if="${not #lists.isEmpty(libros)}">
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+
+            <div th:each="libro : ${libros}" class="col">
+
+                <th:block th:if="${libro.accessInfo?.webReaderLink != null}">
+                    <a th:href="${libro.accessInfo.webReaderLink}" target="_blank" rel="noopener noreferrer" class="card-link-wrapper">
+                        <div class="card h-100 shadow-sm">
+                            <img th:if="${libro.volumeInfo.imageLinks != null}" th:src="${libro.volumeInfo.imageLinks.thumbnail}" class="card-img-top" alt="Portada del libro">
+                            <img th:if="${libro.volumeInfo.imageLinks == null}" th:src="@{/images/default-cover.png}" class="card-img-top" alt="Portada no disponible">
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title" th:text="${libro.volumeInfo.title}">Título</h5>
+                                <p class="card-text">
+                                    <span th:if="${libro.volumeInfo.authors != null}" th:text="${'Por ' + #strings.listJoin(libro.volumeInfo.authors, ', ')}"></span>
+                                    <span th:if="${libro.volumeInfo.authors == null}">Autor Desconocido</span>
+                                </p>
+                                <span class="badge bg-primary mt-auto p-2">Ver en Google Books</span>
+                            </div>
+                        </div>
+                    </a>
+                </th:block>
+
+                <th:block th:if="${libro.accessInfo?.webReaderLink == null}">
+                    <div class="card h-100 shadow-sm" style="opacity: 0.8;">
+                        <img th:if="${libro.volumeInfo.imageLinks != null}" th:src="${libro.volumeInfo.imageLinks.thumbnail}" class="card-img-top" alt="Portada del libro">
+                        <img th:if="${libro.volumeInfo.imageLinks == null}" th:src="@{/images/default-cover.png}" class="card-img-top" alt="Portada no disponible">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title" th:text="${libro.volumeInfo.title}">Título</h5>
+                            <p class="card-text">
+                                <span th:if="${libro.volumeInfo.authors != null}" th:text="${'Por ' + #strings.listJoin(libro.volumeInfo.authors, ', ')}"></span>
+                                <span th:if="${libro.volumeInfo.authors == null}">Autor Desconocido</span>
+                            </p>
+                            <span class="badge bg-secondary mt-auto p-2">Lectura no disponible</span>
+                        </div>
+                    </div>
+                </th:block>
+
+            </div>
+
+        </div>
+    </div>
+
+    <div th:if="${#lists.isEmpty(libros)}" class="text-center">
+        <div class="alert alert-warning d-inline-block" role="alert">
+            <h4 class="alert-heading">¡Vaya!</h4>
+            <p>Parece que no hemos podido cargar los libros en este momento. Por favor, inténtalo de nuevo más tarde.</p>
+        </div>
+    </div>
+</div>
+
+<footer class="text-center text-muted py-4 mt-5 bg-dark">
+    <p>&copy; 2025 Biblioteca Digital UnlApp. Todos los derechos reservados.</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>
