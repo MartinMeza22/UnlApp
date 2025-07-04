@@ -67,7 +67,7 @@ public class ServicioPublicacionTest {
         Long idMateria = 1L;
         when(repositorioMateriaMock.buscarPorId(idMateria)).thenReturn(materiaMock);
 
-        servicioPublicacion.crearPublicacion(titulo, desc, usuarioMock, idMateria);
+        servicioPublicacion.crearPublicacion(titulo, desc, usuarioMock, idMateria, null);
 
         ArgumentCaptor<Publicacion> captor = ArgumentCaptor.forClass(Publicacion.class);
         verify(repositorioPublicacionMock, times(1)).guardar(captor.capture());

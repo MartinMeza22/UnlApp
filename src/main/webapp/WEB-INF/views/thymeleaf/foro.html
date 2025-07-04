@@ -83,6 +83,26 @@
             <div class="publicacion-body mt-3">
                 <h5 th:text="${pub.titulo}">Título de la Publicación</h5>
                 <p th:text="${pub.descripcion}">Descripción de la publicación...</p>
+
+                <div th:if="${pub.nombreArchivo != null}" class="mt-3 border p-2 rounded">
+                    <div th:if="${pub.isImagen()}">
+                        <img th:src="@{/uploads/{filename}(filename=${pub.nombreArchivo})}" class="img-fluid rounded" alt="Archivo adjunto">
+                    </div>
+
+                    <div th:if="${pub.isVideo()}">
+                        <video controls class="w-100 rounded">
+                            <source th:src="@{/uploads/{filename}(filename=${pub.nombreArchivo})}" type="video/mp4">
+                            Tu navegador no soporta el tag de video.
+                        </video>
+                    </div>
+
+                    <div th:if="${pub.isPdf() or pub.isPpt()}">
+                        <h6>Archivo adjunto:</h6>
+                        <a th:href="@{/uploads/{filename}(filename=${pub.nombreArchivo})}" target="_blank" class="btn btn-outline-dark btn-sm">
+                            <i class="fas fa-download mr-2"></i> Descargar <span th:text="${pub.nombreArchivo}"></span>
+                        </a>
+                    </div>
+                </div>
             </div>
 
             <div class="d-flex justify-content-between text-muted small mt-3">
@@ -146,7 +166,7 @@
 <div class="modal fade" id="modalCrearPublicacion" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form th:action="@{/foro/publicacion/crear}" method="post">
+            <form th:action="@{/foro/publicacion/crear}" method="post" enctype="multipart/form-data">
                 <div class="modal-header">
                     <h5 class="modal-title" id="modalLabel">Crear Nueva Publicación</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -158,16 +178,23 @@
                         <label for="titulo">Título</label>
                         <input type="text" class="form-control" id="titulo" name="titulo" required>
                     </div>
+
                     <div class="form-group">
                         <label for="descripcion">Descripción</label>
                         <textarea class="form-control" id="descripcion" name="descripcion" rows="4" required></textarea>
                     </div>
+
                     <div class="form-group">
                         <label for="modalIdMateria">Materia</label>
                         <select class="form-control" id="modalIdMateria" name="idMateria" required>
                             <option value="" disabled selected>Selecciona una materia...</option>
                             <option th:each="m : ${materias}" th:value="${m.id}" th:text="${m.nombre}"></option>
                         </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="archivo">Adjuntar archivo (PDF, PPT, Imagen, Video)</label>
+                        <input type="file" class="form-control-file" id="archivo" name="archivo">
                     </div>
                 </div>
                 <div class="modal-footer">

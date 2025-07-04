@@ -8,10 +8,20 @@ import com.tallerwebi.servicioInterfaz.ServicioPublicacion;
 import com.tallerwebi.servicioInterfaz.ServicioUsuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
+import javax.servlet.ServletContext;
+import java.io.File;
 
 @Controller
 @RequestMapping("/foro")
@@ -22,12 +32,16 @@ public class ControladorForo {
     private final ServicioComentario servicioComentario;
     private final ServicioMateria servicioMateria;
 
+    private static final List<String> PERMITTED_EXTENSIONS = Arrays.asList("pdf", "ppt", "pptx", "jpg", "jpeg", "png", "mp4", "webm");
+    private final ServletContext servletContext;
+
     @Autowired
-    public ControladorForo(ServicioUsuario servicioUsuario, ServicioPublicacion servicioPublicacion, ServicioComentario servicioComentario, ServicioMateria servicioMateria) {
+    public ControladorForo(ServicioUsuario servicioUsuario, ServicioPublicacion servicioPublicacion, ServicioComentario servicioComentario, ServicioMateria servicioMateria, ServletContext servletContext) {
         this.servicioUsuario = servicioUsuario;
         this.servicioPublicacion = servicioPublicacion;
         this.servicioComentario = servicioComentario;
         this.servicioMateria = servicioMateria;
+        this.servletContext = servletContext;
     }
 
     private Long obtenerIdUsuarioDeSesion(HttpSession session) {
@@ -88,6 +102,7 @@ public class ControladorForo {
     public ModelAndView crearPublicacion(@RequestParam("titulo") String titulo,
                                          @RequestParam("descripcion") String descripcion,
                                          @RequestParam("idMateria") Long idMateria,
+                                         @RequestParam("archivo") MultipartFile archivo,
                                          HttpSession session,
                                          RedirectAttributes redirectAttributes) {
         Long idUsuario = obtenerIdUsuarioDeSesion(session);
@@ -97,10 +112,33 @@ public class ControladorForo {
 
         try {
             Usuario usuario = servicioUsuario.obtenerUsuario(idUsuario);
-            servicioPublicacion.crearPublicacion(titulo, descripcion, usuario, idMateria);
+            String nombreArchivoGuardado = null;
+
+            if (archivo != null && !archivo.isEmpty()) {
+                String originalFilename = StringUtils.cleanPath(archivo.getOriginalFilename());
+
+                String extension = originalFilename.substring(originalFilename.lastIndexOf(".") + 1).toLowerCase();
+                if (!PERMITTED_EXTENSIONS.contains(extension)) {
+                    redirectAttributes.addFlashAttribute("error", "Tipo de archivo no permitido.");
+                    return new ModelAndView("redirect:/foro");
+                }
+
+                // OBTENER LA RUTA REAL Y ABSOLUTA DEL SERVIDOR
+                String uploadPath = servletContext.getRealPath("/uploads/");
+                File uploadDir = new File(uploadPath);
+                if (!uploadDir.exists()) {
+                    uploadDir.mkdirs(); // Crea el directorio si no existe
+                }
+
+                Path rutaArchivo = Paths.get(uploadPath, originalFilename);
+                Files.write(rutaArchivo, archivo.getBytes());
+                nombreArchivoGuardado = originalFilename;
+            }
+
+            servicioPublicacion.crearPublicacion(titulo, descripcion, usuario, idMateria, nombreArchivoGuardado);
             redirectAttributes.addFlashAttribute("exito", "Publicación creada correctamente.");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "No se pudo crear la publicación.");
+            redirectAttributes.addFlashAttribute("error", "No se pudo crear la publicación: " + e.getMessage());
         }
         return new ModelAndView("redirect:/foro");
     }

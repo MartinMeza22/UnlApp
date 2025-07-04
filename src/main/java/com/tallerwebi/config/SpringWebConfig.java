@@ -18,6 +18,7 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 import org.thymeleaf.templatemode.TemplateMode;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 
 import java.nio.charset.StandardCharsets;
@@ -50,6 +51,7 @@ public class SpringWebConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/css/**").addResourceLocations("/resources/core/css/");
         registry.addResourceHandler("/js/**").addResourceLocations("/resources/core/js/");
         registry.addResourceHandler("/webjars/**").addResourceLocations("/webjars/");
+        registry.addResourceHandler("/uploads/**").addResourceLocations("/uploads/");
     }
 
     // Add the authentication interceptor
@@ -132,5 +134,12 @@ public class SpringWebConfig implements WebMvcConfigurer {
         scheduler.setThreadNamePrefix("my-scheduled-task-pool-");
         scheduler.initialize();
         return scheduler;
+    }
+    @Bean
+    public CommonsMultipartResolver multipartResolver() {
+        CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
+        // Podés configurar el tamaño máximo de los archivos acá si querés
+        // multipartResolver.setMaxUploadSize(5242880); // Ejemplo: 5MB
+        return multipartResolver;
     }
 }
