@@ -25,7 +25,7 @@ public class ServicioLibro {
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url)
                 .queryParam("q", "web")
-                .queryParam("maxResults", 10)
+                .queryParam("maxResults", 30)
                 .queryParam("key", apiKey);
 
         try{
