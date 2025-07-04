@@ -55,7 +55,7 @@ public class VistaProgresoYModalMateriaE2E {
         page.click("text=Ver progreso académico");
         page.waitForURL("**/progreso");
 
-        String materiaACursar = "Programación Web I"; // ESTA MATERIA TIENE QUE TENER EL BOTON DE "CURSAR" PARA QUE FUNCIONE EL TEST
+        String materiaACursar = "Programación Básica II"; // ESTA MATERIA TIENE QUE TENER EL BOTON DE "CURSAR" PARA QUE FUNCIONE EL TEST
         String notaFinal = "8";
         String dificultad = "2";
 
@@ -89,7 +89,7 @@ public class VistaProgresoYModalMateriaE2E {
         page.click("text=Ver progreso académico");
         page.waitForURL("**/progreso");
 
-        String materiaAModificar = "Programación Web I";
+        String materiaAModificar = "Taller Web I";
         String nuevaNota = "3";
         String nuevaDificultad = "3";
 
@@ -117,7 +117,7 @@ public class VistaProgresoYModalMateriaE2E {
         page.click("text=Ver progreso académico");
         page.waitForURL("**/progreso");
 
-        String materiaADejarDeCursar = "Taller Web II";
+        String materiaADejarDeCursar = "Base de Datos II";
 
         VistaProgreso vistaProgreso = new VistaProgreso(page);
 
