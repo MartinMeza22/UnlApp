@@ -172,4 +172,18 @@ public class ControladorPerfilTest {
         assertThat(response.getBody(), containsString("Usuario no autenticado"));
     }
 
+
+
+
+    @Test
+    public void queGenerarCVDevuelva500EnErrorGenerico() throws Exception {
+        when(session.getAttribute("ID")).thenReturn(1L);
+        when(servicioUsuarioMateria.mostrarMateriasDeUsuario(null, 1L)).thenReturn(Collections.emptyList());
+        when(servicioCv.generarYGuardarCV(1L, Collections.emptyList())).thenThrow(new RuntimeException("Error"));
+
+        ResponseEntity<String> response = controladorPerfil.generarCV(session);
+
+        assertThat(response.getStatusCodeValue(), is(500));
+        assertThat(response.getBody(), containsString("Error interno al generar CV"));
+    }
 }
