@@ -7,10 +7,13 @@ import com.tallerwebi.dominio.*;
 import com.tallerwebi.servicioInterfaz.ServicioUsuario;
 import com.tallerwebi.serviciosImplementacion.ServicioCvImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,11 +26,15 @@ public class ControladorPerfil {
 
     private final ServicioUsuario servicioUsuario;
     private final ServicioUsuarioMateria servicioUsuarioMateria;
+    private final ServicioCvImpl servicioCV;
 
     @Autowired
-    public ControladorPerfil(ServicioUsuario servicioUsuario, ServicioUsuarioMateria servicioUsuarioMateria) {
+    public ControladorPerfil(ServicioUsuario servicioUsuario,
+                             ServicioUsuarioMateria servicioUsuarioMateria,
+                             ServicioCvImpl servicioCV) {
         this.servicioUsuario = servicioUsuario;
         this.servicioUsuarioMateria = servicioUsuarioMateria;
+        this.servicioCV = servicioCV;
     }
 
     // Mostrar perfil del usuario logueado
@@ -103,38 +110,31 @@ public class ControladorPerfil {
 
         return new ModelAndView("redirect:/");
     }
-    @RequestMapping("/perfil")
-    public class ApiPerfil {
 
-        private final ServicioUsuario servicioUsuario;
-        private final ServicioUsuarioMateria servicioUsuarioMateria;
-        private final ServicioCvImpl servicioCV;
-
-        @Autowired
-        public ApiPerfil(ServicioUsuario servicioUsuario, ServicioUsuarioMateria servicioUsuarioMateria, ServicioCvImpl servicioCV) {
-            this.servicioUsuario = servicioUsuario;
-            this.servicioUsuarioMateria = servicioUsuarioMateria;
-            this.servicioCV = servicioCV;
+    @GetMapping("/perfil/generar-cv")
+    @ResponseBody
+    public ResponseEntity<String> generarCV(HttpSession session) {
+        Long usuarioId = (Long) session.getAttribute("ID");
+        if (usuarioId == null) {
+            return ResponseEntity.status(401).body("Usuario no autenticado");
         }
 
-        @GetMapping("/generar-cv")
-        public ResponseEntity<String> generarCV(HttpSession session) {
-            Long usuarioId = (Long) session.getAttribute("ID");
-            if (usuarioId == null) {
-                return ResponseEntity.status(401).body("Usuario no autenticado");
-            }
+        try {
+            List<UsuarioMateria> materias = servicioUsuarioMateria.mostrarMateriasDeUsuario(null, usuarioId)
+                    .stream()
+                    .filter(UsuarioMateria::estaAprobada)
+                    .collect(Collectors.toList());
 
-            try {
-                Usuario usuario = servicioUsuario.obtenerUsuario(usuarioId);
-                List<UsuarioMateria> materias = servicioUsuarioMateria.mostrarMateriasDeUsuario(
-                        usuario.getCarrera().getId().toString(), usuarioId);
-                List<UsuarioMateria> aprobadas = materias.stream().filter(UsuarioMateria::estaAprobada).toList();
+            String cvTexto = servicioCV.generarYGuardarCV(usuarioId, materias);
+            return ResponseEntity.ok(cvTexto);
 
-                String cvTexto = servicioCV.generarCVHarvard(usuario, aprobadas);
-                return ResponseEntity.ok(cvTexto);
-            } catch (UsuarioNoEncontrado e) {
-                return ResponseEntity.status(404).body("Usuario no encontrado");
-            }
+        } catch (UsuarioNoEncontrado e) {
+            return ResponseEntity.status(404).body("Usuario no encontrado");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error interno al generar CV");
         }
     }
-}
+
+    }
+
+
