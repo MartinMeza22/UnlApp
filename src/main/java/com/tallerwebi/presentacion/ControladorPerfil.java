@@ -5,13 +5,16 @@ import com.tallerwebi.dominio.servicios.ServicioUsuarioMateria;
 import com.tallerwebi.repositorioInterfaz.RepositorioUsuario;
 import com.tallerwebi.dominio.*;
 import com.tallerwebi.servicioInterfaz.ServicioUsuario;
+import com.tallerwebi.serviciosImplementacion.ServicioCvImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -99,5 +102,39 @@ public class ControladorPerfil {
         }
 
         return new ModelAndView("redirect:/");
+    }
+    @RequestMapping("/perfil")
+    public class ApiPerfil {
+
+        private final ServicioUsuario servicioUsuario;
+        private final ServicioUsuarioMateria servicioUsuarioMateria;
+        private final ServicioCvImpl servicioCV;
+
+        @Autowired
+        public ApiPerfil(ServicioUsuario servicioUsuario, ServicioUsuarioMateria servicioUsuarioMateria, ServicioCvImpl servicioCV) {
+            this.servicioUsuario = servicioUsuario;
+            this.servicioUsuarioMateria = servicioUsuarioMateria;
+            this.servicioCV = servicioCV;
+        }
+
+        @GetMapping("/generar-cv")
+        public ResponseEntity<String> generarCV(HttpSession session) {
+            Long usuarioId = (Long) session.getAttribute("ID");
+            if (usuarioId == null) {
+                return ResponseEntity.status(401).body("Usuario no autenticado");
+            }
+
+            try {
+                Usuario usuario = servicioUsuario.obtenerUsuario(usuarioId);
+                List<UsuarioMateria> materias = servicioUsuarioMateria.mostrarMateriasDeUsuario(
+                        usuario.getCarrera().getId().toString(), usuarioId);
+                List<UsuarioMateria> aprobadas = materias.stream().filter(UsuarioMateria::estaAprobada).toList();
+
+                String cvTexto = servicioCV.generarCVHarvard(usuario, aprobadas);
+                return ResponseEntity.ok(cvTexto);
+            } catch (UsuarioNoEncontrado e) {
+                return ResponseEntity.status(404).body("Usuario no encontrado");
+            }
+        }
     }
 }
