@@ -162,6 +162,14 @@ public class ControladorPerfilTest {
     }
 
 
-   
+    @Test
+    public void queGenerarCVDevuelva401SiNoHaySesion() {
+        when(session.getAttribute("ID")).thenReturn(null);
+
+        ResponseEntity<String> response = controladorPerfil.generarCV(session);
+
+        assertThat(response.getStatusCodeValue(), is(401));
+        assertThat(response.getBody(), containsString("Usuario no autenticado"));
+    }
 
 }
