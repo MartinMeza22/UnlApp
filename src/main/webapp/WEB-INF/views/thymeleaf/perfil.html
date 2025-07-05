@@ -250,7 +250,7 @@
 <!-- JS Funcionalidad -->
 <script>
   document.getElementById("btnGenerarCV").addEventListener("click", function () {
-    fetch("/perfil/generar-cv")
+    fetch('/tallerwebi-base-1.0-SNAPSHOT/perfil/generar-cv')
             .then(resp => resp.text())
             .then(data => {
               document.getElementById("cvContenido").innerText = data;
