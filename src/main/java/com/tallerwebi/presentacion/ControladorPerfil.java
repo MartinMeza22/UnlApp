@@ -120,7 +120,8 @@ public class ControladorPerfil {
         }
 
         try {
-            List<UsuarioMateria> materias = servicioUsuarioMateria.mostrarMateriasDeUsuario(null, usuarioId)
+            List<UsuarioMateria> materias = servicioUsuarioMateria.mostrarMateriasDeUsuarioo(null, usuarioId)
+
                     .stream()
                     .filter(UsuarioMateria::estaAprobada)
                     .collect(Collectors.toList());
@@ -131,10 +132,12 @@ public class ControladorPerfil {
         } catch (UsuarioNoEncontrado e) {
             return ResponseEntity.status(404).body("Usuario no encontrado");
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error interno al generar CV");
+            e.printStackTrace();  // <--- Esto te ayuda a ver el error real en consola
+            return ResponseEntity.status(500).body("Error interno al generar CV: " + e.getMessage());
         }
     }
 
-    }
+
+}
 
 

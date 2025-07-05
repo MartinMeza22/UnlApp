@@ -311,6 +311,14 @@ public class ServicioUsuarioMateria {
 
         return repositorioUsuarioMateria.buscarPorUsuario(idCarrera, usuarioId);
     }
+    public List<UsuarioMateria> mostrarMateriasDeUsuarioo(String idCarrera, Long usuarioId) {
+        if (usuarioId == null) {
+            throw new IllegalArgumentException("El ID del usuario es obligatorio");
+        }
+
+        return repositorioUsuarioMateria.buscarPorUsuarioo(idCarrera, usuarioId);
+
+    }
 
     /**
      * Obtiene estadísticas básicas de un usuario

@@ -51,6 +51,23 @@ public class RepositorioUsuarioMateriaImpl implements RepositorioUsuarioMateria 
                 .add(Restrictions.eq("m.carrera.id", Long.valueOf(idCarrera)))
                 .list();
     }
+    @Override
+    public List<UsuarioMateria> buscarPorUsuarioo(String carreraId, Long usuarioId) {
+        if (carreraId == null) {
+            return sessionFactory.getCurrentSession()
+                    .createQuery("FROM UsuarioMateria um WHERE um.usuario.id = :usuarioId", UsuarioMateria.class)
+                    .setParameter("usuarioId", usuarioId)
+                    .getResultList();
+        }
+
+        Long carreraIdLong = Long.valueOf(carreraId);
+
+        return sessionFactory.getCurrentSession()
+                .createQuery("FROM UsuarioMateria um WHERE um.usuario.id = :usuarioId AND um.materia.carrera.id = :carreraId", UsuarioMateria.class)
+                .setParameter("usuarioId", usuarioId)
+                .setParameter("carreraId", carreraIdLong)
+                .getResultList();
+    }
 
     @Override
     @SuppressWarnings("unchecked")

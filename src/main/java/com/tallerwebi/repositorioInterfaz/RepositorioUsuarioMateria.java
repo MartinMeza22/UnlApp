@@ -26,6 +26,8 @@ public interface RepositorioUsuarioMateria {
      */
     List<UsuarioMateria> buscarPorUsuario(String idCarrera, Long usuarioId);
 
+    List<UsuarioMateria> buscarPorUsuarioo(String carreraId, Long usuarioId);
+
     /**
      * Obtiene todas las relaciones usuario-materia
      */
