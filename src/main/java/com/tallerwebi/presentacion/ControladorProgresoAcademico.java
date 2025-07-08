@@ -24,6 +24,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class ControladorProgresoAcademico {
@@ -216,4 +217,21 @@ public class ControladorProgresoAcademico {
         }
         return "redirect:/progreso";
     }
+
+    @RequestMapping(path = "/estadisticas-generales", method = RequestMethod.GET)
+    public String verEstadisticasGenerales(HttpSession session, Model modelo, RedirectAttributes redirectAttributes) {
+        Long carreraId = (Long) session.getAttribute("CARRERA_ID");
+
+        if (carreraId == null) {
+            redirectAttributes.addFlashAttribute("error", "No se pudo obtener la carrera del usuario.");
+            return "redirect:/progreso";
+        }
+
+        Map<String, Double> estadisticas = servicioProgreso.obtenerEstadisticasGeneralesDeCarrera(carreraId);
+
+        modelo.addAttribute("estadisticasGenerales", estadisticas);
+
+        return "estadisticas-generales";
+    }
+
 }

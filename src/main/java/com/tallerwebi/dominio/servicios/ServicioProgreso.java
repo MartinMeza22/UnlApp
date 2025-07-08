@@ -420,4 +420,27 @@ public class ServicioProgreso {
         }
         return materiasDiagrama;
     }
+
+    public Map<String, Double> obtenerEstadisticasGeneralesDeCarrera(Long carreraId) {
+        Map<String, Double> estadisticas = new HashMap<>();
+
+        Long totalRelaciones = repositorioUsuarioMateria.contarTotalRelacionesPorCarrera(carreraId);
+        if (totalRelaciones == 0) {
+            estadisticas.put("aprobadas", 0.0);
+            estadisticas.put("desaprobadas", 0.0);
+            estadisticas.put("cursando", 0.0);
+            return estadisticas;
+        }
+
+        Long aprobadas = repositorioUsuarioMateria.contarAprobadasPorCarrera(carreraId);
+        Long desaprobadas = repositorioUsuarioMateria.contarDesaprobadasPorCarrera(carreraId);
+        Long cursando = repositorioUsuarioMateria.contarCursandoPorCarrera(carreraId);
+
+        estadisticas.put("aprobadas", (aprobadas * 100.0) / totalRelaciones);
+        estadisticas.put("desaprobadas", (desaprobadas * 100.0) / totalRelaciones);
+        estadisticas.put("cursando", (cursando * 100.0) / totalRelaciones);
+
+        return estadisticas;
+    }
+
 }
