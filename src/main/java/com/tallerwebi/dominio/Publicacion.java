@@ -45,6 +45,9 @@ public class Publicacion {
         this.likes = 0;
     }
 
+    @OneToMany(mappedBy = "publicacion", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Reporte> reportes = new HashSet<>();
+
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -63,6 +66,13 @@ public class Publicacion {
     public void setComentarios(List<Comentario> comentarios) { this.comentarios = comentarios; }
     public String getNombreArchivo() { return nombreArchivo; }
     public void setNombreArchivo(String nombreArchivo) { this.nombreArchivo = nombreArchivo; }
+    public Set<Reporte> getReportes() { return reportes; }
+    public void setReportes(Set<Reporte> reportes) { this.reportes = reportes; }
+    public void agregarLike(Usuario usuario) {if (this.usuariosQueDieronLike.add(usuario)) {this.likes++;}}
+    public void quitarLike(Usuario usuario) {if (this.usuariosQueDieronLike.remove(usuario)) {this.likes--;}}
+    public boolean usuarioDioLike(Usuario usuario) {return this.usuariosQueDieronLike.contains(usuario);}
+    public Set<Usuario> getUsuariosQueDieronLike() {return usuariosQueDieronLike;}
+    public void setUsuariosQueDieronLike(Set<Usuario> usuariosQueDieronLike){this.usuariosQueDieronLike = usuariosQueDieronLike;}
     @Transient
     public String getFechaCreacionFormateada() {
 
@@ -74,17 +84,7 @@ public class Publicacion {
 
         return this.fechaCreacion.format(formatter);
     }
-    public void agregarLike(Usuario usuario) {
-        if (this.usuariosQueDieronLike.add(usuario)) {this.likes++;}}
 
-    public void quitarLike(Usuario usuario) {
-        if (this.usuariosQueDieronLike.remove(usuario)) {this.likes--;}}
-
-    public boolean usuarioDioLike(Usuario usuario) {return this.usuariosQueDieronLike.contains(usuario);}
-
-    public Set<Usuario> getUsuariosQueDieronLike() {return usuariosQueDieronLike;}
-
-    public void setUsuariosQueDieronLike(Set<Usuario> usuariosQueDieronLike){this.usuariosQueDieronLike = usuariosQueDieronLike;}
 
     @Transient
     public boolean isImagen() {
@@ -111,4 +111,8 @@ public class Publicacion {
         return nombreArchivo.toLowerCase().endsWith(".ppt") || nombreArchivo.toLowerCase().endsWith(".pptx");
     }
 
+    @Transient
+    public int getNumeroDeReportes() {
+        return this.reportes != null ? this.reportes.size() : 0;
+    }
 }

@@ -19,7 +19,7 @@ import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
-
+import org.thymeleaf.extras.java8time.dialect.Java8TimeDialect;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -58,10 +58,21 @@ public class SpringWebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authenticationInterceptor)
-                .addPathPatterns("/**") // Apply to all paths
-                .excludePathPatterns("/css/**", "/js/**", "/webjars/**"); // Static resources
+                .addPathPatterns("/**") // Aplica a todas las rutas
+                .excludePathPatterns(   // Excepto a estas, que son públicas y no necesitan autenticación
+                        "/",
+                        "/login",
+                        "/validar-login",
+                        "/nuevo-usuario",
+                        "/registrarme",
+                        "/verificar-token",
+                        "/registrarme/paso2",
+                        "/css/**",
+                        "/js/**",
+                        "/webjars/**",
+                        "/uploads/**"
+                );
     }
-
     // Para poder usar acentos / letras raras
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
@@ -104,6 +115,7 @@ public class SpringWebConfig implements WebMvcConfigurer {
         // enables Spring's own MessageSource message resolution mechanisms.
         SpringTemplateEngine templateEngine = new SpringTemplateEngine();
         templateEngine.setTemplateResolver(templateResolver());
+        templateEngine.addDialect(java8TimeDialect());
         // Enabling the SpringEL compiler with Spring 4.2.4 or newer can
         // speed up execution in most scenarios, but might be incompatible
         // with specific cases when expressions in one template are reused
@@ -142,4 +154,9 @@ public class SpringWebConfig implements WebMvcConfigurer {
         // multipartResolver.setMaxUploadSize(5242880); // Ejemplo: 5MB
         return multipartResolver;
     }
+    @Bean
+    public Java8TimeDialect java8TimeDialect() {
+        return new Java8TimeDialect();
+    }
+
 }

@@ -9,6 +9,11 @@ VALUES
     (1, 'user@gmail.com', '12345678', 'ALUMNO', 1, 'Juan', 'Pérez', NULL, 'desempleado', 1, true),
     (2, 'user2@user.com', '123', 'ALUMNO', 1, 'Ana', 'Gómez', NULL, 'empleado', 2, true);
 
+-- se inserta un admin
+INSERT INTO Usuario(id, email, password, rol, carreraID, nombre, apellido, activo)
+VALUES
+    (99, 'admin@unlapp.com', '123', 'ADMIN', 1, 'Admin', 'istrador', true);
+
 -- Insertar las materias del cuatrimestre 1 (sin correlativas)
 INSERT INTO Materia(id, nombre, descripcion, tipo, carga_horaria, cuatrimestre, activa, carrera_id, correlativa_1, correlativa_2, correlativa_3, correlativa_4, correlativa_5, correlativa_6)
 VALUES

@@ -72,7 +72,6 @@ public class ControladorLogin {
     @RequestMapping(path = "/registrarme", method = RequestMethod.POST)
     public ModelAndView registrarme(@ModelAttribute("usuario") Usuario usuario, HttpServletRequest request) {
         ModelMap model = new ModelMap();
-
         // Validaciones manuales campo por campo
         if (usuario.getEmail() == null || usuario.getEmail().trim().isEmpty()) {
             model.put("error", "El email es obligatorio");
@@ -114,6 +113,7 @@ public class ControladorLogin {
         }
 
         try {
+            usuario.setRol("ALUMNO");
             usuario.setActivo(false);
             repositorioLogin.registrar(usuario);
             Usuario usuarioBuscado = repositorioLogin.consultarUsuario(usuario.getEmail(), usuario.getPassword());

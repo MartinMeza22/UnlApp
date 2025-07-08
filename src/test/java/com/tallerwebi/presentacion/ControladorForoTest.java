@@ -8,6 +8,7 @@ import com.tallerwebi.dominio.excepcion.UsuarioNoEncontrado;
 import com.tallerwebi.dominio.servicios.ServicioMateria;
 import com.tallerwebi.servicioInterfaz.ServicioComentario;
 import com.tallerwebi.servicioInterfaz.ServicioPublicacion;
+import com.tallerwebi.servicioInterfaz.ServicioReporte;
 import com.tallerwebi.servicioInterfaz.ServicioUsuario;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,6 +37,7 @@ public class ControladorForoTest {
     private ServicioComentario servicioComentarioMock;
     private ServicioMateria servicioMateriaMock;
     private ServletContext servletContextMock;
+    private ServicioReporte servicioReporteMock;
     private ControladorForo controladorForo;
     private HttpSession sessionMock;
     private Usuario usuarioMock;
@@ -52,6 +54,7 @@ public class ControladorForoTest {
         servicioComentarioMock = mock(ServicioComentario.class);
         servicioMateriaMock = mock(ServicioMateria.class);
         servletContextMock = mock(ServletContext.class);
+        servicioReporteMock = mock(ServicioReporte.class);
         sessionMock = mock(HttpSession.class);
         usuarioMock = mock(Usuario.class);
         carreraMock = mock(Carrera.class);
@@ -64,8 +67,7 @@ public class ControladorForoTest {
                 "Este es el contenido del archivo".getBytes()
         );
 
-        controladorForo = new ControladorForo(servicioUsuarioMock, servicioPublicacionMock, servicioComentarioMock, servicioMateriaMock, servletContextMock);
-
+        controladorForo = new ControladorForo(servicioUsuarioMock, servicioPublicacionMock, servicioComentarioMock, servicioMateriaMock, servicioReporteMock, servletContextMock);
         when(sessionMock.getAttribute("ID")).thenReturn(ID_USUARIO);
         when(usuarioMock.getCarrera()).thenReturn(carreraMock);
         when(servicioUsuarioMock.obtenerUsuario(ID_USUARIO)).thenReturn(usuarioMock);
@@ -200,22 +202,51 @@ public class ControladorForoTest {
         assertThat(redirectAttributes.getFlashAttributes().get("error").toString(), containsString(mensajeError));
     }
 
-
     @Test
     public void alAccederANuevaPublicacionSinEstarLogueadoRedirigeALogin() {
         when(sessionMock.getAttribute("ID")).thenReturn(null);
-
         ModelAndView mav = controladorForo.mostrarFormularioNuevaPublicacion(sessionMock);
-
         assertThat(mav.getViewName(), equalTo("redirect:/login"));
     }
 
     @Test
     public void siServicioUsuarioLanzaExcepcionAlBuscarUsuarioRedirigeALogin() throws UsuarioNoEncontrado {
         when(servicioUsuarioMock.obtenerUsuario(ID_USUARIO)).thenThrow(new UsuarioNoEncontrado());
-
         ModelAndView mav = controladorForo.mostrarForo(null, "fecha", sessionMock);
+        assertThat(mav.getViewName(), equalTo("redirect:/login"));
+    }
+
+    @Test
+    public void alReportarContenidoCorrectamenteRedirigeAForoConMensajeExito() throws Exception {
+        Long idPublicacion = 1L;
+        String motivo = "inapropiado";
+
+        ModelAndView mav = controladorForo.reportarContenido(idPublicacion, null, motivo, null, sessionMock, redirectAttributes);
+
+        assertThat(mav.getViewName(), equalTo("redirect:/foro"));
+        assertThat(redirectAttributes.getFlashAttributes().get("exito"), equalTo("Reporte enviado correctamente."));
+        verify(servicioReporteMock, times(1)).crearReporteParaPublicacion(idPublicacion, ID_USUARIO, motivo, null);
+    }
+
+    @Test
+    public void siUsuarioNoLogueadoIntentaReportarRedirigeALogin() {
+        when(sessionMock.getAttribute("ID")).thenReturn(null);
+
+        ModelAndView mav = controladorForo.reportarContenido(1L, null, "ofensivo", null, sessionMock, redirectAttributes);
 
         assertThat(mav.getViewName(), equalTo("redirect:/login"));
+    }
+
+    @Test
+    public void siFallaAlReportarContenidoRedirigeAForoConMensajeDeError() throws Exception {
+        Long idPublicacion = 1L;
+        String motivo = "inapropiado";
+        String mensajeError = "Error al reportar";
+        doThrow(new RuntimeException(mensajeError)).when(servicioReporteMock).crearReporteParaPublicacion(anyLong(), anyLong(), anyString(), any());
+
+        ModelAndView mav = controladorForo.reportarContenido(idPublicacion, null, motivo, null, sessionMock, redirectAttributes);
+
+        assertThat(mav.getViewName(), equalTo("redirect:/foro"));
+        assertThat(redirectAttributes.getFlashAttributes().get("error").toString(), containsString(mensajeError));
     }
 }

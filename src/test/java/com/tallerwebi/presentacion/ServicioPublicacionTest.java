@@ -61,14 +61,18 @@ public class ServicioPublicacionTest {
     }
 
     @Test
-    public void alCrearPublicacionDeberiaLlamarAGuardarDelRepositorio() {
+    public void alCrearPublicacionDeberiaLlamarAGuardarDelRepositorio() throws AccesoDenegado {
+        // PREPARACIÓN: El usuario NO es admin
+        when(usuarioMock.getRol()).thenReturn("ALUMNO");
         String titulo = "Mi Duda";
         String desc = "No entiendo este tema";
         Long idMateria = 1L;
         when(repositorioMateriaMock.buscarPorId(idMateria)).thenReturn(materiaMock);
 
+        // EJECUCIÓN
         servicioPublicacion.crearPublicacion(titulo, desc, usuarioMock, idMateria, null);
 
+        // VALIDACIÓN
         ArgumentCaptor<Publicacion> captor = ArgumentCaptor.forClass(Publicacion.class);
         verify(repositorioPublicacionMock, times(1)).guardar(captor.capture());
         Publicacion publicacionGuardada = captor.getValue();
@@ -77,21 +81,73 @@ public class ServicioPublicacionTest {
     }
 
     @Test
+    public void siUnAdminIntentaCrearPublicacionDeberiaLanzarAccesoDenegado() {
+        // PREPARACIÓN: El usuario SÍ es admin
+        when(usuarioMock.getRol()).thenReturn("ADMIN");
+
+        // VALIDACIÓN
+        assertThrows(AccesoDenegado.class, () -> {
+            servicioPublicacion.crearPublicacion("Titulo Admin", "Desc Admin", usuarioMock, 1L, null);
+        });
+
+        verify(repositorioPublicacionMock, never()).guardar(any());
+    }
+
+    @Test
     public void alEliminarPublicacionAjenaDeberiaLanzarAccesoDenegado() {
+        // PREPARACIÓN
         Long idPublicacion = 1L;
         Long idUsuarioPropietario = 10L;
         Long idUsuarioAjeno = 20L;
+
         Usuario usuarioPropietario = mock(Usuario.class);
         when(usuarioPropietario.getId()).thenReturn(idUsuarioPropietario);
+
+        // Se crea el usuario que intenta eliminar (no es admin)
+        Usuario usuarioAjeno = mock(Usuario.class);
+        when(usuarioAjeno.getId()).thenReturn(idUsuarioAjeno);
+        when(usuarioAjeno.getRol()).thenReturn("ALUMNO");
+
         Publicacion publicacion = new Publicacion();
         publicacion.setUsuario(usuarioPropietario);
-        when(repositorioPublicacionMock.buscarPorId(idPublicacion)).thenReturn(publicacion);
 
+        when(repositorioPublicacionMock.buscarPorId(idPublicacion)).thenReturn(publicacion);
+        when(repositorioUsuarioMock.buscarPorId(idUsuarioAjeno)).thenReturn(usuarioAjeno);
+
+        // VALIDACIÓN
         assertThrows(AccesoDenegado.class, () -> {
             servicioPublicacion.eliminarPublicacion(idPublicacion, idUsuarioAjeno);
         });
         verify(repositorioPublicacionMock, never()).eliminar(any(Publicacion.class));
     }
+
+    @Test
+    public void unAdminDeberiaPoderEliminarCualquierPublicacion() throws PublicacionInexistente, AccesoDenegado {
+        // PREPARACIÓN
+        Long idPublicacion = 1L;
+        Long idUsuarioPropietario = 10L;
+        Long idAdmin = 99L;
+
+        Usuario usuarioPropietario = mock(Usuario.class);
+        when(usuarioPropietario.getId()).thenReturn(idUsuarioPropietario);
+
+        Usuario admin = mock(Usuario.class);
+        when(admin.getId()).thenReturn(idAdmin);
+        when(admin.getRol()).thenReturn("ADMIN");
+
+        Publicacion publicacion = new Publicacion();
+        publicacion.setUsuario(usuarioPropietario);
+
+        when(repositorioPublicacionMock.buscarPorId(idPublicacion)).thenReturn(publicacion);
+        when(repositorioUsuarioMock.buscarPorId(idAdmin)).thenReturn(admin);
+
+        // EJECUCIÓN
+        servicioPublicacion.eliminarPublicacion(idPublicacion, idAdmin);
+
+        // VALIDACIÓN
+        verify(repositorioPublicacionMock, times(1)).eliminar(publicacion);
+    }
+
 
     @Test
     public void alDarLikePorPrimeraVezDeberiaAgregarElLike() throws PublicacionInexistente, UsuarioNoEncontrado {
