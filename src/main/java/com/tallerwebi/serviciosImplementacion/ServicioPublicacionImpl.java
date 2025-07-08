@@ -11,6 +11,7 @@ import com.tallerwebi.dominio.excepcion.AccesoDenegado;
 import com.tallerwebi.dominio.excepcion.PublicacionInexistente;
 import com.tallerwebi.dominio.excepcion.UsuarioNoEncontrado;
 import com.tallerwebi.servicioInterfaz.ServicioPublicacion;
+import com.tallerwebi.servicioInterfaz.ServicioUsuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
@@ -40,18 +41,23 @@ public class ServicioPublicacionImpl implements ServicioPublicacion {
     }
 
     @Override
-    public void crearPublicacion(String titulo, String descripcion, Usuario usuario, Long idMateria, String nombreArchivo) {
-        Materia materia = repositorioMateria.buscarPorId(idMateria);
-        Publicacion nuevaPublicacion = new Publicacion();
-        nuevaPublicacion.setTitulo(titulo);
-        nuevaPublicacion.setDescripcion(descripcion);
-        nuevaPublicacion.setUsuario(usuario);
-        nuevaPublicacion.setMateria(materia);
-        if (nombreArchivo != null && !nombreArchivo.isEmpty()) {
-            nuevaPublicacion.setNombreArchivo(nombreArchivo);
+    public void crearPublicacion(String titulo, String descripcion, Usuario usuario, Long idMateria, String nombreArchivo) throws AccesoDenegado {
+        if(!usuario.getRol().equals("ADMIN")) {
+            Materia materia = repositorioMateria.buscarPorId(idMateria);
+            Publicacion nuevaPublicacion = new Publicacion();
+            nuevaPublicacion.setTitulo(titulo);
+            nuevaPublicacion.setDescripcion(descripcion);
+            nuevaPublicacion.setUsuario(usuario);
+            nuevaPublicacion.setMateria(materia);
+            if (nombreArchivo != null && !nombreArchivo.isEmpty()) {
+                nuevaPublicacion.setNombreArchivo(nombreArchivo);
+            }
+            repositorioPublicacion.guardar(nuevaPublicacion);
+        }else{
+            throw new AccesoDenegado("Los administradores no pueden publicar ni comentar.");
         }
-        repositorioPublicacion.guardar(nuevaPublicacion);
-    }
+        }
+
 
     @Override
     public Publicacion obtenerPublicacion(Long idPublicacion) throws PublicacionInexistente {
@@ -78,10 +84,11 @@ public class ServicioPublicacionImpl implements ServicioPublicacion {
     @Override
     public void eliminarPublicacion(Long idPublicacion, Long idUsuarioQueElimina) throws PublicacionInexistente, AccesoDenegado {
         Publicacion publicacion = repositorioPublicacion.buscarPorId(idPublicacion);
+        Usuario usuarioQueElimina = repositorioUsuario.buscarPorId(idUsuarioQueElimina);
         if (publicacion == null) {
             throw new PublicacionInexistente("La publicación que intentas eliminar no existe.");
         }
-        if (!publicacion.getUsuario().getId().equals(idUsuarioQueElimina)) {
+        if (!publicacion.getUsuario().getId().equals(usuarioQueElimina.getId())&& !usuarioQueElimina.getRol().equals("ADMIN")) {
             throw new AccesoDenegado("No tienes permiso para eliminar esta publicación.");
         }
         repositorioPublicacion.eliminar(publicacion);

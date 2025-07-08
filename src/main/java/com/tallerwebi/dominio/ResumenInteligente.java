@@ -11,7 +11,9 @@ public class ResumenInteligente {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(columnDefinition = "TEXT") //Creo esto porque sino lo crea como un varchar con un maximo de 255 caracteres.
+    // código anterior => @Column(columnDefinition = "TEXT") //Creo esto porque sino lo crea como un varchar con un maximo de 255 caracteres.código anterior =>
+    @Lob //Es para que hibernate maneje la columna según lo que crea correcto
+        // lob = large object
     private String resumen;
 
     private LocalDate fechaGeneracion;

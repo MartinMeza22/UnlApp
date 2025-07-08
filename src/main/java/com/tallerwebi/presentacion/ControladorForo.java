@@ -6,6 +6,7 @@ import com.tallerwebi.dominio.servicios.ServicioMateria;
 import com.tallerwebi.servicioInterfaz.ServicioComentario;
 import com.tallerwebi.servicioInterfaz.ServicioPublicacion;
 import com.tallerwebi.servicioInterfaz.ServicioUsuario;
+import com.tallerwebi.servicioInterfaz.ServicioReporte;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -31,17 +32,22 @@ public class ControladorForo {
     private final ServicioPublicacion servicioPublicacion;
     private final ServicioComentario servicioComentario;
     private final ServicioMateria servicioMateria;
+    private final ServicioReporte servicioReporte;
+
 
     private static final List<String> PERMITTED_EXTENSIONS = Arrays.asList("pdf", "ppt", "pptx", "jpg", "jpeg", "png", "mp4", "webm");
     private final ServletContext servletContext;
 
     @Autowired
-    public ControladorForo(ServicioUsuario servicioUsuario, ServicioPublicacion servicioPublicacion, ServicioComentario servicioComentario, ServicioMateria servicioMateria, ServletContext servletContext) {
+    public ControladorForo(ServicioUsuario servicioUsuario, ServicioPublicacion servicioPublicacion,
+                           ServicioComentario servicioComentario, ServicioMateria servicioMateria,
+                           ServicioReporte servicioReporte , ServletContext servletContext) {
         this.servicioUsuario = servicioUsuario;
         this.servicioPublicacion = servicioPublicacion;
         this.servicioComentario = servicioComentario;
         this.servicioMateria = servicioMateria;
         this.servletContext = servletContext;
+        this.servicioReporte = servicioReporte;
     }
 
     private Long obtenerIdUsuarioDeSesion(HttpSession session) {
@@ -255,4 +261,32 @@ public class ControladorForo {
 
         return new ModelAndView("redirect:/foro");
     }
+    @PostMapping("/reportar")
+    public ModelAndView reportarContenido(
+            @RequestParam(required = false) Long idPublicacion,
+            @RequestParam(required = false) Long idComentario,
+            @RequestParam String motivo,
+            @RequestParam(required = false) String descripcionAdicional,
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
+
+        Long idUsuario = obtenerIdUsuarioDeSesion(session);
+        if (idUsuario == null) return new ModelAndView("redirect:/login");
+
+        try {
+            if (idPublicacion != null) {
+                servicioReporte.crearReporteParaPublicacion(idPublicacion, idUsuario, motivo, descripcionAdicional);
+            } else if (idComentario != null) {
+                servicioReporte.crearReporteParaComentario(idComentario, idUsuario, motivo, descripcionAdicional);
+            } else {
+                redirectAttributes.addFlashAttribute("error", "No se especificó qué reportar.");
+                return new ModelAndView("redirect:/foro");
+            }
+            redirectAttributes.addFlashAttribute("exito", "Reporte enviado correctamente.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error al enviar el reporte: " + e.getMessage());
+        }
+
+        return new ModelAndView("redirect:/foro");
+}
 }
