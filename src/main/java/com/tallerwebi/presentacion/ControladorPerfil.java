@@ -2,8 +2,8 @@ package com.tallerwebi.presentacion;
 
 import com.tallerwebi.dominio.excepcion.UsuarioNoEncontrado;
 import com.tallerwebi.dominio.servicios.ServicioUsuarioMateria;
-import com.tallerwebi.repositorioInterfaz.RepositorioUsuario;
 import com.tallerwebi.dominio.*;
+import com.tallerwebi.servicioInterfaz.ServicioCvInteligente;
 import com.tallerwebi.servicioInterfaz.ServicioUsuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,12 +21,18 @@ public class ControladorPerfil {
 
     private final ServicioUsuario servicioUsuario;
     private final ServicioUsuarioMateria servicioUsuarioMateria;
+    private final ServicioCvInteligente servicioCvInteligente;
+
 
     @Autowired
-    public ControladorPerfil(ServicioUsuario servicioUsuario, ServicioUsuarioMateria servicioUsuarioMateria) {
+    public ControladorPerfil(ServicioUsuario servicioUsuario,
+                             ServicioUsuarioMateria servicioUsuarioMateria,
+                             ServicioCvInteligente servicioCvInteligente) {
         this.servicioUsuario = servicioUsuario;
         this.servicioUsuarioMateria = servicioUsuarioMateria;
+        this.servicioCvInteligente = servicioCvInteligente;
     }
+
 
     // Mostrar perfil del usuario logueado
     @RequestMapping(path = "/perfil", method = RequestMethod.GET)
@@ -100,4 +107,22 @@ public class ControladorPerfil {
 
         return new ModelAndView("redirect:/");
     }
+
+
+    @GetMapping("/perfil/cv-inteligente")
+    @ResponseBody
+    public String generarCvInteligente(HttpSession session) {
+        Long idUsuario = (Long) session.getAttribute("ID"); // unificar clave con la que usás en login/perfil
+        if (idUsuario == null) {
+            return "Sesión expirada. Iniciá sesión nuevamente.";
+        }
+
+        try {
+            return servicioCvInteligente.generarCv(idUsuario);
+        } catch (Exception e) {
+            return "Error generando el CV: " + e.getMessage();
+        }
+    }
+
+
 }

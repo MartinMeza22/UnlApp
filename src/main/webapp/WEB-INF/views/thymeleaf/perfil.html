@@ -222,6 +222,65 @@
   <div th:if="${error}" style="color: var(--danger-color); margin-top: 20px;">
     <p th:text="${error}"></p>
   </div>
+  <!-- Botón para generar CV Inteligente -->
+  <div class="modal-footer">
+    <button id="btnMostrarCvInteligente" class="btn-primary">Descargar CV Inteligente</button>
+  </div>
+
+  <!-- Modal para mostrar el CV Inteligente -->
+  <div class="modal fade" id="cvModal" tabindex="-1" aria-labelledby="cvModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="cvModalLabel">CV Inteligente</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body" id="cvModalBody">
+          Generando CV...
+        </div>
+        <div class="modal-footer">
+          <button id="btnDescargarCv" class="btn-primary" style="display: none;">Descargar PDF</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
 </div>
+
+<script th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.min.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+  const cvModal = new bootstrap.Modal(document.getElementById('cvModal'));
+  const modalBody = document.getElementById('cvModalBody');
+  const btnDescargar = document.getElementById('btnDescargarCv');
+
+  document.getElementById('btnMostrarCvInteligente').addEventListener('click', () => {
+    modalBody.textContent = "Generando CV...";
+    btnDescargar.style.display = 'none';
+    cvModal.show();
+
+    fetch('/tallerwebi-base-1.0-SNAPSHOT/perfil/cv-inteligente')
+            .then(res => res.text())
+            .then(text => {
+              modalBody.textContent = text;
+              btnDescargar.style.display = 'inline-block';
+            })
+            .catch(() => {
+              modalBody.textContent = "Error al generar el CV.";
+            });
+  });
+
+  btnDescargar.addEventListener('click', () => {
+    const texto = modalBody.textContent;
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    const lineas = doc.splitTextToSize(texto, 180);
+    doc.text(lineas, 15, 20);
+    doc.save("cv-inteligente.pdf");
+  });
+</script>
+
 </body>
 </html>
