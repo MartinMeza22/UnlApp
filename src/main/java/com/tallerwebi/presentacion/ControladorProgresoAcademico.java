@@ -104,6 +104,9 @@ public class ControladorProgresoAcademico {
 
         model.put("cuatrimestresDisponibles", cuatri);
         model.put("selectedCuatrimestre", cuatrimestresDisponibles);
+        Long carreraId = (Long) session.getAttribute("CARRERA_ID");
+        Map<String, Double> estadisticas = servicioProgreso.obtenerEstadisticasGeneralesDeCarrera(carreraId);
+        model.addAttribute("estadisticasGenerales", estadisticas);
 
         return new ModelAndView("progreso", model);
     }
