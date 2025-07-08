@@ -4,6 +4,7 @@ import com.tallerwebi.dominio.servicios.ServicioUsuarioMateria;
 import com.tallerwebi.repositorioInterfaz.RepositorioUsuario;
 import com.tallerwebi.dominio.*;
 import com.tallerwebi.dominio.excepcion.UsuarioNoEncontrado;
+import com.tallerwebi.servicioInterfaz.ServicioCvInteligente;
 import com.tallerwebi.servicioInterfaz.ServicioUsuario;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,6 +24,7 @@ public class ControladorPerfilTest {
     private ServicioUsuario servicioUsuario;
     private ServicioUsuarioMateria servicioUsuarioMateria;
     private ControladorPerfil controladorPerfil;
+    private ServicioCvInteligente servicioCvInteligente;  // Agregalo
 
     private HttpServletRequest request;
     private HttpSession session;
@@ -33,8 +35,11 @@ public class ControladorPerfilTest {
     public void setUp() {
         servicioUsuario = mock(ServicioUsuario.class);
         servicioUsuarioMateria = mock(ServicioUsuarioMateria.class);
-        controladorPerfil = new ControladorPerfil(servicioUsuario, servicioUsuarioMateria);
+        servicioCvInteligente = mock(ServicioCvInteligente.class); // Mock para el nuevo servicio
 
+        controladorPerfil = new ControladorPerfil(servicioUsuario, servicioUsuarioMateria, servicioCvInteligente); // Pasar los 3 mocks
+
+        // El resto igual
         request = mock(HttpServletRequest.class);
         session = mock(HttpSession.class);
         when(request.getSession()).thenReturn(session);
@@ -46,7 +51,6 @@ public class ControladorPerfilTest {
         usuario.setEmail("franco@test.com");
         usuario.setPassword("1234");
     }
-
     @Test
     public void queSePuedaVisualizarElPerfilConSesionActiva() throws UsuarioNoEncontrado {
         when(session.getAttribute("ID")).thenReturn(1L);
