@@ -12,7 +12,7 @@ VALUES
 -- se inserta un admin
 INSERT INTO Usuario(id, email, password, rol, carreraID, nombre, apellido, activo)
 VALUES
-    (99, 'admin@unlapp.com', '123', 'ADMIN', 1, 'Admin', 'istrador', true);
+    (3, 'admin@unlapp.com', '123', 'ADMIN', 1, 'Admin', 'istrador', true);
 
 -- Insertar las materias del cuatrimestre 1 (sin correlativas)
 INSERT INTO Materia(id, nombre, descripcion, tipo, carga_horaria, cuatrimestre, activa, carrera_id, correlativa_1, correlativa_2, correlativa_3, correlativa_4, correlativa_5, correlativa_6)
