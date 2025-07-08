@@ -2,6 +2,7 @@ package com.tallerwebi.infraestructura;
 
 import com.tallerwebi.dominio.Carrera;
 import com.tallerwebi.dominio.Materia;
+import com.tallerwebi.dominio.MateriasConPromedios;
 import com.tallerwebi.repositorioInterfaz.RepositorioMateria;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -10,6 +11,7 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository("repositorioMateria")
@@ -99,6 +101,53 @@ public class RepositorioMateriaImpl implements RepositorioMateria {
                 .createQuery(query, Materia.class)
                 .setParameter("id", idMateriaStr)
                 .getResultList();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<MateriasConPromedios> obtenerMateriasConPromediosPorCarrera(String idCarrera) {
+        // Get all materias for the carrera
+        List<Materia> materias = obtenerMateriasDeUnaCarrera(idCarrera);
+        List<MateriasConPromedios> result = new ArrayList<>();
+        
+        for (Materia materia : materias) {
+            // Query to get averages for this specific materia
+            String hql = "SELECT AVG(CAST(um.dificultad AS double)), AVG(CAST(um.nota AS double)), COUNT(um.id) " +
+                        "FROM UsuarioMateria um WHERE um.materia.id = :materiaId";
+            
+            try {
+                Object[] avgResult = (Object[]) sessionFactory.getCurrentSession()
+                    .createQuery(hql)
+                    .setParameter("materiaId", materia.getId())
+                    .uniqueResult();
+                
+                Double promedioDificultad = null;
+                Double promedioNota = null;
+                Long cantidadUsuarios = 0L;
+                
+                if (avgResult != null && avgResult[2] != null) {
+                    cantidadUsuarios = ((Number) avgResult[2]).longValue();
+                    
+                    // Only include averages if there are users who have taken the subject
+                    if (cantidadUsuarios > 0) {
+                        promedioDificultad = (Double) avgResult[0];
+                        promedioNota = (Double) avgResult[1];
+                    }
+                }
+                
+                MateriasConPromedios materiaConPromedio = new MateriasConPromedios(
+                    materia, promedioDificultad, promedioNota, cantidadUsuarios
+                );
+                
+                result.add(materiaConPromedio);
+                
+            } catch (Exception e) {
+                // If there's an error getting averages, add materia without averages
+                result.add(new MateriasConPromedios(materia, null, null, 0L));
+            }
+        }
+        
+        return result;
     }
 
 }

@@ -172,6 +172,42 @@
             border-color: #d6d8db;
         }
 
+        .badge-dificultad {
+            background-color: #fff3cd;
+            color: #856404;
+            border-color: #ffeaa7;
+        }
+
+        .badge-facil {
+            background-color: #d4edda;
+            color: #155724;
+            border-color: #c3e6cb;
+        }
+
+        .badge-moderada {
+            background-color: #fff3cd;
+            color: #856404;
+            border-color: #ffeaa7;
+        }
+
+        .badge-dificil {
+            background-color: #f8d7da;
+            color: #721c24;
+            border-color: #f5c6cb;
+        }
+
+        .badge-sin-datos {
+            background-color: #f2f4f6;
+            color: var(--medium-gray);
+            border-color: #d6d8db;
+        }
+
+        .badge-nota {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border-color: #bee5eb;
+        }
+
         .correlativas-container {
             display: flex;
             flex-wrap: wrap;
@@ -194,6 +230,33 @@
             font-size: 0.85rem;
             color: var(--medium-gray);
             font-style: italic;
+        }
+
+        .promedios-section {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            min-width: 140px;
+        }
+
+        .promedio-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .promedio-label {
+            font-size: 0.75rem;
+            color: var(--medium-gray);
+            font-weight: 600;
+            min-width: 60px;
+        }
+
+        .sin-promedios {
+            font-size: 0.85rem;
+            color: var(--medium-gray);
+            font-style: italic;
+            text-align: center;
         }
 
         /* --- Alert Styles --- */
@@ -322,6 +385,11 @@
                 flex-direction: column;
                 align-items: flex-start;
             }
+
+            .promedios-section {
+                min-width: auto;
+                width: 100%;
+            }
         }
     </style>
 </head>
@@ -359,9 +427,11 @@
             <div class="materia-info">
                 <div class="materia-name" th:text="${materia.nombre}">Nombre de la materia</div>
                 <div class="materia-details">
-                    <span class="materia-badge badge-id" th:text="'ID: ' + ${materia.id}">ID: 1</span>
+                    <span class="materia-badge badge-id" th:text="'CODIGO: ' + ${materia.id}">ID: 1</span>
                     <span class="materia-badge badge-obligatoria" th:text="${materia.tipo}">Obligatoria</span>
                     <span class="materia-badge badge-carga-horaria" th:text="${materia.cargaHoraria} + 'h'">8h</span>
+                    <span class="materia-badge"  th:if="${materia.tienePromedios()}" th:class="'materia-badge ' + ${materia.dificultadCssClass}" th:text="${materia.dificultadTexto}">N/A</span>
+                    <span class="materia-badge badge-nota"  th:if="${materia.tienePromedios()}" th:text="${'Promedio: ' + materia.promedioNotaFormateado}">N/A</span>
                 </div>
             </div>
             <div class="materia-right-section">
@@ -380,9 +450,11 @@
             <div class="materia-info">
                 <div class="materia-name" th:text="${materia.nombre}">Nombre de la materia</div>
                 <div class="materia-details">
-                    <span class="materia-badge badge-id" th:text="'ID: ' + ${materia.id}">ID: 5</span>
+                    <span class="materia-badge badge-id" th:text="'CODIGO: ' + ${materia.id}">ID: 5</span>
                     <span class="materia-badge badge-obligatoria" th:text="${materia.tipo}">Obligatoria</span>
                     <span class="materia-badge badge-carga-horaria" th:text="${materia.cargaHoraria} + 'h'">4h</span>
+                    <span class="materia-badge"  th:if="${materia.tienePromedios()}" th:class="'materia-badge ' + ${materia.dificultadCssClass}" th:text="${materia.dificultadTexto}">N/A</span>
+                    <span class="materia-badge badge-nota"  th:if="${materia.tienePromedios()}" th:text="${'Promedio: ' + materia.promedioNotaFormateado}">N/A</span>
                 </div>
             </div>
             <div class="materia-right-section">
@@ -412,9 +484,11 @@
             <div class="materia-info">
                 <div class="materia-name" th:text="${materia.nombre}">Nombre de la materia</div>
                 <div class="materia-details">
-                    <span class="materia-badge badge-id" th:text="'ID: ' + ${materia.id}">ID: 10</span>
+                    <span class="materia-badge badge-id" th:text="'CODIGO: ' + ${materia.id}">ID: 10</span>
                     <span class="materia-badge badge-obligatoria" th:text="${materia.tipo}">Obligatoria</span>
                     <span class="materia-badge badge-carga-horaria" th:text="${materia.cargaHoraria} + 'h'">8h</span>
+                    <span class="materia-badge"  th:if="${materia.tienePromedios()}" th:class="'materia-badge ' + ${materia.dificultadCssClass}" th:text="${materia.dificultadTexto}">N/A</span>
+                    <span class="materia-badge badge-nota"  th:if="${materia.tienePromedios()}" th:text="${'Promedio: ' + materia.promedioNotaFormateado}">N/A</span>
                 </div>
             </div>
             <div class="materia-right-section">
@@ -443,9 +517,11 @@
             <div class="materia-info">
                 <div class="materia-name" th:text="${materia.nombre}">Nombre de la materia</div>
                 <div class="materia-details">
-                    <span class="materia-badge badge-id" th:text="'ID: ' + ${materia.id}">ID: 14</span>
+                    <span class="materia-badge badge-id" th:text="'CODIGO: ' + ${materia.id}">ID: 14</span>
                     <span class="materia-badge badge-obligatoria" th:text="${materia.tipo}">Obligatoria</span>
                     <span class="materia-badge badge-carga-horaria" th:text="${materia.cargaHoraria} + 'h'">4h</span>
+                    <span class="materia-badge"  th:if="${materia.tienePromedios()}" th:class="'materia-badge ' + ${materia.dificultadCssClass}" th:text="${materia.dificultadTexto}">N/A</span>
+                    <span class="materia-badge badge-nota"  th:if="${materia.tienePromedios()}" th:text="${'Promedio: ' + materia.promedioNotaFormateado}">N/A</span>
                 </div>
             </div>
             <div class="materia-right-section">
@@ -480,9 +556,11 @@
             <div class="materia-info">
                 <div class="materia-name" th:text="${materia.nombre}">Nombre de la materia</div>
                 <div class="materia-details">
-                    <span class="materia-badge badge-id" th:text="'ID: ' + ${materia.id}">ID: 19</span>
+                    <span class="materia-badge badge-id" th:text="'CODIGO: ' + ${materia.id}">ID: 19</span>
                     <span class="materia-badge badge-obligatoria" th:text="${materia.tipo}">Obligatoria</span>
-                    <span class="materia-badge badge-carga-horaria" th:text="${materia.cargaHoraria} + 'h'">4h</span>
+                    <span class="materia-badge badge-carga-horaria" th:text="${materia.cargaHoraria} + 'H'">4h</span>
+                    <span class="materia-badge"  th:if="${materia.tienePromedios()}" th:class="'materia-badge ' + ${materia.dificultadCssClass}" th:text="${materia.dificultadTexto}">N/A</span>
+                    <span class="materia-badge badge-nota"  th:if="${materia.tienePromedios()}" th:text="${'Promedio: ' + materia.promedioNotaFormateado}">N/A</span>
                 </div>
             </div>
             <div class="materia-right-section">

@@ -2,6 +2,7 @@ package com.tallerwebi.repositorioInterfaz;
 
 import com.tallerwebi.dominio.Carrera;
 import com.tallerwebi.dominio.Materia;
+import com.tallerwebi.dominio.MateriasConPromedios;
 
 import java.util.List;
 
@@ -29,4 +30,6 @@ public interface RepositorioMateria {
     Long obtenerCantidadDeMateriasDeLaCarrera();
 
     List<Materia> buscarMateriasQueTienenComoCorrelativas(Long idMateria);
+
+    List<MateriasConPromedios> obtenerMateriasConPromediosPorCarrera(String idCarrera);
 }
