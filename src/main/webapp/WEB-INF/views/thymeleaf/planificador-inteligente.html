@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Planificador Inteligente</title>
+
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}" />
+    <link rel="stylesheet" th:href="@{/css/main.css}" />
+
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .mainbox {
+            background-color: #fff;
+            padding: 30px;
+            margin-top: 70px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        .planificacion-box {
+            text-align: left;
+            white-space: pre-wrap;
+            background-color: #f0f0f0;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top px-3">
+    <a class="navbar-brand" th:href="@{/home}">UnlApp</a>
+
+    <div class="ms-auto pe-3">
+        <form th:action="@{/logout}" method="get" class="d-flex">
+            <button class="btn btn-outline-light" type="submit">Cerrar sesión</button>
+        </form>
+    </div>
+</nav>
+
+<main role="main" class="container">
+    <div class="mainbox col-md-10 mx-auto">
+
+        <h2 class="text-center mb-4">Planificador Inteligente</h2>
+        <hr class="colorgraph">
+
+        <div th:if="${planificacion != null}">
+            <div class="planificacion-box" th:text="${planificacion}"></div>
+        </div>
+
+        <div th:if="${error != null}">
+            <div class="alert alert-danger text-center" th:text="${error}"></div>
+        </div>
+
+        <div class="mt-4 text-center">
+            <a th:href="@{/home}" class="btn btn-primary">Volver al Inicio</a>
+        </div>
+
+    </div>
+</main>
+
+<script type="text/javascript" th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/main.js}"></script>
+</body>
+</html>

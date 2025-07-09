@@ -31,8 +31,6 @@ public class RepositorioResumenInteligenteTest {
 
         repositorio = new RepositorioResumenInteligenteImpl();
         // Simular inyección del SessionFactory
-        // Si no tenés setter, hay que usar reflección para inyectar el mock.
-        // repositorio.setSessionFactory(sessionFactoryMock);
         injectSessionFactoryByReflection(repositorio, sessionFactoryMock);
     }
 
@@ -68,7 +66,6 @@ public class RepositorioResumenInteligenteTest {
         assertEquals(listaEsperada, resultado);
     }
 
-    // Utilidad para inyectar SessionFactory si no hay setter
     private void injectSessionFactoryByReflection(RepositorioResumenInteligenteImpl repo, SessionFactory mock) {
         try {
             var field = RepositorioResumenInteligenteImpl.class.getDeclaredField("sessionFactory");
