@@ -7,7 +7,13 @@ VALUES
 INSERT INTO Usuario(id, email, password, rol, carreraID, nombre, apellido, telefono, situacionLaboral, disponibilidadHoraria, activo)
 VALUES
     (1, 'user@gmail.com', '12345678', 'ALUMNO', 1, 'Juan', 'Pérez', NULL, 'desempleado', 1, true),
-    (2, 'user2@user.com', '123', 'ALUMNO', 1, 'Ana', 'Gómez', NULL, 'empleado', 2, true);
+    (2, 'user2@user.com', '123', 'ALUMNO', 1, 'Ana', 'Gómez', NULL, 'empleado', 2, true),
+     (4, 'mmeza223@alumno.unlam.edu.ar', '12345678', 'ALUMNO', 1, 'Martín', 'Meza', NULL, 'empleado', 20, true),
+    (5, 'quispeNadal@alumno.unlam.edu.ar', '12345678', 'ALUMNO', 1, 'Franco', 'Nadal Quispe', NULL, 'empleado', 40, true),
+    (6, 'ramaGit@alumno.unlam.edu.ar', '12345678', 'ALUMNO', 1, 'Ramiro', 'Casanova', NULL, 'empleado', 15, true),
+    (7, 'vitinha@alumno.unlam.edu.ar', '12345678', 'ALUMNO', 1, 'Tobias', 'Tejerina', NULL, 'empleado', 24, true),
+    (8, 'agus@alumno.unlam.edu.ar', '12345678', 'ALUMNO', 1, 'Agustín', 'Cangelosi', NULL, 'empleado', 30, true),
+    (9, 'aleSergi@alumno.unlam.edu.ar', '12345678', 'ALUMNO', 1, 'Sergio', 'Randam', NULL, 'empleado', 13, true);
 
 -- se inserta un admin
 INSERT INTO Usuario(id, email, password, rol, carreraID, nombre, apellido, activo)
@@ -76,7 +82,29 @@ VALUES
     (5,3, '2024-05-01', '2025-07-15', 9,  12, 1),
     (10,3, '2025-03-01', '2025-07-15', 8,  13, 1),
     (null,2, '2024-05-01', '2025-07-15', null,  14, 1),
-    (null,2, '2025-03-01', '2025-07-15', null,  15, 1);
+    (null,2, '2025-03-01', '2025-07-15', null,  15, 1),
+
+
+-- Martín
+-- Cuatrimestre 1
+     (10, 3,'2022-03-01', '2024-07-15', 8, 1, 4),
+    (5, 3, '2022-03-01', '2024-07-15', 7,  2, 4),
+    (6, 3, '2022-03-01', '2024-07-15', 9,  3, 4),
+    (7, 3, '2022-03-01', '2024-07-15', 5,  4, 4),
+
+    -- Cuatrimestre 2
+    (4, 3, '2023-08-01', '2024-12-15', 9,  5, 4),
+    (10, 3, '2023-08-01', '2024-12-15', 8,  6, 4),
+    (7, 3, '2023-08-01', '2024-12-15', 8,  7, 4),
+    (4, 3, '2023-08-01', '2024-12-15', 9,  8, 4),
+
+    -- Cuatrimestre 3
+    (8,3, '2024-03-01', '2025-07-15', 8,  10, 4),
+    (6,3, '2024-03-01', '2025-07-15', 8,  11, 4),
+    (3,3, '2024-03-01', '2025-07-15', 10,  12, 4),
+    (NULL, 2, '2023-08-01', '2024-12-15', NULL,  13, 4),
+    (NULL, 2, '2023-08-01', '2024-12-15', NULL,  16, 4),
+    (NULL,2, '2024-05-01', '2025-07-15', NULL,  18, 4);
 
 
 
