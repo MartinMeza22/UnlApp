@@ -537,6 +537,22 @@
             <h3 class="progress-label">Materias en Curso:</h3>
             <p class="current-courses-count" th:text="${materiasEnCurso}"></p>
         </div>
+        <div class="progress-card progress-historico mt-4">
+            <h3 class="progress-label">Estadísticas Generales de la Carrera:</h3>
+
+            <p>
+                <strong>Promedio de materias aprobadas por estudiante:</strong>
+                <span th:text="${#numbers.formatDecimal(estadisticasGenerales.aprobadas, 1, 2)} + ' materias'">-</span>
+            </p>
+            <p>
+                <strong>Promedio de materias desaprobadas por estudiante:</strong>
+                <span th:text="${#numbers.formatDecimal(estadisticasGenerales.desaprobadas, 1, 2)} + ' materias'">-</span>
+            </p>
+            <p>
+                <strong>Promedio de materias cursando por estudiante:</strong>
+                <span th:text="${#numbers.formatDecimal(estadisticasGenerales.cursando, 1, 2)} + ' materias'">-</span>
+            </p>
+        </div>
 
         <div class="progress-percentages-group">
             <div class="progress-percentage-card">
