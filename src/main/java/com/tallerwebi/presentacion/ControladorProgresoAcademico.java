@@ -104,9 +104,10 @@ public class ControladorProgresoAcademico {
 
         model.put("cuatrimestresDisponibles", cuatri);
         model.put("selectedCuatrimestre", cuatrimestresDisponibles);
-        Long carreraId = (Long) session.getAttribute("CARRERA_ID");
+        Long carreraId = carrera.getId();
         Map<String, Double> estadisticas = servicioProgreso.obtenerEstadisticasGeneralesDeCarrera(carreraId);
-        model.addAttribute("estadisticasGenerales", estadisticas);
+        System.out.println("Estadísticas generales carrera " + carreraId + ": " + estadisticas);
+        model.put("estadisticasGenerales", estadisticas);
 
         return new ModelAndView("progreso", model);
     }
@@ -233,6 +234,8 @@ public class ControladorProgresoAcademico {
         Map<String, Double> estadisticas = servicioProgreso.obtenerEstadisticasGeneralesDeCarrera(carreraId);
 
         modelo.addAttribute("estadisticasGenerales", estadisticas);
+        System.out.println("CARRERA_ID desde sesión: " + carreraId);
+        System.out.println("Estadísticas retornadas al modelo: " + estadisticas);
 
         return "estadisticas-generales";
     }

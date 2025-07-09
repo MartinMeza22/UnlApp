@@ -421,26 +421,32 @@ public class ServicioProgreso {
         return materiasDiagrama;
     }
 
-    public Map<String, Double> obtenerEstadisticasGeneralesDeCarrera(Long carreraId) {
-        Map<String, Double> estadisticas = new HashMap<>();
 
-        Long totalRelaciones = repositorioUsuarioMateria.contarTotalRelacionesPorCarrera(carreraId);
-        if (totalRelaciones == 0) {
+    public Map<String, Double> obtenerEstadisticasGeneralesDeCarrera(Long carreraId) {
+        Long aprobadas = repositorioUsuarioMateria.contadorDeMateriasAprobadasPorUsuario(carreraId);
+        Long desaprobadas = repositorioUsuarioMateria.contarDesaprobadasPorCarrera(carreraId);
+        Long cursando = repositorioUsuarioMateria.contarCursandoPorCarrera(carreraId);
+        Long total = aprobadas + desaprobadas + cursando;
+
+        System.out.println("Aprobadas: " + aprobadas);
+        System.out.println("Desaprobadas: " + desaprobadas);
+        System.out.println("Cursando: " + cursando);
+        System.out.println("Total: " + total);
+
+        Map<String, Double> estadisticas = new HashMap<>();
+        if (total > 0) {
+            estadisticas.put("aprobadas", (aprobadas * 100.0) / total);
+            estadisticas.put("desaprobadas", (desaprobadas * 100.0) / total);
+            estadisticas.put("cursando", (cursando * 100.0) / total);
+        } else {
             estadisticas.put("aprobadas", 0.0);
             estadisticas.put("desaprobadas", 0.0);
             estadisticas.put("cursando", 0.0);
-            return estadisticas;
         }
 
-        Long aprobadas = repositorioUsuarioMateria.contarAprobadasPorCarrera(carreraId);
-        Long desaprobadas = repositorioUsuarioMateria.contarDesaprobadasPorCarrera(carreraId);
-        Long cursando = repositorioUsuarioMateria.contarCursandoPorCarrera(carreraId);
-
-        estadisticas.put("aprobadas", (aprobadas * 100.0) / totalRelaciones);
-        estadisticas.put("desaprobadas", (desaprobadas * 100.0) / totalRelaciones);
-        estadisticas.put("cursando", (cursando * 100.0) / totalRelaciones);
-
+        System.out.println("Estadísticas generales: " + estadisticas);
         return estadisticas;
     }
+
 
 }

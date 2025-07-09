@@ -228,10 +228,11 @@ public class RepositorioUsuarioMateriaImpl implements RepositorioUsuarioMateria 
                 "FROM UsuarioMateria um " +
                 "WHERE um.usuario.carrera.id = :carreraId";
 
-        return (Long) sessionFactory.getCurrentSession()
+         Long count = (Long) sessionFactory.getCurrentSession()
                 .createQuery(hql)
                 .setParameter("carreraId", carreraId)
                 .uniqueResult();
+        return count;
     }
 
     @Override
