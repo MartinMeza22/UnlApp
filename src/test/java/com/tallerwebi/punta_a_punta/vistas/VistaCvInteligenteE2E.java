@@ -48,5 +48,26 @@ public class VistaCvInteligenteE2E {
         page.waitForSelector("text=Mi Perfil");
     }
 
- 
+    @Test
+    void deberiaMostrarElCvInteligenteEnModal() {
+        loginComoUsuarioTest();
+
+        // Ir al perfil
+        page.click("text=Mi Perfil");
+        page.waitForURL("**/perfil");
+
+        // Hacer click para mostrar el CV
+        page.click("#btnMostrarCvInteligente");
+
+        // Esperar a que el contenido se reemplace (ya no sea "Generando CV...")
+        page.waitForFunction("document.getElementById('cvModalBody').textContent !== 'Generando CV...'", 10000);
+
+        // Leer contenido final
+        String contenidoCv = page.locator("#cvModalBody").textContent();
+        System.out.println("Contenido generado: " + contenidoCv);
+
+        assertThat("El CV generado debería tener contenido descriptivo", contenidoCv.trim().length(), greaterThan(50));
+        assertThat("El CV debería mencionar 'experiencia' o 'educación'", contenidoCv.toLowerCase(),
+                anyOf(containsString("experiencia"), containsString("educación"), containsString("perfil profesional")));
+    }
 }
