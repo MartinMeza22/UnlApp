@@ -1,6 +1,7 @@
 package com.tallerwebi.presentacion;
 
 import com.tallerwebi.dominio.Materia;
+import com.tallerwebi.dominio.MateriasConPromedios;
 import com.tallerwebi.dominio.servicios.ServicioMateria;
 import com.tallerwebi.dominio.servicios.ServicioUsuarioMateria;
 import org.springframework.stereotype.Controller;
@@ -15,7 +16,7 @@ import java.util.List;
 public class ControladorPlanDeEstudios {
 
     private final ServicioMateria servicioMateria;
-    private ServicioUsuarioMateria servicioUsuarioMateria;
+    private final ServicioUsuarioMateria servicioUsuarioMateria;
 
     public ControladorPlanDeEstudios(ServicioMateria servicioMateria, ServicioUsuarioMateria servicioUsuarioMateria) {
         this.servicioMateria = servicioMateria;
@@ -24,16 +25,12 @@ public class ControladorPlanDeEstudios {
 
     @GetMapping
     public String listarMaterias(ModelMap modelo, HttpServletRequest request) {
-
         Long usuarioId = (Long) request.getSession().getAttribute("ID");
-
-        // Para obtener el id de la carrera
         String idCarrera = this.servicioUsuarioMateria.obtenerUsuario(usuarioId).getCarreraID().toString();
-
-        List<Materia> materias = servicioMateria.obtenerMateriasPorCarrera(idCarrera);
-
-        modelo.addAttribute("materias", materias);
-
+        
+        List<MateriasConPromedios> materiasConPromedios = servicioMateria.obtenerMateriasConPromediosPorCarrera(idCarrera);
+        modelo.addAttribute("materias", materiasConPromedios);
+        
         return "materias";
     }
 }
