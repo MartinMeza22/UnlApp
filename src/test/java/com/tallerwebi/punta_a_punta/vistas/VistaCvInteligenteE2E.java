@@ -3,6 +3,7 @@ package com.tallerwebi.punta_a_punta.vistas;
 
 import com.microsoft.playwright.*;
 import com.microsoft.playwright.options.WaitForSelectorState;
+import com.tallerwebi.punta_a_punta.ReiniciarDB;
 import com.tallerwebi.punta_a_punta.vistas.VistaLogin;
 import org.junit.jupiter.api.*;
 
@@ -31,6 +32,7 @@ public class VistaCvInteligenteE2E {
 
     @BeforeEach
     void prepararPagina() {
+        ReiniciarDB.limpiarBaseDeDatos(); // <<< ROLLBACK ACTIVADO ACÁ
         context = browser.newContext(new Browser.NewContextOptions().setAcceptDownloads(true));
         page = context.newPage();
         vistaLogin = new VistaLogin(page);
