@@ -584,7 +584,6 @@ public class ControladorLoginTest {
         assertTrue(mav.getModel().containsKey("materias"));
         assertEquals(materiasMock, mav.getModel().get("materias"));
     }
-
 }
 
 

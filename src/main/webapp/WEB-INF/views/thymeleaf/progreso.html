@@ -507,6 +507,23 @@
                 justify-content: flex-end; /* Align note to the right on small screens */
                 margin-left: 0;
             }
+
+            .btn-info {
+                background: linear-gradient(to right, #5bc0de, #31b0d5);
+                border: none;
+                color: white;
+                font-weight: 600;
+                padding: 12px 25px;
+                border-radius: 10px;
+                transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            }
+
+            .btn-info:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                background: linear-gradient(to right, #31b0d5, #2aabd2);
+            }
+
         }
     </style>
 </head>
@@ -537,6 +554,55 @@
             <h3 class="progress-label">Materias en Curso:</h3>
             <p class="current-courses-count" th:text="${materiasEnCurso}"></p>
         </div>
+        <div class="progress-card progress-historico mt-4">
+            <h3 class="progress-label">Estadísticas Generales de la Carrera:</h3>
+
+            <p>
+                <strong>Promedio de materias aprobadas por estudiante:</strong>
+                <span th:text="${#numbers.formatDecimal(estadisticasGenerales.aprobadas, 1, 2)} + ' materias'">-</span>
+            </p>
+            <p>
+                <strong>Promedio de materias desaprobadas por estudiante:</strong>
+                <span th:text="${#numbers.formatDecimal(estadisticasGenerales.desaprobadas, 1, 2)} + ' materias'">-</span>
+            </p>
+            <p>
+                <strong>Promedio de materias cursando por estudiante:</strong>
+                <span th:text="${#numbers.formatDecimal(estadisticasGenerales.cursando, 1, 2)} + ' materias'">-</span>
+            </p>
+        </div>
+
+<!--        <div class="progress-card mt-4" style="border: 1px solid var(&#45;&#45;info-color);">-->
+<!--            <h3 class="progress-label" style="color: var(&#45;&#45;info-color); margin-bottom: 20px;">-->
+<!--                 Tu rendimiento comparado con el promedio general-->
+<!--            </h3>-->
+<!--            <p class="progress-text">-->
+<!--                <strong>Aprobadas:</strong>-->
+<!--                <span class="text-success" th:text="${porcentajeAprobadas} + '%'"></span> |-->
+<!--                Promedio general:-->
+<!--                <span class="text-success" th:text="${estadisticasGenerales['aprobadas']} + '%'"></span>-->
+<!--            </p>-->
+<!--            <p class="progress-text">-->
+<!--                <strong>Cursando:</strong>-->
+<!--                <span th:text="${materiasEnCurso}"></span> materias |-->
+<!--                Promedio general:-->
+<!--                <span th:text="${estadisticasGenerales['cursando']} + '%'"></span>-->
+<!--            </p>-->
+<!--            <p class="progress-text">-->
+<!--                <strong>Desaprobadas:</strong>-->
+<!--                <span class="text-danger" th:text="${porcentajeDesaprobadas} + '%'"></span> |-->
+<!--                Promedio general:-->
+<!--                <span class="text-danger" th:text="${estadisticasGenerales['desaprobadas']} + '%'"></span>-->
+<!--            </p>-->
+<!--            <div class="alert" th:classappend="${porcentajeAprobadas >= estadisticasGenerales['aprobadas']} ? 'alert-success' : 'alert-warning'">-->
+<!--        <span th:if="${porcentajeAprobadas >= estadisticasGenerales['aprobadas']}">-->
+<!--             Vas por encima del promedio de tu carrera, ¡seguí así!-->
+<!--        </span>-->
+<!--                <span th:if="${porcentajeAprobadas < estadisticasGenerales['aprobadas']}">-->
+<!--             Estás por debajo del promedio de tu carrera. Revisá tus materias pendientes y reforzá donde haga falta.-->
+<!--        </span>-->
+<!--            </div>-->
+<!--        </div>-->
+
 
         <div class="progress-percentages-group">
             <div class="progress-percentage-card">
@@ -557,7 +623,12 @@
         </div>
     </div>
 
-    <a th:href="@{|/carrera/${carrera.getId()}/diagrama|}">Ver digarama </a>
+    <div class="text-center mb-4">
+        <a th:href="@{|/carrera/${carrera.getId()}/diagrama|}" class="btn btn-info btn-lg shadow-sm">
+            <i class="bi bi-diagram-3-fill me-2"></i> Ver diagrama de la carrera
+        </a>
+    </div>
+
     <p th:if="${error != null}" class="alert alert-danger mt-3" th:text="'Error: ' + ${error}"></p>
 
     <div class="list-header">

@@ -57,4 +57,11 @@ public interface RepositorioUsuarioMateria {
     Long contadorDeMateriasCursandoGeneralPorCarrera(Long carreraId);
 
     Long contadorDeTotalDeUsuariosPorCarrera(Long carreraId);
+
+    Long contarAprobadasPorCarrera(Long carreraId);
+    Long contarDesaprobadasPorCarrera(Long carreraId);
+    Long contarCursandoPorCarrera(Long carreraId);
+    Long contarTotalRelacionesPorCarrera(Long carreraId); // Todas las relaciones usuario-materia
+    Long contarUsuariosPorCarrera(Long carreraId); // Distintos usuarios de la carrera
+
 }

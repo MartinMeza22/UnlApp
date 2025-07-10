@@ -12,13 +12,34 @@
     body {
       background-color: #f8f9fa;
     }
-    .mainbox {
-      background-color: #fff;
-      padding: 30px;
-      margin-top: 70px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+
+    body {
+      position: relative;
+      min-height: 100vh;
+      margin: 0;
+      background-color: #f8f9fa; /* fallback */
     }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image: url('/tallerwebi-base-1.0-SNAPSHOT/uploads/unlam.jpeg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      opacity: 0.4; /* Acá controlás cuán transparente queda la imagen */
+      z-index: -1;
+    }
+
+    .mainbox {
+      background-color: rgba(255, 255, 255, 0.75);
+      padding: 30px;
+      margin-top: 150px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+
     .btn-quick {
       margin-top: 15px;
     }
