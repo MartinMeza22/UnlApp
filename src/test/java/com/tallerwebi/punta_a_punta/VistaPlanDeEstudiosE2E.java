@@ -30,8 +30,8 @@ public class VistaPlanDeEstudiosE2E {
     }
 
     @BeforeEach
-    @Sql(scripts = "/reset-db.sql")
     void crearContextoYPagina() {
+        ReiniciarDB.limpiarBaseDeDatos(); // <<< ROLLBACK ACTIVADO ACÁ
         context = browser.newContext();
         page = context.newPage();
         vistaLogin = new VistaLogin(page);
