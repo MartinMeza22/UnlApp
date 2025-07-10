@@ -173,8 +173,8 @@ public class ControladorPlanDeEstudiosTest {
         MateriasConPromedios materiaSinDatos = new MateriasConPromedios(materia, null, null, 0L);
 
         // Assert - Verificar formato de promedios
-        assertThat(materiaConPromedios.getPromedioDificultadFormateado(), is("7.3"));
-        assertThat(materiaConPromedios.getPromedioNotaFormateado(), is("8.7"));
+        assertThat(materiaConPromedios.getPromedioDificultadFormateado(), is("7,3"));
+        assertThat(materiaConPromedios.getPromedioNotaFormateado(), is("8,7"));
         assertThat(materiaConPromedios.tienePromedios(), is(true));
         
         assertThat(materiaSinDatos.getPromedioDificultadFormateado(), is("N/A"));

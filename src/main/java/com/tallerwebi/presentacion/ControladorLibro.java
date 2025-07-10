@@ -1,11 +1,16 @@
 package com.tallerwebi.presentacion;
 
 import com.tallerwebi.dominio.googleBookAPI.ApiResponse;
+import com.tallerwebi.dominio.googleBookAPI.Item;
 import com.tallerwebi.dominio.servicios.ServicioLibro;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.servlet.ModelAndView;
+
+import java.util.List;
 
 @Controller
 public class ControladorLibro {
@@ -18,15 +23,17 @@ public class ControladorLibro {
     }
 
     @GetMapping("/biblioteca-digital")
-    public String mostrarLibros(Model model) {
+    public ModelAndView mostrarLibros() {
+        ModelAndView mav  = new ModelAndView("vista-libros");
+        List<Item> libros = servicioLibro.obtenerLibros();
 
-        ApiResponse response = servicioLibro.obtenerLibros();
-
-        if(response != null && response.getItems() != null) {
-            model.addAttribute("libros", response.getItems());
+        if(libros != null) {
+            mav.addObject("libros", libros);
+        } else {
+            mav.addObject("error", "No se encontraron libros");
         }
 
-        return "vista-libros";
+        return mav;
     }
 
 }

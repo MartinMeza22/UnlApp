@@ -21,6 +21,7 @@ import org.thymeleaf.templatemode.TemplateMode;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.thymeleaf.extras.java8time.dialect.Java8TimeDialect;
 
+import java.net.http.HttpClient;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
@@ -37,6 +38,11 @@ public class SpringWebConfig implements WebMvcConfigurer {
     @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate();
+    }
+
+    @Bean
+    public HttpClient httpClient() {
+        return  HttpClient.newHttpClient();
     }
 
     // Spring + Thymeleaf need this

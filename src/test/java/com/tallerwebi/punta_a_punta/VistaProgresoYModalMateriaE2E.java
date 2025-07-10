@@ -35,6 +35,14 @@ public class VistaProgresoYModalMateriaE2E {
         context = browser.newContext(new Browser.NewContextOptions().setAcceptDownloads(true)); // clave para capturar descargas
         page = context.newPage();
         vistaLogin = new VistaLogin(page);
+
+        APIRequestContext request = playwright.request().newContext();
+        request.post("http://localhost:8080/tallerwebi-base-1.0-SNAPSHOT/api/testing/reset-database");
+        context = browser.newContext(new Browser.NewContextOptions().setAcceptDownloads(true));
+        page = context.newPage();
+        // Navegamos al login después de que la BD ha sido reseteada
+        page.navigate("http://localhost:8080/tallerwebi-base-1.0-SNAPSHOT/login");
+        vistaLogin = new VistaLogin(page);
     }
 
     @AfterEach

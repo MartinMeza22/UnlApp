@@ -5,21 +5,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>UnlApp-Home</title>
 
-  <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}" />
-  <link rel="stylesheet" th:href="@{/css/main.css}" />
+  <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}"/>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+        integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"/>
 
   <style>
-    body {
-      background-color: #f8f9fa;
+    /* --- Paleta de Colores (del archivo 'copia') --- */
+    :root {
+      --bg-color: #f4f7f9;
+      --text-color: #212529;
+      --icon-color: #0056b3;
+      --shadow-color: rgba(0, 0, 0, 0.07);
     }
 
+    /* --- Estilo del Body (combinado) --- */
     body {
-      position: relative;
+      position: relative; /* Necesario para el posicionamiento del pseudo-elemento */
       min-height: 100vh;
       margin: 0;
-      background-color: #f8f9fa; /* fallback */
+      background-color: var(--bg-color); /* Color de fondo si la imagen falla */
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     }
 
+    /* --- Imagen de fondo (del archivo 'original') --- */
     body::before {
       content: "";
       position: fixed;
@@ -28,22 +38,73 @@
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
-      opacity: 0.4; /* Acá controlás cuán transparente queda la imagen */
+      opacity: 0.4; /* Controla la transparencia de la imagen de fondo */
       z-index: -1;
     }
 
-    .mainbox {
-      background-color: rgba(255, 255, 255, 0.75);
-      padding: 30px;
-      margin-top: 150px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    /* --- Contenido Principal (del archivo 'copia') --- */
+    .main-content {
+      padding-top: 100px;
+      padding-bottom: 50px;
     }
 
-    .btn-quick {
-      margin-top: 15px;
+    .welcome-heading {
+      text-align: center;
+      margin-bottom: 1rem;
+      font-weight: 600;
+      color: var(--text-color);
     }
 
+    .welcome-divider {
+      max-width: 100px;
+      margin: 0 auto 4rem auto;
+      border-top: 2px solid var(--icon-color);
+      opacity: 0.8;
+    }
+
+    /* --- Grid de Tarjetas (del archivo 'copia') --- */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+    }
+
+    /* --- Estilo de cada Tarjeta (combinado) --- */
+    .dashboard-card {
+      /* CAMBIO CLAVE: Fondo semitransparente para ver la imagen de atrás */
+      background-color: rgba(255, 255, 255, 0.85);
+      border-radius: 16px;
+      padding: 2rem;
+      text-align: center;
+      text-decoration: none;
+      color: var(--text-color);
+      box-shadow: 0 4px 15px var(--shadow-color);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 220px; /* Ajustado para mejor proporción */
+    }
+
+    /* --- Efecto Hover sobre la Tarjeta (del archivo 'copia') --- */
+    .dashboard-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+      color: var(--icon-color);
+    }
+
+    .card-icon {
+      font-size: 3.5rem;
+      margin-bottom: 1.5rem;
+      color: var(--icon-color);
+      transition: color 0.3s ease;
+    }
+
+    .card-title {
+      font-size: 1.2rem;
+      font-weight: 500;
+    }
   </style>
 </head>
 
@@ -51,7 +112,6 @@
 
 <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top px-3">
   <a class="navbar-brand" th:href="@{/home}">UnlApp</a>
-
   <div class="ms-auto pe-3">
     <form th:action="@{/logout}" method="get" class="d-flex">
       <button class="btn btn-outline-light" type="submit">Cerrar sesión</button>
@@ -59,52 +119,57 @@
   </div>
 </nav>
 
-<main role="main" class="container">
-  <div class="mainbox col-md-8 mx-auto text-center">
+<main role="main" class="container main-content">
 
-    <h2 th:text="'¡Bienvenido, ' + ${session.NOMBRE} + '!'">¡Bienvenido!</h2>
-    <hr class="colorgraph">
+  <h2 class="welcome-heading" th:text="'¡Bienvenido, ' + ${session.NOMBRE} + '!'">¡Bienvenido!</h2>
+  <hr class="welcome-divider">
 
-    <div th:if="${session.ROL == 'ALUMNO'}">
-      <div class="row">
-        <div class="col-md-6 col-sm-12">
-          <a th:href="@{/progreso}" class="btn btn-primary btn-lg w-100 btn-quick">Ver progreso académico</a>
-        </div>
-        <div class="col-md-6 col-sm-12">
-          <a th:href="@{/resumen-inteligente}" class="btn btn-secondary btn-lg w-100 btn-quick">Planificador inteligente</a>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-6 col-sm-12">
-          <a th:href="@{/foro}" class="btn btn-warning btn-lg w-100 btn-quick">Foro de materias</a>
-        </div>
-        <div class="col-md-6 col-sm-12">
-          <a th:href="@{/calendario}" class="btn btn-info btn-lg w-100 btn-quick">Calendario personal</a>
-        </div>
-        <div class="col-md-6 col-sm-12">
-          <a th:href="@{/materias}" class="btn btn-success btn-lg w-100 btn-quick">Ver mi Plan de Estudio</a>
-        </div>
-        <div class="col-md-6 col-sm-12">
-          <a th:href="@{/perfil}" class="btn btn-secondary btn-lg w-100 btn-quick">Ver mi Perfil</a>
-        </div>
-        <div class="col-md-6 col-sm-12">
-          <a th:href="@{/biblioteca-digital}" class="btn btn-dark btn-lg w-100 btn-quick">Biblioteca Digital</a>
-        </div>
-      </div>
+  <div th:if="${session.ROL == 'ALUMNO'}">
+    <div class="dashboard-grid">
+      <a th:href="@{/progreso}" class="dashboard-card">
+        <i class="fas fa-chart-line card-icon"></i>
+        <span class="card-title">Progreso Académico</span>
+      </a>
+      <a th:href="@{/resumen-inteligente}" class="dashboard-card">
+        <i class="fas fa-lightbulb card-icon"></i>
+        <span class="card-title">Planificador Inteligente</span>
+      </a>
+      <a th:href="@{/foro}" class="dashboard-card">
+        <i class="fas fa-comments card-icon"></i>
+        <span class="card-title">Foro de Materias</span>
+      </a>
+      <a th:href="@{/calendario}" class="dashboard-card">
+        <i class="fas fa-calendar-alt card-icon"></i>
+        <span class="card-title">Calendario Personal</span>
+      </a>
+      <a th:href="@{/materias}" class="dashboard-card">
+        <i class="fas fa-book-open card-icon"></i>
+        <span class="card-title">Mi Plan de Estudio</span>
+      </a>
+      <a th:href="@{/perfil}" class="dashboard-card">
+        <i class="fas fa-user-circle card-icon"></i>
+        <span class="card-title">Ver mi Perfil</span>
+      </a>
+      <a th:href="@{/biblioteca-digital}" class="dashboard-card">
+        <i class="fas fa-atlas card-icon"></i>
+        <span class="card-title">Biblioteca Digital</span>
+      </a>
     </div>
-
-    <div th:if="${session.ROL == 'ADMIN'}">
-      <div class="row">
-        <div class="col-md-6 col-sm-12">
-          <a th:href="@{/foro}" class="btn btn-warning btn-lg w-100 btn-quick">Acceder al Foro</a>
-        </div>
-        <div class="col-md-6 col-sm-12">
-          <a th:href="@{/admin/panel}" class="btn btn-danger btn-lg w-100 btn-quick">Ver Reportes</a>
-        </div>
-      </div>
-    </div>
-
   </div>
+
+  <div th:if="${session.ROL == 'ADMIN'}">
+    <div class="dashboard-grid">
+      <a th:href="@{/foro}" class="dashboard-card">
+        <i class="fas fa-comments card-icon"></i>
+        <span class="card-title">Acceder al Foro</span>
+      </a>
+      <a th:href="@{/admin/panel}" class="dashboard-card">
+        <i class="fas fa-chart-pie card-icon"></i>
+        <span class="card-title">Ver Reportes</span>
+      </a>
+    </div>
+  </div>
+
 </main>
 
 <script type="text/javascript" th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.min.js}"></script>
