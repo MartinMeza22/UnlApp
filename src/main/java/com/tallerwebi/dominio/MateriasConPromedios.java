@@ -2,12 +2,14 @@ package com.tallerwebi.dominio;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Locale;
 
 public class MateriasConPromedios {
     private Materia materia;
     private Double promedioDificultad;
     private Double promedioNota;
     private Long cantidadUsuarios;
+
 
     // Constructors
     public MateriasConPromedios() {}
@@ -57,14 +59,14 @@ public class MateriasConPromedios {
         if (promedioDificultad == null) {
             return "N/A";
         }
-        return String.format("%.1f", promedioDificultad);
+        return String.format(Locale.US, "%.1f", promedioDificultad);
     }
 
     public String getPromedioNotaFormateado() {
         if (promedioNota == null) {
             return "N/A";
         }
-        return String.format("%.1f", promedioNota);
+        return String.format(Locale.US,"%.1f", promedioNota);
     }
 
     // Convert difficulty average to descriptive text
