@@ -37,17 +37,22 @@
  </head>
 
  <body>
- <nav class="navbar navbar-expand-md navbar-dark bg-dark px-3">
+ <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top px-3">
      <a class="navbar-brand" th:href="@{/home}">UnlApp</a>
+
      <div class="ms-auto pe-3">
          <form th:action="@{/logout}" method="get" class="d-flex">
-             <button class="btn btn-outline-light">Cerrar sesión</button>
+             <button class="btn btn-outline-light" type="submit">Cerrar sesión</button>
          </form>
      </div>
  </nav>
 
  <main class="container py-5">
-     <h2 class="mb-4 fw-bold">Panel de Gráficos</h2>
+     <h2 class="mb-4 fw-bold" style="font-size: 2rem; color: var(--primary-blue); border-left: 6px solid var(--primary-blue); padding-left: 12px;">
+         Dashboard de Estadísticas
+     </h2>
+
+
 
      <!-- ROW 1 -->
     <div class="row g-4">
