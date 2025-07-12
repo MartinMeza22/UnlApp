@@ -361,15 +361,15 @@ INSERT INTO Usuario(id, email, password, rol, carreraID, nombre, apellido, telef
                                                                                                                                           (15, 'jose.abo@unlam.edu.ar', '123', 'ALUMNO', 4, 'José', 'Alvarez', NULL, 'freelance', 30, true);
 -- Publicaciones de carreraID = 2 (Informática)
 INSERT INTO Publicacion(usuario_id, materia_id, titulo, descripcion, fechaCreacion, likes) VALUES
-                                                                                               (10, 13, 'Problemas con listas en Java', '¿Cómo puedo implementar una lista enlazada desde cero?', '2025-06-10 15:00:00', 4),
-                                                                                               (11, 14, '¿Qué herramientas recomiendan para análisis de vulnerabilidades?', 'Estoy explorando opciones para escaneo de seguridad web.', '2025-06-12 11:30:00', 3);
+                                                                                               (10, 28, 'Problemas con listas en Java', '¿Cómo puedo implementar una lista enlazada desde cero?', '2025-06-10 15:00:00', 4),
+                                                                                               (11, 29, '¿Qué herramientas recomiendan para análisis de vulnerabilidades?', 'Estoy explorando opciones para escaneo de seguridad web.', '2025-06-12 11:30:00', 3);
 
 -- Publicaciones de carreraID = 3 (Marketing Digital)
 INSERT INTO Publicacion(usuario_id, materia_id, titulo, descripcion, fechaCreacion, likes) VALUES
-                                                                                               (12, 15, '¿Qué KPIs usan para medir engagement?', 'Estoy armando un informe y necesito buenas métricas.', '2025-06-14 16:45:00', 2),
-                                                                                               (13, 16, '¿SEM o SEO para un e-commerce nuevo?', 'Busco estrategias para mejorar el tráfico desde cero.', '2025-06-18 14:20:00', 5);
+                                                                                               (12, 47, '¿Qué KPIs usan para medir engagement?', 'Estoy armando un informe y necesito buenas métricas.', '2025-06-14 16:45:00', 2),
+                                                                                               (13, 48, '¿SEM o SEO para un e-commerce nuevo?', 'Busco estrategias para mejorar el tráfico desde cero.', '2025-06-18 14:20:00', 5);
 
 -- Publicaciones de carreraID = 4 (Abogacía)
 INSERT INTO Publicacion(usuario_id, materia_id, titulo, descripcion, fechaCreacion, likes) VALUES
-                                                                                               (14, 17, 'Diferencia entre dolo y culpa', 'Estoy confundida con los conceptos. ¿Alguien me lo explica fácil?', '2025-06-20 10:00:00', 4),
-                                                                                               (15, 18, 'Casos famosos de Derecho Civil', '¿Conocen algún caso interesante que se haya dado en Argentina?', '2025-06-22 13:40:00', 3);
+                                                                                               (14, 87, 'Diferencia entre dolo y culpa', 'Estoy confundida con los conceptos. ¿Alguien me lo explica fácil?', '2025-06-20 10:00:00', 4),
+                                                                                               (15, 88, 'Casos famosos de Derecho Civil', '¿Conocen algún caso interesante que se haya dado en Argentina?', '2025-06-22 13:40:00', 3);
