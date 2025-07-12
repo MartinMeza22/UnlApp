@@ -8,7 +8,7 @@ INSERT INTO Usuario(id, email, password, rol, carreraID, nombre, apellido, telef
 VALUES
     (1, 'user@gmail.com', '12345678', 'ALUMNO', 1, 'Juan', 'Pérez', NULL, 'desempleado', 1, true),
     (2, 'user2@user.com', '123', 'ALUMNO', 1, 'Ana', 'Gómez', NULL, 'empleado', 2, true),
-     (4, 'mmeza223@alumno.unlam.edu.ar', '12345678', 'ALUMNO', 1, 'Martín', 'Meza', NULL, 'empleado', 20, true),
+     (4, 'mmeza223@alumno.unlam.edu.ar', '12345678', 'ALUMNO', 1, 'Martín', 'Table', NULL, 'empleado', 20, true),
     (5, 'quispeNadal@alumno.unlam.edu.ar', '12345678', 'ALUMNO', 1, 'Franco', 'Nadal Quispe', NULL, 'empleado', 40, true),
     (6, 'ramaGit@alumno.unlam.edu.ar', '12345678', 'ALUMNO', 1, 'Ramiro', 'Casanova', NULL, 'empleado', 15, true),
     (7, 'vitinha@alumno.unlam.edu.ar', '12345678', 'ALUMNO', 1, 'Tobias', 'Tejerina', NULL, 'empleado', 24, true),
@@ -344,3 +344,32 @@ VALUES
     (103, 'Práctica Profesional Supervisada I', 'Primeras experiencias en el ejercicio de la abogacía.', 'Obligatoria', 12, 9, true, 4, '99', '100', NULL, NULL, NULL, NULL), -- Correlativa: Clínicas Procesales
     (104, 'Derecho de la Propiedad Intelectual', 'Regulación de creaciones de la mente.', 'Obligatoria', 6, 9, true, 4, '95', NULL, NULL, NULL, NULL, NULL), -- Correlativa: Derecho Comercial
     (105, 'Ética Profesional del Abogado', 'Principios éticos en el ejercicio de la profesión.', 'Obligatoria', 4, 9, true, 4, '71', NULL, NULL, NULL, NULL, NULL); -- Correlativa: Introducción al Derecho
+-- Datos para apreciar los graficos
+-- Usuarios de Licenciatura en Informática (carreraID = 2)
+INSERT INTO Usuario(id, email, password, rol, carreraID, nombre, apellido, telefono, situacionLaboral, disponibilidadHoraria, activo) VALUES
+                                                                                                                                          (10, 'lucas.inf@unlam.edu.ar', '123', 'ALUMNO', 2, 'Lucas', 'Fernández', NULL, 'desempleado', 10, true),
+                                                                                                                                          (11, 'paula.inf@unlam.edu.ar', '123', 'ALUMNO', 2, 'Paula', 'Silva', NULL, 'freelance', 25, true);
+
+-- Usuarios de Tec. en Marketing Digital (carreraID = 3)
+INSERT INTO Usuario(id, email, password, rol, carreraID, nombre, apellido, telefono, situacionLaboral, disponibilidadHoraria, activo) VALUES
+                                                                                                                                          (12, 'rodrigo.mark@unlam.edu.ar', '123', 'ALUMNO', 3, 'Rodrigo', 'Paz', NULL, 'empleado', 20, true),
+                                                                                                                                          (13, 'carla.mark@unlam.edu.ar', '123', 'ALUMNO', 3, 'Carla', 'Méndez', NULL, 'desempleado', 35, true);
+
+-- Usuarios de Lic. en Abogacía (carreraID = 4)
+INSERT INTO Usuario(id, email, password, rol, carreraID, nombre, apellido, telefono, situacionLaboral, disponibilidadHoraria, activo) VALUES
+                                                                                                                                          (14, 'martina.abo@unlam.edu.ar', '123', 'ALUMNO', 4, 'Martina', 'Soto', NULL, 'empleado', 15, true),
+                                                                                                                                          (15, 'jose.abo@unlam.edu.ar', '123', 'ALUMNO', 4, 'José', 'Alvarez', NULL, 'freelance', 30, true);
+-- Publicaciones de carreraID = 2 (Informática)
+INSERT INTO Publicacion(usuario_id, materia_id, titulo, descripcion, fechaCreacion, likes) VALUES
+                                                                                               (10, 13, 'Problemas con listas en Java', '¿Cómo puedo implementar una lista enlazada desde cero?', '2025-06-10 15:00:00', 4),
+                                                                                               (11, 14, '¿Qué herramientas recomiendan para análisis de vulnerabilidades?', 'Estoy explorando opciones para escaneo de seguridad web.', '2025-06-12 11:30:00', 3);
+
+-- Publicaciones de carreraID = 3 (Marketing Digital)
+INSERT INTO Publicacion(usuario_id, materia_id, titulo, descripcion, fechaCreacion, likes) VALUES
+                                                                                               (12, 15, '¿Qué KPIs usan para medir engagement?', 'Estoy armando un informe y necesito buenas métricas.', '2025-06-14 16:45:00', 2),
+                                                                                               (13, 16, '¿SEM o SEO para un e-commerce nuevo?', 'Busco estrategias para mejorar el tráfico desde cero.', '2025-06-18 14:20:00', 5);
+
+-- Publicaciones de carreraID = 4 (Abogacía)
+INSERT INTO Publicacion(usuario_id, materia_id, titulo, descripcion, fechaCreacion, likes) VALUES
+                                                                                               (14, 17, 'Diferencia entre dolo y culpa', 'Estoy confundida con los conceptos. ¿Alguien me lo explica fácil?', '2025-06-20 10:00:00', 4),
+                                                                                               (15, 18, 'Casos famosos de Derecho Civil', '¿Conocen algún caso interesante que se haya dado en Argentina?', '2025-06-22 13:40:00', 3);
