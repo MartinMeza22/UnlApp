@@ -63,4 +63,12 @@ public class RepositorioPublicacionImpl implements RepositorioPublicacion {
         return criteria.list();
     }
 
+    @SuppressWarnings("unchecked")
+    public List<Object[]> countPublicacionesGroupByCarrera() {
+        String hql = "SELECT c.nombre, COUNT(p.id) FROM Publicacion p " +
+                "JOIN p.materia m JOIN m.carrera c GROUP BY c.nombre ORDER BY 2 DESC";
+        return sessionFactory.getCurrentSession().createQuery(hql).list();
+    }
+
+
 }

@@ -38,9 +38,9 @@ public class ServicioAdminImpl implements ServicioAdmin {
     }
 
     @Override
-    public Map<String, Long> obtenerUsuariosPorGenero() {
+    public Map<String, Long> obtenerUsuariosPorSituacionLaboral() {
         List<Object[]> raw = repositorioUsuario
-                .countUsuariosGroupBySexo();    // <-- agrega en el repositorio.
+                .countUsuariosGroupBySituacionLaboral();    // <-- agrega en el repositorio.
         return toLinkedMap(raw);
     }
 
