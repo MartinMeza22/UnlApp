@@ -70,4 +70,5 @@ public class ServicioNotificacionImpl implements ServicioNotificacion {
     public void marcarTodasComoLeidas(Usuario usuario) {
         repositorioNotificacion.marcarTodasComoLeidas(usuario);
     }
+
 }
