@@ -163,7 +163,6 @@
 
 <script>
     $(document).ready(function() {
-        // Lógica para modales existentes
         $('#editarPublicacionModal').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget);
             var id = button.data('id'), titulo = button.data('titulo'), descripcion = button.data('descripcion');
@@ -203,7 +202,7 @@
             else if (idComentario) { modal.find('#adminEliminarIdComentario').val(idComentario); }
         });
 
-        // Lógica corregida para notificaciones
+
         $('#notificacionesDropdown').parent().on('hide.bs.dropdown', function () {
             var badge = $('#notificacion-badge');
             if (badge.length > 0) {

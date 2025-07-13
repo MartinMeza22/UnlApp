@@ -31,7 +31,7 @@ public class ServicioReporteImpl implements ServicioReporte {
     }
 
     @Override
-    public void crearReporteParaPublicacion(Long idPublicacion, Long idUsuario, String motivo, String desc) throws PublicacionInexistente, UsuarioNoEncontrado, ReporteExistente {
+    public Reporte crearReporteParaPublicacion(Long idPublicacion, Long idUsuario, String motivo, String desc) throws PublicacionInexistente, UsuarioNoEncontrado, ReporteExistente {
         Publicacion publicacion = repositorioPublicacion.buscarPorId(idPublicacion);
         if(publicacion == null) throw new PublicacionInexistente("La publicación no existe");
 
@@ -51,13 +51,14 @@ public class ServicioReporteImpl implements ServicioReporte {
         }
         repositorioReporte.guardar(reporte);
 
-        if(publicacion.getReportes().size() + 1 >= LIMITE_REPORTES) {
+        if(publicacion.getReportes().size() >= LIMITE_REPORTES) {
             repositorioPublicacion.eliminar(publicacion);
         }
+        return reporte;
     }
 
     @Override
-    public void crearReporteParaComentario(Long idComentario, Long idUsuario, String motivo, String desc) throws ComentarioInexistente, UsuarioNoEncontrado, ReporteExistente {
+    public Reporte crearReporteParaComentario(Long idComentario, Long idUsuario, String motivo, String desc) throws ComentarioInexistente, UsuarioNoEncontrado, ReporteExistente {
         Comentario comentario = repositorioComentario.buscarPorId(idComentario);
         if(comentario == null) throw new ComentarioInexistente("El comentario no existe");
 
@@ -77,15 +78,17 @@ public class ServicioReporteImpl implements ServicioReporte {
         }
         repositorioReporte.guardar(reporte);
 
-        if(comentario.getReportes().size() + 1 >= LIMITE_REPORTES) {
+        if(comentario.getReportes().size() >= LIMITE_REPORTES) {
             repositorioComentario.eliminar(comentario);
         }
+        return reporte;
     }
 
     @Override
     public List<Reporte> obtenerReportesPorCarrera(Carrera carrera) {
         return repositorioReporte.buscarReportesPorCarrera(carrera);
     }
+
     @Override
     public void eliminarReporte(Long idReporte) throws ReporteInexistente {
         Reporte reporte = repositorioReporte.buscarPorId(idReporte);
@@ -93,5 +96,31 @@ public class ServicioReporteImpl implements ServicioReporte {
             throw new ReporteInexistente("El reporte que intentas eliminar no existe.");
         }
         repositorioReporte.eliminar(reporte);
+    }
+
+
+    @Override
+    public Reporte obtenerReportePorId(Long idReporte) throws ReporteInexistente {
+        Reporte reporte = repositorioReporte.buscarPorId(idReporte);
+        if (reporte == null) {
+            throw new ReporteInexistente("El reporte no existe.");
+        }
+        return reporte;
+    }
+
+    @Override
+    public void eliminarReportesDePublicacion(Long idPublicacion) {
+        List<Reporte> reportes = repositorioReporte.buscarPorPublicacion(idPublicacion);
+        for(Reporte reporte : reportes) {
+            repositorioReporte.eliminar(reporte);
+        }
+    }
+
+    @Override
+    public void eliminarReportesDeComentario(Long idComentario) {
+        List<Reporte> reportes = repositorioReporte.buscarPorComentario(idComentario);
+        for(Reporte reporte : reportes) {
+            repositorioReporte.eliminar(reporte);
+        }
     }
 }

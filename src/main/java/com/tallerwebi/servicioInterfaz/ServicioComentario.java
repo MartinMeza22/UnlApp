@@ -8,7 +8,7 @@ import com.tallerwebi.dominio.excepcion.PublicacionInexistente;
 import com.tallerwebi.dominio.excepcion.UsuarioNoEncontrado;
 
 public interface ServicioComentario {
-    void crearComentario(Long idPublicacion, Usuario usuario, String descripcion) throws PublicacionInexistente, AccesoDenegado;
+    Comentario crearComentario(Long idPublicacion, Usuario usuario, String descripcion) throws PublicacionInexistente, AccesoDenegado;
 
     void modificarComentario(Long idComentario, String descripcion, Long idUsuario) throws ComentarioInexistente, AccesoDenegado, UsuarioNoEncontrado;
 
