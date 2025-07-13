@@ -52,12 +52,15 @@
         <td>
           <form th:if="${reporte.publicacion != null}" th:action="@{/foro/publicacion/eliminar}" method="post" class="d-inline">
             <input type="hidden" name="idPublicacion" th:value="${reporte.publicacion.id}" />
+            <input type="hidden" name="idReporte" th:value="${reporte.id}" />
             <button type="submit" class="btn btn-sm btn-danger" title="Eliminar Publicación">
               <i class="fas fa-trash-alt"></i>
             </button>
           </form>
+
           <form th:if="${reporte.comentario != null}" th:action="@{/foro/comentario/eliminar}" method="post" class="d-inline">
             <input type="hidden" name="idComentario" th:value="${reporte.comentario.id}" />
+            <input type="hidden" name="idReporte" th:value="${reporte.id}" />
             <button type="submit" class="btn btn-sm btn-danger" title="Eliminar Comentario">
               <i class="fas fa-trash-alt"></i>
             </button>

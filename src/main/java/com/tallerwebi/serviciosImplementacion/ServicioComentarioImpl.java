@@ -30,7 +30,7 @@ public class ServicioComentarioImpl implements ServicioComentario {
     }
 
     @Override
-    public void crearComentario(Long idPublicacion, Usuario usuario, String descripcion) throws PublicacionInexistente, AccesoDenegado {
+    public Comentario crearComentario(Long idPublicacion, Usuario usuario, String descripcion) throws PublicacionInexistente, AccesoDenegado {
         if ("ADMIN".equalsIgnoreCase(usuario.getRol())) {
             throw new AccesoDenegado("Los administradores no pueden crear comentarios.");
         }
@@ -40,6 +40,7 @@ public class ServicioComentarioImpl implements ServicioComentario {
         nuevoComentario.setUsuario(usuario);
         nuevoComentario.setPublicacion(publicacion);
         repositorioComentario.guardar(nuevoComentario);
+        return nuevoComentario;
     }
 
     @Override

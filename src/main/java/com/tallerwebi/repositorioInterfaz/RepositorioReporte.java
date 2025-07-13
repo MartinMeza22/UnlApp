@@ -10,4 +10,8 @@ public interface RepositorioReporte {
     List<Reporte> buscarReportesPorCarrera(Carrera carrera);
     Reporte buscarPorId(Long id);
     void eliminar(Reporte reporte);
+
+    List<Reporte> buscarPorPublicacion(Long idPublicacion);
+
+    List<Reporte> buscarPorComentario(Long idComentario);
 }
