@@ -3,6 +3,7 @@ package com.tallerwebi.presentacion;
 import com.tallerwebi.dominio.Reporte;
 import com.tallerwebi.dominio.Usuario;
 import com.tallerwebi.dominio.excepcion.UsuarioNoEncontrado;
+import com.tallerwebi.servicioInterfaz.ServicioAdmin;
 import com.tallerwebi.servicioInterfaz.ServicioReporte;
 import com.tallerwebi.servicioInterfaz.ServicioUsuario;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +24,13 @@ public class ControladorAdmin {
 
     private final ServicioUsuario servicioUsuario;
     private final ServicioReporte servicioReporte;
+    private final ServicioAdmin servicioAdmin;
 
     @Autowired
-    public ControladorAdmin(ServicioUsuario servicioUsuario, ServicioReporte servicioReporte) {
+    public ControladorAdmin(ServicioUsuario servicioUsuario, ServicioReporte servicioReporte,ServicioAdmin servicioAdmin) {
         this.servicioUsuario = servicioUsuario;
         this.servicioReporte = servicioReporte;
+        this.servicioAdmin = servicioAdmin;
     }
 
     @GetMapping("/panel")
@@ -61,4 +64,24 @@ public class ControladorAdmin {
         }
         return new ModelAndView("redirect:/admin/panel");
     }
+
+    @GetMapping("/graficos")
+    public ModelAndView mostrarGraficos(HttpSession session) {
+        String rol = (String) session.getAttribute("ROL");
+        Long id = (Long) session.getAttribute("ID");
+
+        if (id == null || !"ADMIN".equals(rol)) {
+            return new ModelAndView("redirect:/home");
+        }
+
+        ModelAndView mav = new ModelAndView("admin-graficos");
+
+        mav.addObject("usuariosPorCarrera", servicioAdmin.obtenerUsuariosPorCarrera());
+        mav.addObject("usuariosPorSituacionLaboral", servicioAdmin.obtenerUsuariosPorSituacionLaboral());
+        mav.addObject("publicacionesPorCarrera", servicioAdmin.obtenerPublicacionesPorCarrera());
+
+        return mav;
+    }
+
+
 }

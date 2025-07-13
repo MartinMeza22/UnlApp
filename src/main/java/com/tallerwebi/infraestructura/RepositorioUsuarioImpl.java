@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Repository("repositorioUsuario")
 public class RepositorioUsuarioImpl implements RepositorioUsuario {
 
@@ -88,6 +90,22 @@ public class RepositorioUsuarioImpl implements RepositorioUsuario {
         // Finalmente, eliminar al usuario
         session.delete(session.contains(usuario) ? usuario : session.merge(usuario));
     }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<Object[]> countUsuariosGroupByCarrera() {
+        String hql = "SELECT c.nombre, COUNT(u.id) FROM Usuario u JOIN u.carrera c GROUP BY c.nombre ORDER BY 2 DESC";
+        return sessionFactory.getCurrentSession().createQuery(hql).list();
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<Object[]> countUsuariosGroupBySituacionLaboral() {
+        String hql = "SELECT u.situacionLaboral, COUNT(u.id) FROM Usuario u GROUP BY u.situacionLaboral ORDER BY 2 DESC";
+        return sessionFactory.getCurrentSession().createQuery(hql).list();
+    }
+
+
+
 
 
 

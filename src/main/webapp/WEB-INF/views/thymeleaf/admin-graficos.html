@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>UnlApp – Gráficos</title>
+
+    <!-- Bootstrap + tu main.css -->
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}" />
+    <link rel="stylesheet" th:href="@{/css/main.css}" />
+
+    <!-- Chart.js -->
+    <!--  <script th:src="@{/tallerwebi-base-1.0-SNAPSHOT/webjars/chart.js/4.4.0/chart.min.js}"></script>-->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+
+    <style>
+         :root {
+             --primary-blue:   #4a90e2;
+             --background-color: #f8f9fa;
+             --card-background: #ffffff;
+             --border-color:   #e0e6ed;
+             --shadow-light:   rgba(0, 0, 0, 0.04);
+         }
+         body { background: var(--background-color); }
+         .chart-card {
+             background: var(--card-background);
+             border: 1px solid var(--border-color);
+             border-radius: 12px;
+             padding: 20px;
+             box-shadow: 0 4px 12px var(--shadow-light);
+             transition: .2s;
+             height: 100%;
+         }
+         .chart-card:hover { transform: translateY(-3px); }
+     </style>
+ </head>
+
+ <body>
+ <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top px-3">
+     <a class="navbar-brand" th:href="@{/home}">UnlApp</a>
+
+     <div class="ms-auto pe-3">
+         <form th:action="@{/logout}" method="get" class="d-flex">
+             <button class="btn btn-outline-light" type="submit">Cerrar sesión</button>
+         </form>
+     </div>
+ </nav>
+
+ <main class="container py-5">
+     <h2 class="mb-4 fw-bold" style="font-size: 2rem; color: var(--primary-blue); border-left: 6px solid var(--primary-blue); padding-left: 12px;">
+         Dashboard de Estadísticas
+     </h2>
+
+
+
+     <!-- ROW 1 -->
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="chart-card">
+                <h5 class="mb-3">Usuarios por Carrera</h5>
+                <canvas id="chartUsuariosCarrera"></canvas>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="chart-card">
+                <h5 class="mb-3">Usuarios por Situación Laboral</h5>
+                <canvas id="chartUsuariosSituacion"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- ROW 2 -->
+    <div class="row g-4 mt-1">
+        <div class="col-12">
+            <div class="chart-card">
+                <h5 class="mb-3">Publicaciones por Carrera</h5>
+                <canvas id="chartPublicacionesCarrera"></canvas>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Bootstrap bundle -->
+<script th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.min.js}"></script>
+
+<script th:inline="javascript">
+    /* <![CDATA[ */
+    const usuariosCarrera = /*[[${usuariosPorCarrera}]]*/ {};
+    const usuariosSituacion = /*[[${usuariosPorSituacionLaboral}]]*/ {};
+    const publicacionesCarrera = /*[[${publicacionesPorCarrera}]]*/ {};
+
+    const labelsUC = Object.keys(usuariosCarrera);
+    const dataUC   = Object.values(usuariosCarrera);
+
+    const labelsUS = Object.keys(usuariosSituacion);
+    const dataUS   = Object.values(usuariosSituacion);
+
+    const labelsPC = Object.keys(publicacionesCarrera);
+    const dataPC   = Object.values(publicacionesCarrera);
+
+    // Chart: Usuarios por Carrera
+    new Chart(document.getElementById('chartUsuariosCarrera'), {
+        type: 'bar',
+        data: {
+            labels: labelsUC,
+            datasets: [{
+                label: 'Usuarios',
+                data: dataUC,
+                borderWidth: 1,
+                backgroundColor: '#4a90e2'
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { display: false } }
+        }
+    });
+
+    // Chart: Usuarios por Situación Laboral
+    new Chart(document.getElementById('chartUsuariosSituacion'), {
+        type: 'pie',
+        data: {
+            labels: labelsUS,
+            datasets: [{
+                data: dataUS,
+                backgroundColor: ['#4a90e2', '#50e3c2', '#f5a623', '#d0021b']
+            }]
+        },
+        options: { responsive: true }
+    });
+
+    // Chart: Publicaciones por Carrera
+    new Chart(document.getElementById('chartPublicacionesCarrera'), {
+        type: 'bar',
+        data: {
+            labels: labelsPC,
+            datasets: [{
+                label: 'Publicaciones',
+                data: dataPC,
+                backgroundColor: '#f5a623',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            indexAxis: 'y',
+            plugins: { legend: { display: false } }
+        }
+    });
+    /* ]]> */
+</script>
+
+</body>
+</html>
