@@ -143,14 +143,6 @@ public class Usuario {
         this.publicacionesLikeadas = publicacionesLikeadas;
     }
 
-//    public void setCarrera(Carrera carrera) {
-//        this.carrera = carrera;
-//    }
-//
-//    // Método de conveniencia para obtener el ID de la carrera
-//    public Long getCarreraID() {
-//        return carrera != null ? carrera.getId() : null;
-//    }
 
     public boolean activo() {
         return activo;

@@ -141,10 +141,16 @@
             <artifactId>spring-context-support</artifactId>
             <version>${spring.version}</version>
         </dependency>
-       
 
-        <!-- Excluir jakarta.activation-api y com.sun.activation:javax.activation -->
-<!--        <dependency>-->
+        <!-- DEPENDENCIA UTILIZADA PARA EXCEL - ADMINISTRACIÓN -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>5.2.3</version>
+        </dependency>
+
+
+        <!--        <dependency>-->
 <!--            <groupId>com.sun.mail</groupId>-->
 <!--            <artifactId>javax.mail</artifactId>-->
 <!--            <version>1.6.2</version>-->
@@ -160,7 +166,7 @@
 <!--            </exclusions>-->
 <!--        </dependency>-->
 
-        <!-- Declarar explícitamente la dependencia que querés usar -->
+
 <!--        <dependency>-->
 <!--            <groupId>javax.activation</groupId>-->
 <!--            <artifactId>activation</artifactId>-->
