@@ -9,6 +9,8 @@ import com.tallerwebi.dominio.servicios.ServicioMateria;
 import com.tallerwebi.servicioInterfaz.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
@@ -17,6 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributesModelMap;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
+import java.io.File;
 import java.util.Collections;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -45,6 +48,7 @@ public class ControladorForoTest {
     private RedirectAttributes redirectAttributes;
     private final Long ID_USUARIO = 1L;
     private MultipartFile archivoMock;
+    private MultipartFile archivoNoPermitidoMock;
 
 
     @BeforeEach
@@ -70,6 +74,14 @@ public class ControladorForoTest {
                 "Este es el contenido del archivo".getBytes()
         );
 
+        archivoNoPermitidoMock = new MockMultipartFile(
+                "archivo",
+                "test-file.exe",
+                "application/octet-stream",
+                "Contenido malicioso".getBytes()
+        );
+
+
         controladorForo = new ControladorForo(
                 servicioUsuarioMock, servicioPublicacionMock, servicioComentarioMock,
                 servicioMateriaMock, servicioReporteMock, servletContextMock,
@@ -78,8 +90,14 @@ public class ControladorForoTest {
 
         when(sessionMock.getAttribute("ID")).thenReturn(ID_USUARIO);
         when(usuarioMock.getCarrera()).thenReturn(carreraMock);
+        when(usuarioMock.getId()).thenReturn(ID_USUARIO);
         when(servicioUsuarioMock.obtenerUsuario(ID_USUARIO)).thenReturn(usuarioMock);
         when(servletContextMock.getRealPath(anyString())).thenReturn("src/main/webapp/uploads");
+        // Simular la creación del directorio para evitar NullPointerException
+        File uploadDir = new File("src/main/webapp/uploads");
+        if (!uploadDir.exists()) {
+            uploadDir.mkdirs();
+        }
     }
 
     @Test
@@ -138,6 +156,16 @@ public class ControladorForoTest {
     }
 
     @Test
+    public void alCrearPublicacionConExtensionNoPermitidaDeberiaRetornarError() throws Exception {
+        ModelAndView mav = controladorForo.crearPublicacion("Titulo", "Desc", 1L, archivoNoPermitidoMock, sessionMock, redirectAttributes);
+
+        assertThat(mav.getViewName(), equalTo("redirect:/foro"));
+        assertThat(redirectAttributes.getFlashAttributes().get("error"), equalTo("Tipo de archivo no permitido."));
+        verify(servicioPublicacionMock, never()).crearPublicacion(any(), any(), any(), any(), any());
+    }
+
+
+    @Test
     public void alCrearPublicacionCorrectamenteRedirigeAForoConMensajeDeExito() throws Exception {
         ModelAndView mav = controladorForo.crearPublicacion("Titulo", "Desc", 1L, archivoMock, sessionMock, redirectAttributes);
         assertThat(mav.getViewName(), equalTo("redirect:/foro"));
@@ -155,6 +183,38 @@ public class ControladorForoTest {
 
         assertThat(mav.getViewName(), equalTo("redirect:/foro"));
         assertThat(redirectAttributes.getFlashAttributes().get("exito"), notNullValue());
+    }
+
+    @Test
+    public void unAdminPuedeEliminarUnaPublicacionReportadaYNotificaAlAutor() throws Exception {
+        Long idPublicacion = 2L;
+        Long idReporte = 3L;
+        String emailAutor = "autor@test.com";
+        String nombreAutor = "Autor Original";
+
+        when(sessionMock.getAttribute("ROL")).thenReturn("ADMIN");
+
+        Usuario autorMock = mock(Usuario.class);
+        when(autorMock.getEmail()).thenReturn(emailAutor);
+        when(autorMock.getNombre()).thenReturn(nombreAutor);
+
+        Publicacion publicacionMock = mock(Publicacion.class);
+        when(publicacionMock.getUsuario()).thenReturn(autorMock);
+        when(publicacionMock.getTitulo()).thenReturn("Publicación a eliminar");
+
+        Reporte reporteMock = mock(Reporte.class);
+        when(reporteMock.getMotivo()).thenReturn("Contenido inapropiado");
+
+        when(servicioPublicacionMock.obtenerPublicacion(idPublicacion)).thenReturn(publicacionMock);
+        when(servicioReporteMock.obtenerReportePorId(idReporte)).thenReturn(reporteMock);
+
+        ModelAndView mav = controladorForo.eliminarPublicacion(idPublicacion, idReporte, sessionMock, redirectAttributes);
+
+        assertThat(mav.getViewName(), equalTo("redirect:/admin/panel"));
+        assertThat(redirectAttributes.getFlashAttributes().get("exito"), notNullValue());
+        verify(servicioPublicacionMock, times(1)).eliminarPublicacion(idPublicacion, ID_USUARIO);
+        verify(servicioReporteMock, times(1)).eliminarReportesDePublicacion(idPublicacion);
+        verify(servicioEmailMock, times(1)).enviarEmailAUsuario(eq(emailAutor), anyString(), anyString());
     }
 
     @Test
@@ -180,6 +240,39 @@ public class ControladorForoTest {
         assertThat(redirectAttributes.getFlashAttributes().get("exito"), notNullValue());
         verify(servicioComentarioMock, times(1)).modificarComentario(idComentario, nuevaDesc, ID_USUARIO);
     }
+
+    @Test
+    public void unAdminPuedeEliminarUnComentarioReportadoYNotificaAlAutor() throws Exception {
+        Long idComentario = 2L;
+        Long idReporte = 3L;
+        String emailAutor = "autor@test.com";
+        String nombreAutor = "Autor Original";
+
+        when(sessionMock.getAttribute("ROL")).thenReturn("ADMIN");
+
+        Usuario autorMock = mock(Usuario.class);
+        when(autorMock.getEmail()).thenReturn(emailAutor);
+        when(autorMock.getNombre()).thenReturn(nombreAutor);
+
+        Comentario comentarioMock = mock(Comentario.class);
+        when(comentarioMock.getUsuario()).thenReturn(autorMock);
+        when(comentarioMock.getDescripcion()).thenReturn("Comentario a eliminar");
+
+        Reporte reporteMock = mock(Reporte.class);
+        when(reporteMock.getMotivo()).thenReturn("Contenido ofensivo");
+
+        when(servicioComentarioMock.obtenerComentarioPorId(idComentario)).thenReturn(comentarioMock);
+        when(servicioReporteMock.obtenerReportePorId(idReporte)).thenReturn(reporteMock);
+
+        ModelAndView mav = controladorForo.eliminarComentario(idComentario, idReporte, sessionMock, redirectAttributes);
+
+        assertThat(mav.getViewName(), equalTo("redirect:/admin/panel"));
+        assertThat(redirectAttributes.getFlashAttributes().get("exito"), notNullValue());
+        verify(servicioComentarioMock, times(1)).eliminarComentario(idComentario, ID_USUARIO);
+        verify(servicioReporteMock, times(1)).eliminarReportesDeComentario(idComentario);
+        verify(servicioEmailMock, times(1)).enviarEmailAUsuario(eq(emailAutor), anyString(), anyString());
+    }
+
 
     @Test
     public void alDarLikeAUnaPublicacionRedirigeAlForoYSeCreaNotificacion() throws Exception {
@@ -268,5 +361,26 @@ public class ControladorForoTest {
         ModelAndView mav = controladorForo.reportarContenido(idPublicacion, null, motivo, null, sessionMock, redirectAttributes);
         assertThat(mav.getViewName(), equalTo("redirect:/foro"));
         assertThat(redirectAttributes.getFlashAttributes().get("error").toString(), containsString(mensajeError));
+    }
+
+    @Test
+    public void alMarcarNotificacionesComoLeidasDevuelveStatusOK() {
+        ResponseEntity<Void> response = controladorForo.marcarNotificacionesComoLeidas(sessionMock);
+        assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
+        verify(servicioNotificacionMock, times(1)).marcarTodasComoLeidas(usuarioMock);
+    }
+
+    @Test
+    public void siUsuarioNoLogueadoIntentaMarcarNotificacionesComoLeidasDevuelveStatusUnauthorized() {
+        when(sessionMock.getAttribute("ID")).thenReturn(null);
+        ResponseEntity<Void> response = controladorForo.marcarNotificacionesComoLeidas(sessionMock);
+        assertThat(response.getStatusCode(), equalTo(HttpStatus.UNAUTHORIZED));
+    }
+
+    @Test
+    public void siUsuarioNoEsEncontradoAlMarcarNotificacionesDevuelveStatusNotFound() throws UsuarioNoEncontrado {
+        when(servicioUsuarioMock.obtenerUsuario(ID_USUARIO)).thenThrow(new UsuarioNoEncontrado());
+        ResponseEntity<Void> response = controladorForo.marcarNotificacionesComoLeidas(sessionMock);
+        assertThat(response.getStatusCode(), equalTo(HttpStatus.NOT_FOUND));
     }
 }
