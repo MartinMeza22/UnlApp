@@ -65,4 +65,21 @@ public class RepositorioReporteImpl implements RepositorioReporte {
     public void eliminar(Reporte reporte) {
         sessionFactory.getCurrentSession().delete(reporte);
     }
+
+    @Override
+    public List<Reporte> buscarPorPublicacion(Long idPublicacion) {
+        final Session session = sessionFactory.getCurrentSession();
+        return (List<Reporte>) session.createCriteria(Reporte.class)
+                .add(Restrictions.eq("publicacion.id", idPublicacion))
+                .list();
+    }
+
+    @Override
+    public List<Reporte> buscarPorComentario(Long idComentario) {
+        final Session session = sessionFactory.getCurrentSession();
+        return (List<Reporte>) session.createCriteria(Reporte.class)
+                .add(Restrictions.eq("comentario.id", idComentario))
+                .list();
+    }
+
 }
