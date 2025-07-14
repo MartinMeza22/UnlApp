@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Generador de Resúmenes</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}" />
+</head>
+<body>
+<main class="container mt-5">
+    <div class="card shadow p-4">
+        <h2 class="mb-4 text-center">Generador de Resúmenes</h2>
+
+        <form th:action="@{/generar-resumen}" method="post" accept-charset="UTF-8">
+            <div class="mb-3">
+                <label for="tema" class="form-label">Describí el tema del cual querés generar un resumen:</label>
+                <textarea id="tema" name="tema" class="form-control" rows="5" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Generar resumen</button>
+        </form>
+
+        <div th:if="${resumenGenerado != null}" class="mt-4">
+            <h4>Resumen generado:</h4>
+            <p th:text="${resumenGenerado}"></p>
+        </div>
+    </div>
+</main>
+</body>
+</html>
