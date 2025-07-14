@@ -13,7 +13,7 @@ VALUES
     (6, 'ramaGit@alumno.unlam.edu.ar', '12345678', 'ALUMNO', 1, 'Ramiro', 'Casanova', NULL, 'empleado', 15, true),
     (7, 'vitinha@alumno.unlam.edu.ar', '12345678', 'ALUMNO', 1, 'Tobias', 'Tejerina', NULL, 'empleado', 24, true),
     (8, 'agus@alumno.unlam.edu.ar', '12345678', 'ALUMNO', 1, 'Agustín', 'Cangelosi', NULL, 'empleado', 30, true),
-    (9, 'aleSergi@alumno.unlam.edu.ar', '12345678', 'ALUMNO', 1, 'Sergio', 'Randam', NULL, 'empleado', 13, true);
+    (9, 'aleSergi@alumno.unlam.edu.ar', '12345678', 'ALUMNO', 1, 'Sergio', 'Ramirez', NULL, 'empleado', 13, true);
 
 -- se inserta un admin
 INSERT INTO Usuario(id, email, password, rol, carreraID, nombre, apellido, activo)
