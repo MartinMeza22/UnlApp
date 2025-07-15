@@ -3,13 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Biblioteca Digital | UnlApp</title>
+    <title>Mis Favoritos | UnlApp</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
     <style>
+        :root { /* ... */ }
+        body { /* ... */ }
+        /* Copiar todos los estilos del CSS de la vista anterior aquí */
         :root {
             --background-color: #121212;
             --surface-color: #1e1e1e;
@@ -37,7 +40,6 @@
         .favorite-btn { background: transparent; border: none; color: var(--text-secondary); font-size: 1.8rem; padding: 0; line-height: 1; transition: color 0.2s, transform 0.2s; }
         .favorite-btn:hover { transform: scale(1.15); }
         .favorite-btn .bi-heart-fill { color: var(--danger-accent); }
-        .favorite-btn:hover .bi-heart { color: var(--danger-accent); }
 
         .toast-container.top-center {
             position: fixed;
@@ -63,8 +65,8 @@
             <span class="fw-bold">Biblioteca UnlApp</span>
         </a>
         <div class="ms-auto">
-            <a class="btn btn-outline-primary" th:href="@{/libros-favoritos}">
-                <i class="bi bi-star-fill me-2"></i>Mis Favoritos
+            <a class="btn btn-outline-light" th:href="@{/biblioteca-digital}">
+                <i class="bi bi-book me-2"></i>Volver a la Biblioteca
             </a>
         </div>
     </div>
@@ -72,8 +74,8 @@
 
 <main class="container my-5">
     <header class="page-header mb-5">
-        <h1>Bienvenido a la Biblioteca Digital</h1>
-        <p>Explora una colección curada de conocimiento y aventura, disponible al alcance de tu mano.</p>
+        <h1>Mis Libros Favoritos</h1>
+        <p>Tu colección personal de conocimiento y aventura.</p>
     </header>
 
     <div th:if="${not #lists.isEmpty(libros)}" class="book-grid">
@@ -95,24 +97,25 @@
                     <a th:if="${libro.accessInfo?.webReaderLink != null}" class="book-card-badge bg-primary" th:href="${libro.accessInfo.webReaderLink}" target="_blank" rel="noopener noreferrer">Ver libro online</a>
                     <span th:if="${libro.accessInfo?.webReaderLink == null}" class="book-card-badge bg-secondary">No disponible</span>
 
-                    <th:block th:if="${session.ID != null}">
-                        <form th:if="${librosFavoritosIds.contains(libro.id)}" th:action="@{/eliminar-favorito}" method="post">
-                            <input type="hidden" name="favorito" th:value="${libro.id}" />
-                            <button type="submit" class="btn favorite-btn" aria-label="Eliminar de favoritos"><i class="bi bi-heart-fill"></i></button>
-                        </form>
-                        <form th:unless="${librosFavoritosIds.contains(libro.id)}" th:action="@{/agregar-favoritos}" method="post">
-                            <input type="hidden" name="favorito" th:value="${libro.id}" />
-                            <button type="submit" class="btn favorite-btn" aria-label="Guardar en favoritos"><i class="bi bi-heart"></i></button>
-                        </form>
-                    </th:block>
+                    <form th:action="@{/eliminar-favorito-en-favoritos}" method="post"> <input type="hidden" name="favorito" th:value="${libro.id}" />
+                        <button type="submit" class="btn favorite-btn" aria-label="Eliminar de favoritos">
+                            <i class="bi bi-heart-fill"></i>
+                        </button>
+                    </form>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div th:if="${#lists.isEmpty(libros)}" class="text-center mt-5">
+        <div class="alert alert-secondary d-inline-block p-4">
+            <h4 class="alert-heading">Aún no tienes favoritos</h4>
+            <p class="mb-0">¡Explora la <a th:href="@{/biblioteca-digital}" class="alert-link">biblioteca digital</a> y empieza a guardar los libros que más te gusten!</p>
         </div>
     </div>
 </main>
 
 <footer class="footer mt-5 py-4 text-center border-top border-secondary-subtle">
-    <p class="text-secondary mb-0">&copy; 2025 Biblioteca Digital UnlApp. Todos los derechos reservados.</p>
 </footer>
 
 <div class="toast-container top-center">
