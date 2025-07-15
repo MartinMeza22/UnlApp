@@ -105,4 +105,28 @@ public class ControladorAdminTest {
                 "El reporte fue descartado correctamente."));
         verify(servicioReporteMock).eliminarReporte(10L);
     }
+
+    @Test
+    void debeMostrarGraficosConDatos() {
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("ROL", "ADMIN");
+        session.setAttribute("ID", 1L);
+
+        Map<String, Long> usuariosCarrera   = Map.of("Ing", 3L);
+        Map<String, Long> usuariosLaboral   = Map.of("Desempleado", 2L);
+        Map<String, Long> publicacionesCarr = Map.of("Ing", 1L);
+
+        when(servicioAdminMock.obtenerUsuariosPorCarrera()).thenReturn(usuariosCarrera);
+        when(servicioAdminMock.obtenerUsuariosPorSituacionLaboral()).thenReturn(usuariosLaboral);
+        when(servicioAdminMock.obtenerPublicacionesPorCarrera()).thenReturn(publicacionesCarr);
+
+        ModelAndView mav = controlador.mostrarGraficos(session);
+
+        assertThat(mav.getViewName(), is("admin-graficos"));
+        assertThat(mav.getModel(), allOf(
+                hasEntry("usuariosPorCarrera", usuariosCarrera),
+                hasEntry("usuariosPorSituacionLaboral", usuariosLaboral),
+                hasEntry("publicacionesPorCarrera", publicacionesCarr)
+        ));
+    }
 }
