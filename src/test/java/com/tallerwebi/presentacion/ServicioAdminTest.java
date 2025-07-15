@@ -82,5 +82,13 @@ public class ServicioAdminTest {
         assertThat(resultado.get("Medicina"), is(4L));
         verify(repositorioPublicacionMock).countPublicacionesGroupByCarrera();
     }
+    @Test
+    public void queDevuelvaMapaVacioSiNoHayDatos() {
+        when(repositorioUsuarioMock.countUsuariosGroupByCarrera()).thenReturn(List.of());
+
+        Map<String, Long> resultado = servicio.obtenerUsuariosPorCarrera();
+
+        assertThat(resultado, is(anEmptyMap()));
+    }
 }
 
