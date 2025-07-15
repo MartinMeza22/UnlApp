@@ -891,63 +891,74 @@
                     alert('Error al generar el analítico: ' + err.message);
                 });
         });
-        
+
         function generarPDFAnalitico(datos) {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
-            
+
             const fecha = new Date().toLocaleDateString('es-AR', {
                 day: '2-digit',
                 month: '2-digit',
                 year: 'numeric'
             });
-            
+
             let yPosition = 20;
             const marginLeft = 15;
             const lineHeight = 7;
-            
+
             // Título principal
             doc.setFontSize(16);
             doc.setFont(undefined, 'bold');
             doc.text('ANALÍTICO ACADÉMICO', marginLeft, yPosition);
             yPosition += lineHeight + 5;
-            
-            // Información del estudiante
+
+            // Información del estudiante - CORREGIDO
             doc.setFontSize(12);
             doc.text(`Estudiante: ${datos.estudiante.nombre}`, marginLeft, yPosition);
             yPosition += lineHeight;
             doc.text(`Email: ${datos.estudiante.email}`, marginLeft, yPosition);
             yPosition += lineHeight;
-            doc.text(`Carrera: ${datos.estudiante.carrera}`, marginLeft, yPosition);
+            // CAMBIO: acceder a carrera.nombre si es objeto, o carrera directamente si es string
+            const carreraNombre = typeof datos.estudiante.carrera === 'object'
+                ? datos.estudiante.carrera.nombre
+                : datos.estudiante.carrera;
+            doc.text(`Carrera: ${carreraNombre}`, marginLeft, yPosition);
             yPosition += lineHeight;
             doc.text(`Fecha de emisión: ${fecha}`, marginLeft, yPosition);
             yPosition += lineHeight + 5;
-            
-            // Resumen académico
+
+            // Resumen académico - CORREGIDO
             doc.setFont(undefined, 'bold');
             doc.text('RESUMEN ACADÉMICO', marginLeft, yPosition);
             yPosition += lineHeight;
-            
+
             doc.setFont(undefined, 'normal');
-            doc.text(`Promedio General: ${datos.resumen.promedioGeneral}`, marginLeft, yPosition);
+            // CAMBIO: usar datos.estadisticas en lugar de datos.resumen
+            const stats = datos.estadisticas || datos.resumen; // fallback por si cambia
+            doc.text(`Promedio General: ${stats.promedioGeneral}`, marginLeft, yPosition);
             yPosition += lineHeight;
-            doc.text(`Materias Aprobadas: ${datos.resumen.materiasAprobadas}`, marginLeft, yPosition);
+            doc.text(`Materias Aprobadas: ${stats.materiasAprobadas}`, marginLeft, yPosition);
             yPosition += lineHeight;
-            doc.text(`Materias Desaprobadas: ${datos.resumen.materiasDesaprobadas}`, marginLeft, yPosition);
+            doc.text(`Materias Desaprobadas: ${stats.materiasDesaprobadas}`, marginLeft, yPosition);
             yPosition += lineHeight;
-            doc.text(`Materias Cursando: ${datos.resumen.materiasCursando}`, marginLeft, yPosition);
+            doc.text(`Materias Cursando: ${stats.materiasCursando}`, marginLeft, yPosition);
             yPosition += lineHeight;
-            doc.text(`Porcentaje de Avance: ${datos.resumen.porcentajeAvance}%`, marginLeft, yPosition);
+            doc.text(`Porcentaje de Avance: ${stats.porcentajeAvance}%`, marginLeft, yPosition);
+            yPosition += lineHeight;
+            // NUEVO: agregar más estadísticas que genera el backend
+            doc.text(`Materias Pendientes: ${stats.materiasPendientes}`, marginLeft, yPosition);
+            yPosition += lineHeight;
+            doc.text(`Horas Académicas Aprobadas: ${stats.horasAcademicasAprobadas}`, marginLeft, yPosition);
             yPosition += lineHeight + 10;
-            
+
             // Detalle de materias
             doc.setFont(undefined, 'bold');
             doc.text('DETALLE DE MATERIAS', marginLeft, yPosition);
             yPosition += lineHeight + 5;
-            
+
             doc.setFont(undefined, 'normal');
             doc.setFontSize(10);
-            
+
             // Cabeceras
             doc.text('MATERIA', marginLeft, yPosition);
             doc.text('CUATR.', marginLeft + 80, yPosition);
@@ -955,30 +966,30 @@
             doc.text('NOTA', marginLeft + 150, yPosition);
             doc.text('DIFIC.', marginLeft + 170, yPosition);
             yPosition += lineHeight;
-            
+
             // Línea separadora
             doc.line(marginLeft, yPosition - 2, 200, yPosition - 2);
             yPosition += 2;
-            
-            // Materias
+
+            // Materias - sin cambios, esta parte ya estaba bien
             datos.materias.forEach(materia => {
                 if (yPosition > 280) {
                     doc.addPage();
                     yPosition = 20;
                 }
-                
-                const nombreMateria = materia.nombre.length > 25 ? 
+
+                const nombreMateria = materia.nombre.length > 25 ?
                     materia.nombre.substring(0, 25) + '...' : materia.nombre;
-                
+
                 doc.text(nombreMateria, marginLeft, yPosition);
                 doc.text(materia.cuatrimestre?.toString() || '-', marginLeft + 80, yPosition);
                 doc.text(materia.estado || '-', marginLeft + 110, yPosition);
                 doc.text(materia.nota?.toString() || '-', marginLeft + 150, yPosition);
-                doc.text(materia.dificultadCursada || '-', marginLeft + 170, yPosition);
-                
+                doc.text(materia.dificultadPercibida || '-', marginLeft + 170, yPosition); // CAMBIO: dificultadPercibida
+
                 yPosition += lineHeight;
             });
-            
+
             // Pie de página
             const totalPages = doc.internal.getNumberOfPages();
             for (let i = 1; i <= totalPages; i++) {
@@ -987,7 +998,7 @@
                 doc.text(`Página ${i} de ${totalPages}`, 170, 290);
                 doc.text('Documento generado por UnlApp', marginLeft, 290);
             }
-            
+
             // Descargar
             doc.save(`Analitico_${datos.estudiante.nombre.replace(/\s+/g, '_')}.pdf`);
         }

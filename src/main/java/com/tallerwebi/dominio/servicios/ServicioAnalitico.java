@@ -68,8 +68,8 @@ public class ServicioAnalitico {
 
         estudiante.put("nombre", usuario.getNombre() + " " + usuario.getApellido());
         estudiante.put("email", usuario.getEmail());
-        estudiante.put("telefono", usuario.getTelefono() != null ? usuario.getTelefono() : "No especificado");
-        estudiante.put("situacionLaboral", usuario.getSituacionLaboral() != null ? usuario.getSituacionLaboral() : "No especificada");
+        estudiante.put("telefono", usuario.getTelefono() != null ? usuario.getTelefono() : "---");
+        estudiante.put("situacionLaboral", usuario.getSituacionLaboral() != null ? usuario.getSituacionLaboral() : "---");
 
         // Información de la carrera
         Map<String, Object> carrera = new HashMap<>();
@@ -191,17 +191,17 @@ public class ServicioAnalitico {
     }
 
     private String convertirDificultadATexto(Integer dificultad) {
-        if (dificultad == null) return "No especificada";
+        if (dificultad == null) return "---";
         switch (dificultad) {
             case 1: return "Fácil";
             case 2: return "Moderada";
             case 3: return "Difícil";
-            default: return "No especificada";
+            default: return "---";
         }
     }
 
     private String formatearFecha(Object fecha) {
-        if (fecha == null) return "No especificada";
+        if (fecha == null) return "---";
 
         try {
             // Si es Date tradicional
