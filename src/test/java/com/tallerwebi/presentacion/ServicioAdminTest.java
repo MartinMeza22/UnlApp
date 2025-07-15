@@ -50,5 +50,21 @@ public class ServicioAdminTest {
         assertThat(resultado, hasEntry("Derecho", 5L));
         verify(repositorioUsuarioMock).countUsuariosGroupByCarrera();
     }
+    @Test
+    public void queObtengaUsuariosPorSituacionLaboral() {
+        List<Object[]> datosMock = List.of(
+                new Object[]{"Desempleado", 3L},
+                new Object[]{"En relación de dependencia", 7L}
+        );
+
+        when(repositorioUsuarioMock.countUsuariosGroupBySituacionLaboral()).thenReturn(datosMock);
+
+        Map<String, Long> resultado = servicio.obtenerUsuariosPorSituacionLaboral();
+
+        assertThat(resultado.size(), is(2));
+        assertThat(resultado, hasEntry("Desempleado", 3L));
+        assertThat(resultado, hasEntry("En relación de dependencia", 7L));
+        verify(repositorioUsuarioMock).countUsuariosGroupBySituacionLaboral();
+    }
 }
 
