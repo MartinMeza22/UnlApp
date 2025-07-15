@@ -73,5 +73,13 @@ public class ControladorAdminTest {
         verify(servicioReporteMock).obtenerReportesPorCarrera(carrera);
     }
 
+    @Test
+    void debeRedirigirAHomeSiNoEsAdmin() {
+        MockHttpSession session = new MockHttpSession(); // sin atributos
 
+        ModelAndView mav = controlador.mostrarPanelDeReportes(session);
+
+        assertThat(mav.getViewName(), is("redirect:/home"));
+        verifyNoInteractions(servicioUsuarioMock, servicioReporteMock);
+    }
 }
