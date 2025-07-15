@@ -6,6 +6,7 @@ import com.tallerwebi.dominio.servicios.ServicioEmail;
 import com.tallerwebi.dominio.servicios.ServicioMateria;
 import com.tallerwebi.servicioInterfaz.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -130,13 +131,14 @@ public class ControladorForo {
                     return new ModelAndView("redirect:/foro");
                 }
 
-                String uploadPath = servletContext.getRealPath("/uploads/");
-                File uploadDir = new File(uploadPath);
-                if (!uploadDir.exists()) {
-                    uploadDir.mkdirs(); // Crea el directorio si no existe
+                String uploadDirString = new ClassPathResource("static/uploads/").getFile().getAbsolutePath();
+                Path uploadPath = Paths.get(uploadDirString);
+
+                if (!Files.exists(uploadPath)) {
+                    Files.createDirectories(uploadPath);
                 }
 
-                Path rutaArchivo = Paths.get(uploadPath, originalFilename);
+                Path rutaArchivo = uploadPath.resolve(originalFilename);
                 Files.write(rutaArchivo, archivo.getBytes());
                 nombreArchivoGuardado = originalFilename;
             }
@@ -145,6 +147,7 @@ public class ControladorForo {
             redirectAttributes.addFlashAttribute("exito", "Publicación creada correctamente.");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "No se pudo crear la publicación: " + e.getMessage());
+            e.printStackTrace();
         }
         return new ModelAndView("redirect:/foro");
     }
@@ -335,6 +338,7 @@ public class ControladorForo {
         }
         return new ModelAndView("redirect:/foro");
     }
+
     @PostMapping("/notificaciones/marcar-leidas")
     @ResponseBody // esto indica que la respuesta no es una vista
     public ResponseEntity<Void> marcarNotificacionesComoLeidas(HttpSession session) {
