@@ -128,4 +128,21 @@ public class ServicioCvInteligenteTest {
         // RestTemplate invocado exactamente una vez:
         verify(restTemplateMock, times(1)).postForEntity(anyString(), any(HttpEntity.class), eq(String.class));
     }
+
+    @Test
+    public void queDevuelvaMensajeSiGeminiRespondeVacio() {
+        Usuario usuario = usuarioConCarrera();
+
+        when(repositorioUsuarioMock.buscarPorId(usuario.getId())).thenReturn(usuario);
+        when(servicioUsuarioMateriaMock.mostrarMateriasDeUsuario(anyString(), eq(usuario.getId())))
+                .thenReturn(listaMaterias());
+
+        ResponseEntity<String> responseVacio = new ResponseEntity<>(null, HttpStatus.OK);
+        when(restTemplateMock.postForEntity(anyString(), any(HttpEntity.class), eq(String.class)))
+                .thenReturn(responseVacio);
+
+        String resultado = servicio.generarCv(usuario.getId());
+
+        assertThat(resultado, is("Respuesta vacía de Gemini."));
+    }
 }
