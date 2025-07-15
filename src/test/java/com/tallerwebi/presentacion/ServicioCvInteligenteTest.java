@@ -107,4 +107,25 @@ public class ServicioCvInteligenteTest {
         assertThat(resultado, is("Usuario no tiene carrera asignada"));
         verifyNoInteractions(servicioUsuarioMateriaMock, restTemplateMock);
     }
+    @Test
+    public void queGenereCvCuandoGeminiRespondeCorrectamente() throws Exception {
+        Usuario usuario = usuarioConCarrera();
+
+        when(repositorioUsuarioMock.buscarPorId(usuario.getId())).thenReturn(usuario);
+        when(servicioUsuarioMateriaMock.mostrarMateriasDeUsuario(
+                String.valueOf(usuario.getCarrera().getId()), usuario.getId()))
+                .thenReturn(listaMaterias());
+
+        when(restTemplateMock.postForEntity(
+                anyString(),
+                any(HttpEntity.class),
+                eq(String.class))
+        ).thenReturn(respuestaGemini("CV generado."));
+
+        String resultado = servicio.generarCv(usuario.getId());
+
+        assertThat(resultado, is("CV generado."));
+        // RestTemplate invocado exactamente una vez:
+        verify(restTemplateMock, times(1)).postForEntity(anyString(), any(HttpEntity.class), eq(String.class));
+    }
 }
