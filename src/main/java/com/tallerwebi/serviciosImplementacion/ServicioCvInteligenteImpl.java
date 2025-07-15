@@ -120,7 +120,6 @@ public class ServicioCvInteligenteImpl implements ServicioCvInteligente {
         return String.format(
                 "Generá el contenido completo y final de un CV académico estilo Harvard para el siguiente usuario.\n"
                         + "El CV debe estar redactado en español, con formato profesional, incluyendo únicamente las secciones relevantes y disponibles.\n"
-                        + "No incluyas introducciones, explicaciones, sugerencias, corchetes, ni campos vacíos.\n"
                         + "Al final coloca una seccion de objetivo y que diga Insertarme en el mercado laboral que tenga que ver con mi carrera e implementar todo lo aprendido o algo asi para hacerlo mas largo.\n"
                         + "Solo devolvé el contenido del CV, listo para ser usado directamente (como el cuerpo de un PDF o documento final).\n\n"
                         + "Datos del usuario:\n"
