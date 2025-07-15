@@ -107,7 +107,7 @@ public class ServicioCvInteligenteTest {
         assertThat(resultado, is("Usuario no tiene carrera asignada"));
         verifyNoInteractions(servicioUsuarioMateriaMock, restTemplateMock);
     }
-   
+
 
     @Test
     public void queDevuelvaMensajeSiGeminiRespondeVacio() {
