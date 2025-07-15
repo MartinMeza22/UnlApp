@@ -66,5 +66,21 @@ public class ServicioAdminTest {
         assertThat(resultado, hasEntry("En relación de dependencia", 7L));
         verify(repositorioUsuarioMock).countUsuariosGroupBySituacionLaboral();
     }
+    @Test
+    public void queObtengaPublicacionesPorCarrera() {
+        List<Object[]> datosMock = List.of(
+                new Object[]{"Arquitectura", 2L},
+                new Object[]{"Medicina", 4L}
+        );
+
+        when(repositorioPublicacionMock.countPublicacionesGroupByCarrera()).thenReturn(datosMock);
+
+        Map<String, Long> resultado = servicio.obtenerPublicacionesPorCarrera();
+
+        assertThat(resultado.size(), is(2));
+        assertThat(resultado.get("Arquitectura"), is(2L));
+        assertThat(resultado.get("Medicina"), is(4L));
+        verify(repositorioPublicacionMock).countPublicacionesGroupByCarrera();
+    }
 }
 
