@@ -106,29 +106,29 @@ public class VistaProgresoYModalMateriaE2E {
         assertThat("La nota debería ser la modificada", notaObtenida, is(nuevaNota));
     }
 
-//    @Test
-//    public void queCuandoElUsuarioPongaCursarUnaMateriaPeroSeArrepientaYVuelvaDejarlaMateriaYSuEstadoSeaPendiente() {
-//        realizarLoginComoTestUser();
-//        page.click("text=Ver progreso académico");
-//        page.waitForURL("**/progreso");
-//
-//        String materiaADejarDeCursar = "Base de Datos II";
-//
-//        VistaProgreso vistaProgreso = new VistaProgreso(page);
-//
-//        vistaProgreso.cursarMateria(materiaADejarDeCursar);
-//        String obtenerEstadoDeLaMateria = vistaProgreso.obtenerEstadoMateria(materiaADejarDeCursar);
-//        assertThat("La materia debería estar CURSANDO", obtenerEstadoDeLaMateria, is("CURSANDO"));
-//
-//        vistaProgreso.dejarMateria(materiaADejarDeCursar);
-//        page.waitForURL("**/progreso");
-//
-//        String estadoFinal = vistaProgreso.obtenerEstadoMateria(materiaADejarDeCursar).trim();
-//        assertThat("La materia debería estar PENDIENTE", estadoFinal, is("PENDIENTE"));
-//
-//        Boolean botonCursarDisponible = vistaProgreso.botonCursarEstaDisponible(materiaADejarDeCursar);
-//        assertThat("El botón de cursar debería estar disponible", botonCursarDisponible, is(true));
-//    }
+    @Test
+    public void queCuandoElUsuarioPongaCursarUnaMateriaPeroSeArrepientaYVuelvaDejarlaMateriaYSuEstadoSeaPendiente() {
+        realizarLoginComoTestUser();
+        page.click("text=Ver progreso académico");
+        page.waitForURL("**/progreso");
+
+        String materiaADejarDeCursar = "Taller Web II";
+
+        VistaProgreso vistaProgreso = new VistaProgreso(page);
+
+        vistaProgreso.cursarMateria(materiaADejarDeCursar);
+        String obtenerEstadoDeLaMateria = vistaProgreso.obtenerEstadoMateria(materiaADejarDeCursar);
+        assertThat("La materia debería estar CURSANDO", obtenerEstadoDeLaMateria, is("CURSANDO"));
+
+        vistaProgreso.dejarMateria(materiaADejarDeCursar);
+        page.waitForURL("**/progreso");
+
+        String estadoFinal = vistaProgreso.obtenerEstadoMateria(materiaADejarDeCursar).trim();
+        assertThat("La materia debería estar PENDIENTE", estadoFinal, is("PENDIENTE"));
+
+        Boolean botonCursarDisponible = vistaProgreso.botonCursarEstaDisponible(materiaADejarDeCursar);
+        assertThat("El botón de cursar debería estar disponible", botonCursarDisponible, is(true));
+    }
 
     // @Test
     // public void queSePuedanFiltrarLasMateriasAprobadas() {

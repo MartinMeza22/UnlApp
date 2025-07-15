@@ -1,5 +1,6 @@
 package com.tallerwebi.repositorioInterfaz;
 
+import com.tallerwebi.dominio.DTO.UsuarioYMateriasDTO;
 import com.tallerwebi.dominio.UsuarioMateria;
 
 import java.util.List;
@@ -63,5 +64,5 @@ public interface RepositorioUsuarioMateria {
     Long contarCursandoPorCarrera(Long carreraId);
     Long contarTotalRelacionesPorCarrera(Long carreraId); // Todas las relaciones usuario-materia
     Long contarUsuariosPorCarrera(Long carreraId); // Distintos usuarios de la carrera
-
+    List<UsuarioYMateriasDTO> obtenerUsuariosConMaterias();
 }

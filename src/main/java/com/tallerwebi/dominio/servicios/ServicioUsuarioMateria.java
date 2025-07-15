@@ -1,5 +1,6 @@
 package com.tallerwebi.dominio.servicios;
 
+import com.tallerwebi.dominio.DTO.UsuarioYMateriasDTO;
 import com.tallerwebi.dominio.Materia;
 import com.tallerwebi.dominio.Usuario;
 import com.tallerwebi.dominio.UsuarioMateria;
@@ -52,64 +53,7 @@ public class ServicioUsuarioMateria {
         return estadisticaGeneral;
     }
 
-//    public ProgresoDTO obtenerEstadisticaGeneralPorCarrera(Long usuarioId) {
-//        Long totalMaterias = repositorioMateria.obtenerCantidadDeMateriasDeLaCarrera();
-//        Long totalDeUsuariosPorCarrera = repositorioUsuarioMateria.contadorDeTotalDeUsuariosPorCarrera(1L);
-//
-//        Long materiasAprobadasPorUsuario = repositorioUsuarioMateria.contadorDeMateriasAprobadasGeneralPorCarrera(1L);
-//        Long materiasDesaprobadasPorUsuario = repositorioUsuarioMateria.contadorDeMateriasDesaprobadasGeneralPorCarrera(1L);
-//        Long materiasCursandoPorUsuario = repositorioUsuarioMateria.contadorDeMateriasCursandoGeneralPorCarrera(1L);
-//
-//        Long materiasPendientes = totalMaterias - materiasAprobadasPorUsuario * 1;
-//
-//        ProgresoDTO estadisticaGeneral = new ProgresoDTO(totalMaterias, materiasCursandoPorUsuario,
-//                materiasTotalesPorUsuario, materiasDesaprobadasPorUsuario, materiasAprobadasPorUsuario,
-//                materiasPendientes);
-//
-//        estadisticaGeneral.setMateriasTotalesPorUsuario(totalMaterias); //Total de materias de la carrera
-//        estadisticaGeneral.setMateriasAprobadasPorUsuario(materiasAprobadasPorUsuario); //Materias aprobadas x el usuario
-//        estadisticaGeneral.setMateriasCursandoPorUsuario(materiasCursandoPorUsuario); //Materias que el usuario está cursando x el usuario
-//        estadisticaGeneral.setMateriasDesaprobadasPorUsuario(materiasDesaprobadasPorUsuario); //Materias desaprobadas x el usuario
-//        estadisticaGeneral.setMateriasPendientes(materiasPendientes); //Materias que no cursó el usuario
-//
-//        return estadisticaGeneral;
-//    }
-    /**
-     * Asigna una materia a un usuario (empieza cursando = nota null)
-     */
-//    public UsuarioMateria asignarMateria(Long usuarioId, Long materiaId, Integer dificultad) {
-//        // Validaciones básicas
-//        validarUsuarioYMateria(usuarioId, materiaId);
-//
-//        // Verificar que el usuario existe
-//        Usuario usuario = repositorioUsuario.buscarPorId(usuarioId);
-//        if (usuario == null) {
-//            throw new IllegalArgumentException("El usuario con ID " + usuarioId + " no existe");
-//        }
-//
-//        // Verificar que la materia existe
-//        Materia materia = repositorioMateria.buscarPorId(materiaId);
-//        if (materia == null) {
-//            throw new IllegalArgumentException("La materia con ID " + materiaId + " no existe");
-//        }
-//
-//        // Verificar que no esté ya asignada
-//        if (repositorioUsuarioMateria.existe(usuarioId, materiaId)) {
-//            throw new IllegalArgumentException("El usuario ya tiene asignada esta materia");
-//        }
-//
-//        // Validar dificultad
-//        validarDificultad(dificultad);
-//
-//        // Crear la relación (nota = null = cursando)
-//        UsuarioMateria usuarioMateria = new UsuarioMateria(usuario, materia);
-//        usuarioMateria.setDificultad(dificultad);
-//
-//        // Guardar
-//        repositorioUsuarioMateria.guardar(usuarioMateria);
-//
-//        return usuarioMateria;
-//    }
+
 
     public UsuarioMateria asignarMateria(Long usuarioId, Long materiaId, Integer nota, Integer dificultad) {
         // Validaciones básicas
@@ -411,6 +355,10 @@ public class ServicioUsuarioMateria {
     public Usuario obtenerUsuario(Long idUsuario) {
 
         return this.repositorioUsuario.buscarPorId(idUsuario);
+    }
+
+    public List<UsuarioYMateriasDTO> obtenerUsuariosConMaterias() {
+        return repositorioUsuarioMateria.obtenerUsuariosConMaterias();
     }
 
 }
