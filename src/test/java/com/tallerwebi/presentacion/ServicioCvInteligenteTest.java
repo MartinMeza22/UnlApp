@@ -95,4 +95,16 @@ public class ServicioCvInteligenteTest {
         assertThat(resultado, is("Usuario no encontrado"));
         verifyNoInteractions(servicioUsuarioMateriaMock, restTemplateMock);
     }
+
+    @Test
+    public void queNoGenereCvSiUsuarioSinCarrera() {
+        Usuario usuario = new Usuario();
+        usuario.setId(2L);          // sin carrera
+        when(repositorioUsuarioMock.buscarPorId(usuario.getId())).thenReturn(usuario);
+
+        String resultado = servicio.generarCv(usuario.getId());
+
+        assertThat(resultado, is("Usuario no tiene carrera asignada"));
+        verifyNoInteractions(servicioUsuarioMateriaMock, restTemplateMock);
+    }
 }
