@@ -28,4 +28,6 @@ public class VistaLogin extends VistaWeb {
     public void darClickEnIniciarSesion(){
         this.darClickEnElElemento("#btn-login");
     }
+    public void cerrarSesion() {this.darClickEnElElemento("button:has-text('Cerrar sesión')");
+    }
 }
