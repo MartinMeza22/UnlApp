@@ -149,5 +149,6 @@ public class ForoE2E {
         Locator filaReporte = page.locator("tr:has-text('" + tituloPublicacionUnico + "')");
         assertThat(filaReporte).isVisible();
         assertThat(filaReporte).containsText("inapropiado");
+
     }
 }
