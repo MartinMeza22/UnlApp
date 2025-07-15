@@ -3,6 +3,7 @@ import com.tallerwebi.dominio.Reporte;
 import com.tallerwebi.dominio.Usuario;
 import com.tallerwebi.dominio.Carrera;
 import com.tallerwebi.dominio.excepcion.UsuarioNoEncontrado;
+import com.tallerwebi.dominio.servicios.ServicioUsuarioMateria;
 import com.tallerwebi.servicioInterfaz.ServicioAdmin;
 import com.tallerwebi.servicioInterfaz.ServicioReporte;
 import com.tallerwebi.servicioInterfaz.ServicioUsuario;
@@ -26,6 +27,7 @@ public class ControladorAdminTest {
     private ServicioUsuario servicioUsuarioMock;
     private ServicioReporte servicioReporteMock;
     private ServicioAdmin servicioAdminMock;
+    private ServicioUsuarioMateria servicioUsuarioMateriaMock;
 
     private ControladorAdmin controlador;
 
@@ -34,11 +36,13 @@ public class ControladorAdminTest {
         servicioUsuarioMock = mock(ServicioUsuario.class);
         servicioReporteMock = mock(ServicioReporte.class);
         servicioAdminMock   = mock(ServicioAdmin.class);
+        servicioUsuarioMateriaMock = mock(ServicioUsuarioMateria.class);
 
         controlador = new ControladorAdmin(
                 servicioUsuarioMock,
                 servicioReporteMock,
-                servicioAdminMock
+                servicioAdminMock,
+                servicioUsuarioMateriaMock
         );
     }
 
