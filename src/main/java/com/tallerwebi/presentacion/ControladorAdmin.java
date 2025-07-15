@@ -32,7 +32,7 @@ public class ControladorAdmin {
     private final ServicioUsuarioMateria servicioUsuarioMateria;
 
     @Autowired
-    public ControladorAdmin(ServicioUsuario servicioUsuario, ServicioReporte servicioReporte,ServicioAdmin servicioAdmin, ServicioUsuarioMateria servicioUsuarioMateria) {
+    public ControladorAdmin(ServicioUsuario servicioUsuario, ServicioReporte servicioReporte, ServicioAdmin servicioAdmin, ServicioUsuarioMateria servicioUsuarioMateria) {
         this.servicioUsuario = servicioUsuario;
         this.servicioReporte = servicioReporte;
         this.servicioAdmin = servicioAdmin;
