@@ -85,5 +85,14 @@ public class ServicioCvInteligenteTest {
         );
     }
 
-    
+    @Test
+    public void queNoGenereCvSiUsuarioNoExiste() {
+        Long idUsuario = 99L;
+        when(repositorioUsuarioMock.buscarPorId(idUsuario)).thenReturn(null);
+
+        String resultado = servicio.generarCv(idUsuario);
+
+        assertThat(resultado, is("Usuario no encontrado"));
+        verifyNoInteractions(servicioUsuarioMateriaMock, restTemplateMock);
+    }
 }
