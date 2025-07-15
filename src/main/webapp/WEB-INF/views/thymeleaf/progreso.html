@@ -756,6 +756,7 @@
 
     <button id="btnMostrarResumen" class="btn btn-primary">Ver Resumen Inteligente</button>
     <button id="btnMostrarResumenHistorico" class="btn btn-secondary ms-2">Ver Resumen Histórico</button>
+    <button id="btnGenerarAnalitico" class="btn btn-danger ms-2">Generar Analítico</button>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -873,6 +874,123 @@
 
             doc.save(`Resumen_${nombreUsuario.replace(/\s+/g, '_')}.pdf`);
         });
+        
+        // botón generar analítico
+        document.getElementById('btnGenerarAnalitico').addEventListener('click', function () {
+            fetch('/tallerwebi-base-1.0-SNAPSHOT/analitico-academico')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error al obtener los datos del analítico');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    generarPDFAnalitico(data);
+                })
+                .catch(err => {
+                    alert('Error al generar el analítico: ' + err.message);
+                });
+        });
+        
+        function generarPDFAnalitico(datos) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            const fecha = new Date().toLocaleDateString('es-AR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+            
+            let yPosition = 20;
+            const marginLeft = 15;
+            const lineHeight = 7;
+            
+            // Título principal
+            doc.setFontSize(16);
+            doc.setFont(undefined, 'bold');
+            doc.text('ANALÍTICO ACADÉMICO', marginLeft, yPosition);
+            yPosition += lineHeight + 5;
+            
+            // Información del estudiante
+            doc.setFontSize(12);
+            doc.text(`Estudiante: ${datos.estudiante.nombre}`, marginLeft, yPosition);
+            yPosition += lineHeight;
+            doc.text(`Email: ${datos.estudiante.email}`, marginLeft, yPosition);
+            yPosition += lineHeight;
+            doc.text(`Carrera: ${datos.estudiante.carrera}`, marginLeft, yPosition);
+            yPosition += lineHeight;
+            doc.text(`Fecha de emisión: ${fecha}`, marginLeft, yPosition);
+            yPosition += lineHeight + 5;
+            
+            // Resumen académico
+            doc.setFont(undefined, 'bold');
+            doc.text('RESUMEN ACADÉMICO', marginLeft, yPosition);
+            yPosition += lineHeight;
+            
+            doc.setFont(undefined, 'normal');
+            doc.text(`Promedio General: ${datos.resumen.promedioGeneral}`, marginLeft, yPosition);
+            yPosition += lineHeight;
+            doc.text(`Materias Aprobadas: ${datos.resumen.materiasAprobadas}`, marginLeft, yPosition);
+            yPosition += lineHeight;
+            doc.text(`Materias Desaprobadas: ${datos.resumen.materiasDesaprobadas}`, marginLeft, yPosition);
+            yPosition += lineHeight;
+            doc.text(`Materias Cursando: ${datos.resumen.materiasCursando}`, marginLeft, yPosition);
+            yPosition += lineHeight;
+            doc.text(`Porcentaje de Avance: ${datos.resumen.porcentajeAvance}%`, marginLeft, yPosition);
+            yPosition += lineHeight + 10;
+            
+            // Detalle de materias
+            doc.setFont(undefined, 'bold');
+            doc.text('DETALLE DE MATERIAS', marginLeft, yPosition);
+            yPosition += lineHeight + 5;
+            
+            doc.setFont(undefined, 'normal');
+            doc.setFontSize(10);
+            
+            // Cabeceras
+            doc.text('MATERIA', marginLeft, yPosition);
+            doc.text('CUATR.', marginLeft + 80, yPosition);
+            doc.text('ESTADO', marginLeft + 110, yPosition);
+            doc.text('NOTA', marginLeft + 150, yPosition);
+            doc.text('DIFIC.', marginLeft + 170, yPosition);
+            yPosition += lineHeight;
+            
+            // Línea separadora
+            doc.line(marginLeft, yPosition - 2, 200, yPosition - 2);
+            yPosition += 2;
+            
+            // Materias
+            datos.materias.forEach(materia => {
+                if (yPosition > 280) {
+                    doc.addPage();
+                    yPosition = 20;
+                }
+                
+                const nombreMateria = materia.nombre.length > 25 ? 
+                    materia.nombre.substring(0, 25) + '...' : materia.nombre;
+                
+                doc.text(nombreMateria, marginLeft, yPosition);
+                doc.text(materia.cuatrimestre?.toString() || '-', marginLeft + 80, yPosition);
+                doc.text(materia.estado || '-', marginLeft + 110, yPosition);
+                doc.text(materia.nota?.toString() || '-', marginLeft + 150, yPosition);
+                doc.text(materia.dificultadCursada || '-', marginLeft + 170, yPosition);
+                
+                yPosition += lineHeight;
+            });
+            
+            // Pie de página
+            const totalPages = doc.internal.getNumberOfPages();
+            for (let i = 1; i <= totalPages; i++) {
+                doc.setPage(i);
+                doc.setFontSize(8);
+                doc.text(`Página ${i} de ${totalPages}`, 170, 290);
+                doc.text('Documento generado por UnlApp', marginLeft, 290);
+            }
+            
+            // Descargar
+            doc.save(`Analitico_${datos.estudiante.nombre.replace(/\s+/g, '_')}.pdf`);
+        }
     });
 </script>
 
