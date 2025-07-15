@@ -23,6 +23,21 @@
             <p th:text="${resumenGenerado}"></p>
         </div>
     </div>
+
+    <div class="card shadow p-4 mt-5">
+        <h3 class="mb-4 text-center">Mis resúmenes</h3>
+
+        <div th:if="${misResumenes != null and #lists.isEmpty(misResumenes) == false}">
+            <div th:each="resumen : ${misResumenes}" class="mb-4">
+                <h5 th:text="${resumen.textoOriginal}"></h5>
+                <p th:text="${resumen.resumenGenerado}"></p>
+                <hr>
+            </div>
+        </div>
+        <div th:if="${misResumenes == null or #lists.isEmpty(misResumenes)}">
+            <p class="text-muted text-center">Todavía no generaste resúmenes.</p>
+        </div>
+    </div>
 </main>
 </body>
 </html>

@@ -2,6 +2,7 @@ package com.tallerwebi.presentacion;
 
 
 import com.tallerwebi.dominio.excepcion.UsuarioNoEncontrado;
+import com.tallerwebi.dominio.servicios.ResumenUsuario;
 import com.tallerwebi.dominio.servicios.ServicioGeneradorResumen;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 @Controller
 public class ControladorGeneradorResumen {
@@ -31,11 +33,24 @@ public class ControladorGeneradorResumen {
         String resumen = servicioGeneradorResumen.generarYGuardarResumen(tema, usuarioId);
         modelo.addAttribute("resumenGenerado", resumen);
 
+        List<ResumenUsuario> misResúmenes = servicioGeneradorResumen.obtenerResúmenesDeUsuario(usuarioId);
+        modelo.addAttribute("misResúmenes", misResúmenes);
+
         return "generar-resumen";
     }
 
     @GetMapping("/generar-resumen")
-    public String mostrarFormulario() {
+    public String mostrarFormulario(HttpSession session, Model modelo) {
+        Long usuarioId = (Long) session.getAttribute("ID");
+        if (usuarioId == null) {
+            return "redirect:/login";
+        }
+
+        List<ResumenUsuario> misResúmenes = servicioGeneradorResumen.obtenerResúmenesDeUsuario(usuarioId);
+        modelo.addAttribute("misResumenes", misResúmenes);
+
         return "generar-resumen";
     }
 }
+
+

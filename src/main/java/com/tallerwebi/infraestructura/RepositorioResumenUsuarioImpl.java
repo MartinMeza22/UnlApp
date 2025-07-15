@@ -27,5 +27,15 @@ public class RepositorioResumenUsuarioImpl implements RepositorioResumenUsuario 
                 .setParameter("usuario", usuario)
                 .getResultList();
     }
+
+    @Override
+    public List<ResumenUsuario> obtenerPorUsuarioId(Long usuarioId) {
+        String hql = "FROM ResumenUsuario WHERE usuario.id = :usuarioId ORDER BY id DESC";
+        return sessionFactory.getCurrentSession()
+                .createQuery(hql, ResumenUsuario.class)
+                .setParameter("usuarioId", usuarioId)
+                .getResultList();
+    }
+
 }
 

@@ -9,5 +9,7 @@ public interface RepositorioResumenUsuario {
     void guardar(ResumenUsuario resumen);
 
     List<ResumenUsuario> obtenerPorUsuario(Usuario usuario);
+    List<ResumenUsuario> obtenerPorUsuarioId(Long usuarioId);
+
 }
 

@@ -40,7 +40,7 @@ public class ServicioGeneradorResumen {
 
 
     public String generarYGuardarResumen(String tema, Long usuarioId) throws UsuarioNoEncontrado {
-        String prompt = "Generá un resumen claro y académico sobre el siguiente tema, asi puedo estudiar de ahí. Incluí todo lo que consideres importante. Usa texto plano, no uses listas ni nada por el estilo. Podes usar varios parrafos: " + tema;
+        String prompt = "Generá un resumen claro y académico sobre el siguiente tema, asi puedo estudiar de ahí. Incluí todo lo que consideres importante. Usa texto plano, no uses listas, ni negritas, ni nada por el estilo. Podes usar varios parrafos: " + tema;
 
         String resumenGenerado = obtenerResumenDesdeGemini(prompt);
 
@@ -87,6 +87,10 @@ public class ServicioGeneradorResumen {
         List<Map<String, Object>> parts = (List<Map<String, Object>>) contentMap.get("parts");
 
         return (String) parts.get(0).get("text");
+    }
+
+    public List<ResumenUsuario> obtenerResúmenesDeUsuario(Long usuarioId) {
+        return repositorioResumen.obtenerPorUsuarioId(usuarioId);
     }
 }
 
