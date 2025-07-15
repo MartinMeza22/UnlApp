@@ -82,4 +82,16 @@ public class ControladorAdminTest {
         assertThat(mav.getViewName(), is("redirect:/home"));
         verifyNoInteractions(servicioUsuarioMock, servicioReporteMock);
     }
+    @Test
+    void debeRedirigirALoginSiUsuarioNoEncontrado() throws UsuarioNoEncontrado {
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("ROL", "ADMIN");
+        session.setAttribute("ID", 99L);
+
+        when(servicioUsuarioMock.obtenerUsuario(99L)).thenThrow(new UsuarioNoEncontrado());
+
+        ModelAndView mav = controlador.mostrarPanelDeReportes(session);
+
+        assertThat(mav.getViewName(), is("redirect:/login"));
+    }
 }
