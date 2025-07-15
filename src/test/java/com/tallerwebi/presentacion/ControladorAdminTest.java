@@ -129,4 +129,15 @@ public class ControladorAdminTest {
                 hasEntry("publicacionesPorCarrera", publicacionesCarr)
         ));
     }
+
+
+    @Test
+    void debeRedirigirAHomeSiNoAdminEnGraficos() {
+        MockHttpSession session = new MockHttpSession(); // sin rol
+
+        ModelAndView mav = controlador.mostrarGraficos(session);
+
+        assertThat(mav.getViewName(), is("redirect:/home"));
+        verifyNoInteractions(servicioAdminMock);
+    }
 }
