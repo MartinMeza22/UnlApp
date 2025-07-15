@@ -42,7 +42,36 @@ public class ControladorAdminTest {
         );
     }
 
+    @Test
+    void debeMostrarPanelSiAdminAutenticado() throws UsuarioNoEncontrado {
+        // ---- datos de prueba ----
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("ROL", "ADMIN");
+        session.setAttribute("ID", 1L);
+
+        Carrera carrera = new Carrera();
+        carrera.setNombre("Ingeniería");
+        Usuario admin = new Usuario();
+        admin.setId(1L);
+        admin.setNombre("Admin");
+        admin.setCarrera(carrera);
+
+        List<Reporte> reportes = List.of(new Reporte());
+
+        when(servicioUsuarioMock.obtenerUsuario(1L)).thenReturn(admin);
+        when(servicioReporteMock.obtenerReportesPorCarrera(carrera)).thenReturn(reportes);
+
+        // ---- ejecución ----
+        ModelAndView mav = controlador.mostrarPanelDeReportes(session);
+
+        // ---- verificaciones ----
+        assertThat(mav.getViewName(), is("admin-panel"));
+        assertThat(mav.getModel(), hasEntry("admin", admin));
+        assertThat(mav.getModel(), hasEntry("reportes", reportes));
+
+        verify(servicioUsuarioMock).obtenerUsuario(1L);
+        verify(servicioReporteMock).obtenerReportesPorCarrera(carrera);
+    }
 
 
-   
 }
