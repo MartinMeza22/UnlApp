@@ -6,6 +6,17 @@
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}" />
 </head>
 <body>
+
+<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top px-3">
+    <a class="navbar-brand" th:href="@{/home}">UnlApp</a>
+
+    <div class="ms-auto pe-3">
+        <form th:action="@{/logout}" method="get" class="d-flex">
+            <button class="btn btn-outline-light" type="submit">Cerrar sesión</button>
+        </form>
+    </div>
+</nav>
+
 <main class="container mt-5">
     <div class="card shadow p-4">
         <h2 class="mb-4 text-center">Generador de Resúmenes</h2>
