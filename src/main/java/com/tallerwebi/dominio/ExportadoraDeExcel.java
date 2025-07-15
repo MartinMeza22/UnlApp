@@ -19,12 +19,13 @@ public class ExportadoraDeExcel {
 
             // Encabezado
             Row header = hoja.createRow(0);
-            header.createCell(0).setCellValue("Usuario");
-            header.createCell(1).setCellValue("Carrera");
-            header.createCell(2).setCellValue("Materia");
-            header.createCell(3).setCellValue("Estado");
-            header.createCell(4).setCellValue("Nota");
-            header.createCell(5).setCellValue("Dificultad");
+            header.createCell(0).setCellValue("Nombre y Apellido");
+            header.createCell(1).setCellValue("Email");
+            header.createCell(2).setCellValue("Carrera");
+            header.createCell(3).setCellValue("Materia");
+            header.createCell(4).setCellValue("Estado");
+            header.createCell(5).setCellValue("Nota");
+            header.createCell(6).setCellValue("Dificultad");
 
             int fila = 1;
             for (UsuarioYMateriasDTO umDTO : usuarios) {
@@ -35,12 +36,13 @@ public class ExportadoraDeExcel {
 
                     Materia materia = um.getMateria();
 
-                    row.createCell(0).setCellValue(usuario.getNombre());
-                    row.createCell(1).setCellValue(usuario.getCarrera().getNombre());
-                    row.createCell(2).setCellValue(materia.getNombre());
-                    row.createCell(3).setCellValue(estadoComoTexto(um.getEstado()));
-                    row.createCell(4).setCellValue(um.getNota() != null ? String.valueOf(um.getNota()) : "-");
-                    row.createCell(5).setCellValue(um.getDificultad() != null ? String.valueOf(um.getDificultad()) : "-");
+                    row.createCell(0).setCellValue(usuario.getNombre() + " " + usuario.getApellido());
+                    row.createCell(1).setCellValue(usuario.getEmail());
+                    row.createCell(2).setCellValue(usuario.getCarrera().getNombre());
+                    row.createCell(3).setCellValue(materia.getNombre());
+                    row.createCell(4).setCellValue(estadoComoTexto(um.getEstado()));
+                    row.createCell(5).setCellValue(um.getNota() != null ? String.valueOf(um.getNota()) : "-");
+                    row.createCell(6).setCellValue(um.getDificultad() != null ? String.valueOf(um.getDificultad()) : "-");
                 }
             }
 
@@ -57,9 +59,9 @@ public class ExportadoraDeExcel {
 
     private static String estadoComoTexto(Integer estado) {
         switch (estado) {
-            case 1: return "Aprobada";
+            case 3: return "Aprobada";
             case 2: return "Cursando";
-            case 3: return "Desaprobada";
+            case 4: return "Desaprobada";
             default: return "Sin estado";
         }
     }

@@ -1,8 +1,11 @@
 package com.tallerwebi.presentacion;
 
+import com.tallerwebi.dominio.DTO.UsuarioYMateriasDTO;
+import com.tallerwebi.dominio.ExportadoraDeExcel;
 import com.tallerwebi.dominio.Reporte;
 import com.tallerwebi.dominio.Usuario;
 import com.tallerwebi.dominio.excepcion.UsuarioNoEncontrado;
+import com.tallerwebi.dominio.servicios.ServicioUsuarioMateria;
 import com.tallerwebi.servicioInterfaz.ServicioAdmin;
 import com.tallerwebi.servicioInterfaz.ServicioReporte;
 import com.tallerwebi.servicioInterfaz.ServicioUsuario;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 
@@ -25,12 +29,14 @@ public class ControladorAdmin {
     private final ServicioUsuario servicioUsuario;
     private final ServicioReporte servicioReporte;
     private final ServicioAdmin servicioAdmin;
+    private final ServicioUsuarioMateria servicioUsuarioMateria;
 
     @Autowired
-    public ControladorAdmin(ServicioUsuario servicioUsuario, ServicioReporte servicioReporte,ServicioAdmin servicioAdmin) {
+    public ControladorAdmin(ServicioUsuario servicioUsuario, ServicioReporte servicioReporte,ServicioAdmin servicioAdmin, ServicioUsuarioMateria servicioUsuarioMateria) {
         this.servicioUsuario = servicioUsuario;
         this.servicioReporte = servicioReporte;
         this.servicioAdmin = servicioAdmin;
+        this.servicioUsuarioMateria = servicioUsuarioMateria;
     }
 
     @GetMapping("/panel")
@@ -83,5 +89,21 @@ public class ControladorAdmin {
         return mav;
     }
 
+    @GetMapping("/exportar-excel")
+    public void exportarProgreso(HttpServletResponse response) {
+        try {
+            response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            response.setHeader("Content-Disposition", "attachment; filename=progreso.xlsx");
 
+            List<UsuarioYMateriasDTO> datos = servicioUsuarioMateria.obtenerUsuariosConMaterias();
+
+            ExportadoraDeExcel.exportarProgresoUsuarios(datos, response.getOutputStream());
+
+            response.flushBuffer();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error al exportar Excel", e);
+        }
+    }
 }

@@ -1,5 +1,7 @@
 package com.tallerwebi.infraestructura;
 
+import com.tallerwebi.dominio.DTO.UsuarioYMateriasDTO;
+import com.tallerwebi.dominio.Usuario;
 import com.tallerwebi.repositorioInterfaz.RepositorioUsuarioMateria;
 import com.tallerwebi.dominio.UsuarioMateria;
 import org.hibernate.SessionFactory;
@@ -8,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Repository("repositorioUsuarioMateria")
 public class RepositorioUsuarioMateriaImpl implements RepositorioUsuarioMateria { //Implementamos la interfaz
@@ -56,9 +60,9 @@ public class RepositorioUsuarioMateriaImpl implements RepositorioUsuarioMateria 
     @SuppressWarnings("unchecked")
     public List<UsuarioMateria> buscarTodas() {
         final String hql = "FROM UsuarioMateria um " + //HQL es una consulta con Hibernate
-                          "JOIN FETCH um.usuario u " +
-                          "JOIN FETCH um.materia m " +
-                          "ORDER BY u.email, m.nombre";
+                "JOIN FETCH um.usuario u " +
+                "JOIN FETCH um.materia m " +
+                "ORDER BY u.email, m.nombre";
         return sessionFactory.getCurrentSession()
                 .createQuery(hql)
                 .list();
@@ -228,7 +232,7 @@ public class RepositorioUsuarioMateriaImpl implements RepositorioUsuarioMateria 
                 "FROM UsuarioMateria um " +
                 "WHERE um.usuario.carrera.id = :carreraId";
 
-         Long count = (Long) sessionFactory.getCurrentSession()
+        Long count = (Long) sessionFactory.getCurrentSession()
                 .createQuery(hql)
                 .setParameter("carreraId", carreraId)
                 .uniqueResult();
@@ -247,4 +251,38 @@ public class RepositorioUsuarioMateriaImpl implements RepositorioUsuarioMateria 
                 .uniqueResult();
     }
 
+    @Override
+    public List<UsuarioYMateriasDTO> obtenerUsuariosConMaterias() {
+        try {
+            String hql = "FROM UsuarioMateria um " +
+                    "JOIN FETCH um.usuario " +
+                    "JOIN FETCH um.materia";
+
+            List<UsuarioMateria> todas = sessionFactory.getCurrentSession()
+                    .createQuery(hql, UsuarioMateria.class)
+                    .getResultList();
+
+            System.out.println("Tengo:" + todas.size() + " UsuarioMateria");
+
+            Map<Usuario, List<UsuarioMateria>> agrupado = todas.stream()
+                    .collect(Collectors.groupingBy(UsuarioMateria::getUsuario));
+
+            return agrupado.entrySet().stream()
+                    .map(entry -> new UsuarioYMateriasDTO(entry.getKey(), entry.getValue()))
+                    .collect(Collectors.toList());
+
+        } catch (Exception e) {
+            System.err.println("Error en obtenerUsuariosConMaterias:");
+            e.printStackTrace();
+            throw e;
+        }
+
+
+    }
 }
+//header.createCell(0).setCellValue("Usuario");
+//            header.createCell(1).setCellValue("Carrera");
+//            header.createCell(2).setCellValue("Materia");
+//            header.createCell(3).setCellValue("Estado");
+//            header.createCell(4).setCellValue("Nota");
+//            header.createCell(5).setCellValue("Dificultad");
