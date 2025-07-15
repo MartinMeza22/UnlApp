@@ -94,4 +94,15 @@ public class ControladorAdminTest {
 
         assertThat(mav.getViewName(), is("redirect:/login"));
     }
+    @Test
+    void debeEliminarReporteYAgregarFlashDeExito() {
+        RedirectAttributes flashes = new RedirectAttributesModelMap();
+
+        ModelAndView mav = controlador.eliminarReporte(10L, flashes);
+
+        assertThat(mav.getViewName(), is("redirect:/admin/panel"));
+        assertThat(flashes.getFlashAttributes(), hasEntry("exito",
+                "El reporte fue descartado correctamente."));
+        verify(servicioReporteMock).eliminarReporte(10L);
+    }
 }
