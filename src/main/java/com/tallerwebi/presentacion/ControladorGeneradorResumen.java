@@ -34,7 +34,7 @@ public class ControladorGeneradorResumen {
         modelo.addAttribute("resumenGenerado", resumen);
 
         List<ResumenUsuario> misResúmenes = servicioGeneradorResumen.obtenerResumenesDelUsuario(usuarioId);
-        modelo.addAttribute("misResúmenes", misResúmenes);
+        modelo.addAttribute("misResumenes", misResúmenes);
 
         return "generar-resumen";
     }
