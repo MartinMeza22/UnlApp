@@ -16,10 +16,10 @@ import java.util.Map;
 public class ControladorAnalitico {
 
     @Autowired
-    private ServicioAnalitico servicioAnalitico;
+    ServicioAnalitico servicioAnalitico;
 
     @Autowired
-    private ObjectMapper objectMapper;
+    ObjectMapper objectMapper;
 
     @GetMapping("/analitico-academico")
     @ResponseBody
