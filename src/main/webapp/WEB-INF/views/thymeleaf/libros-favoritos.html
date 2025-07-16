@@ -12,7 +12,7 @@
     <style>
         :root { /* ... */ }
         body { /* ... */ }
-        /* Copiar todos los estilos del CSS de la vista anterior aquí */
+
         :root {
             --background-color: #121212;
             --surface-color: #1e1e1e;
@@ -141,29 +141,24 @@
         const errorMsg = /*[[${error}]]*/ null;
 
         let message = null;
-        let colorClasses = ''; // Usaremos esta variable para todas las clases de color
+        let colorClasses = '';
 
         if (exitoAgregar) {
             message = exitoAgregar;
-            // Fondo verde con texto blanco
             colorClasses = 'bg-success text-white';
         } else if (exitoEliminar) {
             message = exitoEliminar;
-            // Fondo amarillo con texto oscuro para contraste
             colorClasses = 'bg-warning text-dark';
         } else if (errorMsg) {
             message = errorMsg;
-            // Fondo rojo con texto blanco
             colorClasses = 'bg-danger text-white';
         }
 
         if (message) {
             toastBody.textContent = message;
 
-            // 1. Limpiamos CUALQUIER clase de color anterior para evitar conflictos
             toastEl.classList.remove('bg-success', 'bg-warning', 'bg-danger', 'text-white', 'text-dark');
 
-            // 2. Agregamos las clases nuevas (ej: 'bg-warning' y 'text-dark')
             toastEl.classList.add(...colorClasses.split(' '));
 
             toast.show();

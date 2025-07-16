@@ -45,9 +45,8 @@ public class ControladorBiblioteca {
         }
         try {
             this.servicioLibro.agregarLibroAFavoritos(usuarioId, idLibroFavorito);
-            // Mensaje de éxito para agregar
             redirectAttributes.addFlashAttribute("exito_agregar", "¡Libro guardado en tus favoritos!");
-        } catch (Exception e) { // Puedes usar una excepción más específica si la tienes
+        } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "No se pudo guardar el libro.");
         }
         return "redirect:/biblioteca-digital";
@@ -62,7 +61,6 @@ public class ControladorBiblioteca {
         }
         try {
             servicioLibro.eliminarLibroDeFavoritos(usuarioId, idLibroFavorito);
-            // Mensaje de éxito para eliminar
             redirectAttributes.addFlashAttribute("exito_eliminar", "Libro eliminado de tus favoritos.");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "No se pudo eliminar el favorito.");

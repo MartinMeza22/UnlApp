@@ -26,14 +26,8 @@ public class ControladorLibrosFavoritos {
         Long usuarioId = (Long) session.getAttribute("ID");
         Model model;
 
-        // Si no hay usuario, redirigir al login
-        if (usuarioId == null) {
-            return new ModelAndView("redirect:/login");
-        }
-
         ModelAndView mav = new ModelAndView("libros-favoritos");
 
-        // Usamos el nuevo método del servicio para obtener los libros
         List<Item> librosFavoritos = servicioLibro.obtenerLibrosFavoritosDelUsuario(usuarioId);
 
         mav.addObject("libros", librosFavoritos);
