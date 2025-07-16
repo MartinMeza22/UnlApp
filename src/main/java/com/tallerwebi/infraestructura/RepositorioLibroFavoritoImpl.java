@@ -22,7 +22,6 @@ public class RepositorioLibroFavoritoImpl implements RepositorioLibroFavorito {
 
     @Override
     public void guardar(LibroFavorito libroFavorito) {
-        // El método save() de Hibernate persiste la nueva entidad en la DB.
         sessionFactory.getCurrentSession().save(libroFavorito);
     }
 
@@ -30,18 +29,14 @@ public class RepositorioLibroFavoritoImpl implements RepositorioLibroFavorito {
     public boolean existe(Usuario usuario, String idGoogleBook) {
         final Session session = sessionFactory.getCurrentSession();
 
-        // Usamos una consulta HQL (Hibernate Query Language) para contar los registros.
-        // Es más eficiente que traer el objeto completo.
         Query<Long> query = session.createQuery(
                 "SELECT count(lf.id) FROM LibroFavorito lf WHERE lf.usuario = :usuario AND lf.idGoogleBook = :idGoogleBook",
                 Long.class
         );
 
-        // Asignamos los parámetros para evitar inyección SQL.
         query.setParameter("usuario", usuario);
         query.setParameter("idGoogleBook", idGoogleBook);
 
-        // getSingleResult() obtiene el conteo. Si es mayor a 0, el favorito ya existe.
         return query.getSingleResult() > 0;
     }
 
@@ -49,7 +44,6 @@ public class RepositorioLibroFavoritoImpl implements RepositorioLibroFavorito {
     public List<String> obtenerIdsPorUsuario(Usuario usuario) {
         final Session session = sessionFactory.getCurrentSession();
         Query<String> query = session.createQuery(
-                // Seleccionamos solo el campo idGoogleBook de la entidad LibroFavorito
                 "SELECT lf.idGoogleBook FROM LibroFavorito lf WHERE lf.usuario = :usuario",
                 String.class
         );
@@ -65,7 +59,7 @@ public class RepositorioLibroFavoritoImpl implements RepositorioLibroFavorito {
         );
         query.setParameter("usuario", usuario);
         query.setParameter("idGoogleBook", idGoogleBook);
-        query.executeUpdate(); // Se usa para operaciones de DELETE, UPDATE, INSERT
+        query.executeUpdate();
 
     }
 }

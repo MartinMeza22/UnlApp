@@ -9,16 +9,13 @@ public class LibroFavorito {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Relación: Muchos favoritos pueden pertenecer a UN usuario.
     @ManyToOne
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
 
-    // Guardamos el ID que nos da la API de Google Books.
     @Column(name = "bookApiId", nullable = false)
     private String idGoogleBook;
 
-    // Constructores, getters y setters
 
     public LibroFavorito() {
     }
@@ -28,7 +25,6 @@ public class LibroFavorito {
         this.idGoogleBook = idGoogleBook;
     }
 
-    // Getters y Setters ...
     public Long getId() {
         return id;
     }

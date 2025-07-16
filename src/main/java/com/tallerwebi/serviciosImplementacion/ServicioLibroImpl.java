@@ -44,33 +44,29 @@ public class ServicioLibroImpl implements ServicioLibro{
     public List<Item> obtenerLibros() {
         String url = "https://www.googleapis.com/books/v1/volumes";
 
-        // Construye la URL con los parámetros de consulta
         URI uri = URI.create(
                 url + "?q=web&maxResults=30&key=" + apiKey
         );
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(uri)
-                .GET() // Método GET
+                .GET()
                 .build();
 
         try {
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
             if (response.statusCode() == 200) {
-                // Deserializa la respuesta completa a ApiResponse primero
-                // Luego, extrae la lista de Items
                 ApiResponse apiResponse = objectMapper.readValue(response.body(), ApiResponse.class);
                 return apiResponse != null && apiResponse.getItems() != null ? apiResponse.getItems() : Collections.emptyList();
             } else {
-                // Manejar otros códigos de estado si es necesario
                 System.err.println("Error al obtener libros. Código de estado: " + response.statusCode());
                 return Collections.emptyList();
             }
 
         } catch (IOException | InterruptedException e) {
             System.err.println("Excepción al obtener libros: " + e.getMessage());
-            return Collections.emptyList(); // Retornar una lista vacía en caso de error
+            return Collections.emptyList();
         }
     }
 
@@ -85,20 +81,19 @@ public class ServicioLibroImpl implements ServicioLibro{
     @Override
     public Set<String> obtenerIdsDeLibrosFavoritos(Long idUsuario) {
         if (idUsuario == null) {
-            return Collections.emptySet(); // Devuelve un conjunto vacío si no hay usuario
+            return Collections.emptySet();
         }
         Usuario usuario = repositorioUsuario.buscarPorId(idUsuario);
         if (usuario == null) {
             return Collections.emptySet();
         }
-        // Convertimos la lista del repositorio a un HashSet para búsquedas rápidas
         return new HashSet<>(repositorioLibroFavorito.obtenerIdsPorUsuario(usuario));
 
     }
 
     @Override
     public void eliminarLibroDeFavoritos(Long usuarioId, String idGoogleBook) {
-        if (usuarioId == null) return; // No hacer nada si no hay usuario
+        if (usuarioId == null) return;
 
         Usuario usuario = repositorioUsuario.buscarPorId(usuarioId);
         if (usuario != null) {
@@ -108,14 +103,12 @@ public class ServicioLibroImpl implements ServicioLibro{
 
     @Override
     public List<Item> obtenerLibrosFavoritosDelUsuario(Long usuarioId) {
-        // 1. Obtener los IDs de los libros favoritos desde la BD
         Set<String> idsFavoritos = obtenerIdsDeLibrosFavoritos(usuarioId);
 
         if (idsFavoritos.isEmpty()) {
-            return Collections.emptyList(); // No hay favoritos, devuelve lista vacía
+            return Collections.emptyList();
         }
 
-        // 2. Por cada ID, obtener los detalles completos del libro desde la API
         List<Item> librosCompletos = new ArrayList<>();
         for (String bookId : idsFavoritos) {
             try {
@@ -124,8 +117,6 @@ public class ServicioLibroImpl implements ServicioLibro{
                     librosCompletos.add(libro);
                 }
             } catch (IOException | InterruptedException e) {
-                // Manejar el error, por ejemplo, loggearlo.
-                // Aquí simplemente continuamos con el siguiente libro.
                 System.err.println("Error al obtener el libro con ID: " + bookId + " - " + e.getMessage());
             }
         }
@@ -142,11 +133,10 @@ public class ServicioLibroImpl implements ServicioLibro{
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() == 200) {
-            // Deserializamos la respuesta directamente a un objeto Item
             return objectMapper.readValue(response.body(), Item.class);
         }
 
-        return null; // Devuelve null si no se encontró o hubo un error
+        return null;
     }
 
 }
