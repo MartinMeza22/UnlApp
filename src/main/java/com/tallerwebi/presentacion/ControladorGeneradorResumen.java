@@ -33,8 +33,8 @@ public class ControladorGeneradorResumen {
         String resumen = servicioGeneradorResumen.generarYGuardarResumen(tema, usuarioId);
         modelo.addAttribute("resumenGenerado", resumen);
 
-        List<ResumenUsuario> misResúmenes = servicioGeneradorResumen.obtenerResúmenesDeUsuario(usuarioId);
-        modelo.addAttribute("misResúmenes", misResúmenes);
+        List<ResumenUsuario> misResúmenes = servicioGeneradorResumen.obtenerResumenesDelUsuario(usuarioId);
+        modelo.addAttribute("misResumenes", misResúmenes);
 
         return "generar-resumen";
     }
@@ -46,7 +46,7 @@ public class ControladorGeneradorResumen {
             return "redirect:/login";
         }
 
-        List<ResumenUsuario> misResúmenes = servicioGeneradorResumen.obtenerResúmenesDeUsuario(usuarioId);
+        List<ResumenUsuario> misResúmenes = servicioGeneradorResumen.obtenerResumenesDelUsuario(usuarioId);
         modelo.addAttribute("misResumenes", misResúmenes);
 
         return "generar-resumen";
