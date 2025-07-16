@@ -21,4 +21,12 @@ public class UsuarioYMateriasDTO {
     public List<UsuarioMateria> getMaterias() {
         return materias;
     }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
+    public void setMaterias(List<UsuarioMateria> materias) {
+        this.materias = materias;
+    }
 }
