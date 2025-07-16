@@ -1,4 +1,6 @@
 package com.tallerwebi.presentacion;
+import com.tallerwebi.dominio.DTO.UsuarioYMateriasDTO;
+import com.tallerwebi.dominio.ExportadoraDeExcel;
 import com.tallerwebi.dominio.Reporte;
 import com.tallerwebi.dominio.Usuario;
 import com.tallerwebi.dominio.Carrera;
@@ -9,16 +11,21 @@ import com.tallerwebi.servicioInterfaz.ServicioReporte;
 import com.tallerwebi.servicioInterfaz.ServicioUsuario;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InOrder;
+import org.mockito.MockedStatic;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributesModelMap;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
@@ -28,7 +35,7 @@ public class ControladorAdminTest {
     private ServicioReporte servicioReporteMock;
     private ServicioAdmin servicioAdminMock;
     private ServicioUsuarioMateria servicioUsuarioMateriaMock;
-
+    private HttpServletResponse responseMock;
     private ControladorAdmin controlador;
 
     @BeforeEach
@@ -37,7 +44,7 @@ public class ControladorAdminTest {
         servicioReporteMock = mock(ServicioReporte.class);
         servicioAdminMock   = mock(ServicioAdmin.class);
         servicioUsuarioMateriaMock = mock(ServicioUsuarioMateria.class);
-
+        responseMock = mock(HttpServletResponse.class);
         controlador = new ControladorAdmin(
                 servicioUsuarioMock,
                 servicioReporteMock,
@@ -86,6 +93,7 @@ public class ControladorAdminTest {
         assertThat(mav.getViewName(), is("redirect:/home"));
         verifyNoInteractions(servicioUsuarioMock, servicioReporteMock);
     }
+
     @Test
     void debeRedirigirALoginSiUsuarioNoEncontrado() throws UsuarioNoEncontrado {
         MockHttpSession session = new MockHttpSession();
@@ -144,4 +152,35 @@ public class ControladorAdminTest {
         assertThat(mav.getViewName(), is("redirect:/home"));
         verifyNoInteractions(servicioAdminMock);
     }
+
+    @Test
+    void exportarProgreso_mockeandoExportadora() throws Exception {
+        List<UsuarioYMateriasDTO> datosMock = List.of(mock(UsuarioYMateriasDTO.class));
+        ServletOutputStream outputStreamMock = mock(ServletOutputStream.class);
+
+        when(servicioUsuarioMateriaMock.obtenerUsuariosConMaterias()).thenReturn(datosMock);
+        when(responseMock.getOutputStream()).thenReturn(outputStreamMock);
+
+        try (MockedStatic<ExportadoraDeExcel> mockedStatic = mockStatic(ExportadoraDeExcel.class)) {
+            mockedStatic.when(() ->
+                    ExportadoraDeExcel.exportarProgresoUsuarios(anyList(), any())
+            ).thenAnswer(inv -> null); // no hace nada
+
+            controlador.exportarProgreso(responseMock);
+
+            verify(responseMock).setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            verify(responseMock).setHeader("Content-Disposition", "attachment; filename=progreso.xlsx");
+            verify(responseMock).getOutputStream();
+            verify(responseMock).flushBuffer();
+        }
+    }
+
+    @Test
+    void exportarProgreso_deberiaLanzarExcepcionSiFalla() throws Exception {
+
+        when(responseMock.getOutputStream()).thenThrow(new RuntimeException("Error simulado"));
+
+        assertThrows(RuntimeException.class, () -> controlador.exportarProgreso(responseMock));
+    }
+
 }
