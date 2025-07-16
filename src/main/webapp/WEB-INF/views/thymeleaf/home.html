@@ -6,18 +6,16 @@
   <title>UnlApp-Home</title>
 
   <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
   <link rel="stylesheet" th:href="@{/css/main.css}" />
 
   <style>
     body {
-      background-color: #f8f9fa;
-    }
-
-    body {
       position: relative;
       min-height: 100vh;
       margin: 0;
-      background-color: #f8f9fa; /* fallback */
+      background-color: #f8f9fa; 
     }
 
     body::before {
@@ -28,96 +26,188 @@
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
-      opacity: 0.4; /* Acá controlás cuán transparente queda la imagen */
+      opacity: 0.5;
       z-index: -1;
     }
 
-    .mainbox {
-      background-color: rgba(255, 255, 255, 0.75);
-      padding: 30px;
-      margin-top: 150px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    .welcome-heading {
+      margin-top: 80px;
+      margin-bottom: 1rem; 
+      font-size: 2.8rem;
+      font-weight: bold;
+      color: #212529; 
+      text-shadow: none; 
     }
 
-    .btn-quick {
-      margin-top: 15px;
+    .welcome-line {
+      width: 100px; 
+      margin: 0 auto 40px auto; 
+      border-top: 3px solid #0d6efd; 
+      opacity: 1; 
     }
 
+    .action-card {
+      background-color: rgba(255, 255, 255, 0.80);
+      border-radius: 15px;
+      padding: 20px 15px;
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out, background-color 0.2s ease-in-out;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      min-height: 160px;
+      height: 100%;
+      backdrop-filter: blur(2px);
+    }
+
+    .action-card i {
+      color: #0d6efd;
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+      transition: transform 0.2s ease-in-out, color 0.2s ease-in-out;
+    }
+
+    .action-card span {
+      color: #212529;
+      font-weight: 500;
+      font-size: 1rem;
+      text-align: center;
+      transition: color 0.2s ease-in-out;
+    }
+
+    /* --- EFECTOS HOVER --- */
+    .action-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+      background-color: rgba(255, 255, 255, 0.95);
+    }
+
+    .action-card:hover i {
+      transform: scale(1.1);
+      color: #0a58ca;
+    }
+
+    .action-card:hover span {
+      color: #0d6efd;
+    }
   </style>
 </head>
 
 <body>
 
 <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top px-3">
-  <a class="navbar-brand" th:href="@{/home}">UnlApp</a>
-
-  <div class="ms-auto pe-3">
-    <form th:action="@{/logout}" method="get" class="d-flex">
-      <button class="btn btn-outline-light" type="submit">Cerrar sesión</button>
-    </form>
+  <a class="navbar-brand" th:href="@{/home}">
+    <i class="fas fa-graduation-cap"></i>
+    UnlApp
+  </a>
+  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav ms-auto">
+      <li class="nav-item">
+        <span class="navbar-text me-3" th:text="'¡Hola, ' + ${session.NOMBRE} + '!'">¡Hola, Usuario!</span>
+      </li>
+      <li class="nav-item">
+        <a th:href="@{/logout}" class="btn btn-outline-light">Cerrar Sesión</a>
+      </li>
+    </ul>
   </div>
 </nav>
 
-<main role="main" class="container">
-  <div class="mainbox col-md-8 mx-auto text-center">
+<main role="main" class="container-xl text-center">
 
-    <h2 th:text="'¡Bienvenido, ' + ${session.NOMBRE} + '!'">¡Bienvenido!</h2>
-    <hr class="colorgraph">
+  <h2 class="welcome-heading" th:text="'¡Bienvenido, ' + ${session.NOMBRE} + '!'">¡Bienvenido!</h2>
+  <hr class="welcome-line">
 
-    <div th:if="${session.ROL == 'ALUMNO'}">
-      <div class="row">
-        <div class="col-md-6 col-sm-12">
-          <a th:href="@{/progreso}" class="btn btn-primary btn-lg w-100 btn-quick">Ver progreso académico</a>
-        </div>
-        <div class="col-md-6 col-sm-12">
-          <a th:href="@{/planificador-inteligente}" class="btn btn-danger btn-lg w-100 btn-quick">Planificador inteligente</a>
-        </div>
+  <div th:if="${session.ROL == 'ALUMNO'}">
+    <div class="row g-4">
+
+      <div class="col-xl-3 col-md-6 col-12">
+        <a th:href="@{/progreso}" class="action-card">
+          <i class="fas fa-chart-line"></i>
+          <span>Progreso Académico</span>
+        </a>
       </div>
-      <div class="row">
-        <div class="col-md-6 col-sm-12">
-          <a th:href="@{/foro}" class="btn btn-warning btn-lg w-100 btn-quick">Foro de materias</a>
-        </div>
-        <div class="col-md-6 col-sm-12">
-          <a th:href="@{/calendario}" class="btn btn-info btn-lg w-100 btn-quick">Calendario personal</a>
-        </div>
-        <div class="col-md-6 col-sm-12">
-          <a th:href="@{/materias}" class="btn btn-success btn-lg w-100 btn-quick">Ver mi Plan de Estudio</a>
-        </div>
-        <div class="col-md-6 col-sm-12">
-          <a th:href="@{/perfil}" class="btn btn-secondary btn-lg w-100 btn-quick">Ver mi Perfil</a>
-        </div>
-        <div class="col-md-6 col-sm-12">
-          <a th:href="@{/biblioteca-digital}" class="btn btn-dark btn-lg w-100 btn-quick">Biblioteca Digital</a>
-        </div>
-
-        <div class="col-md-6 col-sm-12">
-          <a th:href="@{/generar-resumen}"
-             style="background-color: coral; border-color: coral; color: white;"
-             class="btn btn-lg w-100 btn-quick">Generador de Resúmenes</a>
-        </div>
+      <div class="col-xl-3 col-md-6 col-12">
+        <a th:href="@{/planificador-inteligente}" class="action-card">
+          <i class="fas fa-lightbulb"></i>
+          <span>Planificador Inteligente</span>
+        </a>
       </div>
+      <div class="col-xl-3 col-md-6 col-12">
+        <a th:href="@{/foro}" class="action-card">
+          <i class="fas fa-comments"></i>
+          <span>Foro de Materias</span>
+        </a>
+      </div>
+      <div class="col-xl-3 col-md-6 col-12">
+        <a th:href="@{/calendario}" class="action-card">
+          <i class="fas fa-calendar-alt"></i>
+          <span>Calendario Personal</span>
+        </a>
+      </div>
+      <div class="col-xl-3 col-md-6 col-12">
+        <a th:href="@{/materias}" class="action-card">
+          <i class="fas fa-book-open"></i>
+          <span>Mi Plan de Estudio</span>
+        </a>
+      </div>
+      <div class="col-xl-3 col-md-6 col-12">
+        <a th:href="@{/perfil}" class="action-card">
+          <i class="fas fa-user"></i>
+          <span>Ver mi Perfil</span>
+        </a>
+      </div>
+      <div class="col-xl-3 col-md-6 col-12">
+        <a th:href="@{/biblioteca-digital}" class="action-card">
+          <i class="fas fa-book"></i>
+          <span>Biblioteca Digital</span>
+        </a>
+      </div>
+      <div class="col-xl-3 col-md-6 col-12">
+        <a th:href="@{/generar-resumen}" class="action-card">
+          <i class="fas fa-file-alt"></i>
+          <span>Generador de Resúmenes</span>
+        </a>
+      </div>
+
     </div>
-
-    <div th:if="${session.ROL == 'ADMIN'}">
-      <div class="row">
-        <div class="col-md-6 col-sm-12">
-          <a th:href="@{/foro}" class="btn btn-warning btn-lg w-100 btn-quick">Acceder al Foro</a>
-        </div>
-        <div class="col-md-6 col-sm-12">
-          <a th:href="@{/admin/panel}" class="btn btn-danger btn-lg w-100 btn-quick">Ver Reportes</a>
-        </div>
-        <div class="col-md-6 col-sm-12">
-          <a th:href="@{/admin/graficos}" class="btn btn-primary btn-lg w-100 btn-quick">Ver Gráficos</a>
-        </div>
-        <div class="col-md-6 col-sm-12">
-          <a th:href="@{/admin/exportar-excel}" class="btn btn-dark btn-lg w-100 btn-quick">Descargar progreso de Usuarios (Excel)</a>
-        </div>
-      </div>
-    </div>
-
-
   </div>
+
+  <div th:if="${session.ROL == 'ADMIN'}">
+    <div class="row g-4 justify-content-center">
+
+      <div class="col-xl-3 col-md-6 col-12">
+        <a th:href="@{/foro}" class="action-card">
+          <i class="fas fa-comments"></i>
+          <span>Acceder al Foro</span>
+        </a>
+      </div>
+      <div class="col-xl-3 col-md-6 col-12">
+        <a th:href="@{/admin/panel}" class="action-card">
+          <i class="fas fa-flag"></i>
+          <span>Ver Reportes</span>
+        </a>
+      </div>
+      <div class="col-xl-3 col-md-6 col-12">
+        <a th:href="@{/admin/graficos}" class="action-card">
+          <i class="fas fa-chart-pie"></i>
+          <span>Ver Gráficos</span>
+        </a>
+      </div>
+      <div class="col-xl-3 col-md-6 col-12">
+        <a th:href="@{/admin/exportar-excel}" class="action-card">
+          <i class="fas fa-file-excel"></i>
+          <span>Descargar progreso (Excel)</span>
+        </a>
+      </div>
+
+    </div>
+  </div>
+
 </main>
 
 <script type="text/javascript" th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.min.js}"></script>
