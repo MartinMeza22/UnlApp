@@ -8,8 +8,8 @@ INSERT INTO Usuario(id, email, password, rol, carreraID, nombre, apellido, telef
 VALUES
     (1, 'user@gmail.com', '12345678', 'ALUMNO', 1, 'Juan', 'Pérez', NULL, 'desempleado', 1, true),
     (2, 'user2@user.com', '123', 'ALUMNO', 1, 'Ana', 'Gómez', NULL, 'empleado', 2, true),
-     (4, 'mmeza223@alumno.unlam.edu.ar', '12345678', 'ALUMNO', 1, 'Martín', 'Table', NULL, 'empleado', 20, true),
-    (5, 'quispeNadal@alumno.unlam.edu.ar', '12345678', 'ALUMNO', 1, 'Franco', 'Nadal Quispe', NULL, 'empleado', 40, true),
+     (4, 'mmeza223@alumno.unlam.edu.ar', '12345678', 'ALUMNO', 1, 'Martín', 'Meza', NULL, 'empleado', 20, true),
+    (5, 'quispeNadal@alumno.unlam.edu.ar', '12345678', 'ALUMNO', 1, 'Franco', 'Nadal', NULL, 'empleado', 40, true),
     (6, 'ramaGit@alumno.unlam.edu.ar', '12345678', 'ALUMNO', 1, 'Ramiro', 'Casanova', NULL, 'empleado', 15, true),
     (7, 'vitinha@alumno.unlam.edu.ar', '12345678', 'ALUMNO', 1, 'Tobias', 'Tejerina', NULL, 'empleado', 24, true),
     (8, 'agus@alumno.unlam.edu.ar', '12345678', 'ALUMNO', 1, 'Agustín', 'Cangelosi', NULL, 'empleado', 30, true),
