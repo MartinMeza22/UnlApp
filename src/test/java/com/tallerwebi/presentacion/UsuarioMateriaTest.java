@@ -6,6 +6,7 @@ import com.tallerwebi.dominio.Usuario;
 import com.tallerwebi.dominio.UsuarioMateria;
 import com.tallerwebi.dominio.servicios.ServicioUsuarioMateria;
 import com.tallerwebi.infraestructura.RepositorioUsuarioMateriaImpl;
+import com.tallerwebi.repositorioInterfaz.RepositorioUsuarioMateria;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -22,15 +23,20 @@ public class UsuarioMateriaTest {
     private Usuario usuarioMock;
     private Materia materiaMock;
     private ServicioUsuarioMateria servicioUsuarioMateriaMock;
-    private RepositorioUsuarioMateriaImpl repositorioUsuarioMateriaMock;
+    private RepositorioUsuarioMateriaImpl repositorioUsuarioMateriaImplMock;
     private UsuarioYMateriasDTO dto;
+    private RepositorioUsuarioMateria repositorioUsuarioMateriaMock;
+
     @BeforeEach
     public void init() {
         usuarioMateriaMock = new UsuarioMateria();
         usuarioMock = mock(Usuario.class);
         materiaMock = mock(Materia.class);
+
+        repositorioUsuarioMateriaImplMock = mock(RepositorioUsuarioMateriaImpl.class);
+        repositorioUsuarioMateriaMock = mock(RepositorioUsuarioMateria.class);
+
         servicioUsuarioMateriaMock = mock(ServicioUsuarioMateria.class);
-        repositorioUsuarioMateriaMock = mock(RepositorioUsuarioMateriaImpl.class);
         dto = mock(UsuarioYMateriasDTO.class);
     }
 
@@ -342,18 +348,40 @@ public class UsuarioMateriaTest {
     }
 
     @Test
-    void obtenerUsuariosConMaterias_deberiaDevolverListaDeDTOs() {
-        when(repositorioUsuarioMateriaMock.obtenerUsuariosConMaterias()).thenReturn(List.of(dto));
+    void obtenerUsuariosConMateriasDeberiaDevolverListaDeDTOsConDatosValidos() {
+        UsuarioYMateriasDTO dto = mock(UsuarioYMateriasDTO.class);
+        Usuario usuarioMock = mock(Usuario.class);
+        Materia materiaMock = mock(Materia.class);
+        UsuarioMateria usuarioMateriaMock = mock(UsuarioMateria.class);
+
+        when(dto.getUsuario()).thenReturn(usuarioMock);
+        when(dto.getMaterias()).thenReturn(List.of(usuarioMateriaMock));
+        when(usuarioMock.getNombre()).thenReturn("Juan");
+        when(usuarioMock.getApellido()).thenReturn("Pérez");
+        when(usuarioMateriaMock.getMateria()).thenReturn(materiaMock);
+        when(materiaMock.getNombre()).thenReturn("Programación");
+        when(usuarioMateriaMock.getNota()).thenReturn(9);
+
+        when(servicioUsuarioMateriaMock.obtenerUsuariosConMaterias()).thenReturn(List.of(dto));
 
         List<UsuarioYMateriasDTO> resultado = servicioUsuarioMateriaMock.obtenerUsuariosConMaterias();
 
-        assertThat(resultado, is(notNullValue()));
+        assertThat(resultado, is(not(empty())));
+        UsuarioYMateriasDTO resultadoDTO = resultado.get(0);
+        assertThat(resultadoDTO.getUsuario().getNombre(), is("Juan"));
+        assertThat(resultadoDTO.getUsuario().getApellido(), is("Pérez"));
+        assertThat(resultadoDTO.getMaterias(), hasSize(1));
+        assertThat(resultadoDTO.getMaterias().get(0).getMateria().getNombre(), is("Programación"));
+        assertThat(resultadoDTO.getMaterias().get(0).getNota(), is(9));
+
         verify(servicioUsuarioMateriaMock).obtenerUsuariosConMaterias();
     }
 
+
+
     @Test
-    void obtenerUsuariosConMaterias_deberiaDevolverListaVaciaSiNoHayDatos() {
-        when(repositorioUsuarioMateriaMock.obtenerUsuariosConMaterias()).thenReturn(List.of());
+    void obtenerUsuariosConMateriasDeberiaDevolverListaVaciaSiNoHayDatos() {
+        when(repositorioUsuarioMateriaImplMock.obtenerUsuariosConMaterias()).thenReturn(List.of());
 
         List<UsuarioYMateriasDTO> resultado = servicioUsuarioMateriaMock.obtenerUsuariosConMaterias();
 
@@ -361,9 +389,9 @@ public class UsuarioMateriaTest {
     }
 
     @Test
-    void obtenerUsuariosConMaterias_deberiaLanzarExcepcionSiRepositorioFalla() {
+    void obtenerUsuariosConMateriasDeberiaLanzarExcepcionSiRepositorioFalla() {
         // Arrange
-        when(repositorioUsuarioMateriaMock.obtenerUsuariosConMaterias()).thenThrow(new RuntimeException("Error en repo"));
+        when(repositorioUsuarioMateriaImplMock.obtenerUsuariosConMaterias()).thenThrow(new RuntimeException("Error en repo"));
 
         // Act & Assert
         try {
