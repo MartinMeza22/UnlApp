@@ -8,6 +8,26 @@
     <style>
         body { background-color: #f8f9fa; }
         .publicacion-container { background-color: #ffffff; }
+        .media-attachment-container {
+            max-width: 100%;
+            max-height: 450px;
+            border: 1px solid #dee2e6;
+            background-color: #f0f2f5;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        .media-attachment-container img,
+        .media-attachment-container video {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 4px;
+            object-fit: contain;
+        }
     </style>
 </head>
 <body>
@@ -99,10 +119,21 @@
             <div class="publicacion-body mt-3">
                 <h5 th:text="${pub.titulo}">Título</h5>
                 <p th:text="${pub.descripcion}">Descripción</p>
-                <div th:if="${pub.nombreArchivo != null}" class="mt-3 border p-2 rounded">
-                    <div th:if="${pub.isImagen()}"><img th:src="@{/uploads/{fn}(fn=${pub.nombreArchivo})}" class="img-fluid rounded"></div>
-                    <div th:if="${pub.isVideo()}"><video controls class="w-100 rounded"><source th:src="@{/uploads/{fn}(fn=${pub.nombreArchivo})}" type="video/mp4"></video></div>
-                    <div th:if="${pub.isPdf() or pub.isPpt()}"><a th:href="@{/uploads/{fn}(fn=${pub.nombreArchivo})}" target="_blank" class="btn btn-outline-dark btn-sm"><i class="fas fa-download mr-2"></i>Descargar <span th:text="${pub.nombreArchivo}"></span></a></div>
+                <div th:if="${pub.nombreArchivo != null}">
+                    <div th:if="${pub.isImagen() or pub.isVideo()}" class="media-attachment-container">
+                        <img th:if="${pub.isImagen()}" th:src="@{/uploads/{fn}(fn=${pub.nombreArchivo})}" alt="Imagen adjunta">
+                        <video th:if="${pub.isVideo()}" controls>
+                            <source th:src="@{/uploads/{fn}(fn=${pub.nombreArchivo})}" type="video/mp4">
+                            Tu navegador no soporta el tag de video.
+                        </video>
+                    </div>
+
+                    <div th:if="${pub.isPdf() or pub.isPpt()}" class="mt-3">
+                        <a th:href="@{/uploads/{fn}(fn=${pub.nombreArchivo})}" target="_blank" class="btn btn-outline-secondary">
+                            <i class="fas fa-file-download mr-2"></i>Descargar Archivo:
+                            <span th:text="${pub.nombreArchivo}"></span>
+                        </a>
+                    </div>
                 </div>
             </div>
 
