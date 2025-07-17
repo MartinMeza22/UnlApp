@@ -16,9 +16,9 @@ VALUES
     (9, 'aleSergi@alumno.unlam.edu.ar', '12345678', 'ALUMNO', 1, 'Sergio', 'Ramirez', NULL, 'empleado', 13, true);
 
 -- se inserta un admin
-INSERT INTO Usuario(id, email, password, rol, carreraID, nombre, apellido, activo)
+INSERT INTO Usuario(id, email, password, rol, carreraID, nombre, apellido, activo, situacionLaboral)
 VALUES
-    (3, 'admin@unlapp.com', '123', 'ADMIN', 1, 'Admin', 'istrador', true);
+    (3, 'admin@unlapp.com', '123', 'ADMIN', 1, 'Admin', 'istrador', true, 'empleado');
 
 -- Insertar las materias del cuatrimestre 1 (sin correlativas)
 INSERT INTO Materia(id, nombre, descripcion, tipo, carga_horaria, cuatrimestre, activa, carrera_id, correlativa_1, correlativa_2, correlativa_3, correlativa_4, correlativa_5, correlativa_6)
@@ -65,45 +65,45 @@ INSERT INTO usuario_materia(dificultad, estado, fecha_asignacion, fecha_modifica
 VALUES
     -- Cuatrimestre 1
     (1, 3,'2022-03-01', '2024-07-15', 8, 1, 1),
-    (5, 3, '2022-03-01', '2024-07-15', 9,  2, 1),
-    (10, 3, '2022-03-01', '2024-07-15', 6,  3, 1),
+    (2, 3, '2022-03-01', '2024-07-15', 9,  2, 1),
+    (3, 3, '2022-03-01', '2024-07-15', 6,  3, 1),
     (1, 3, '2022-03-01', '2024-07-15', 7,  4, 1),
 
     -- Cuatrimestre 2
   --  (5, '2023-08-01', '2024-12-15', 8, 'Buena evolución en programación', 5, 1),
    -- (5, '2023-08-01', '2024-12-15', 9, 'Excelente trabajo con tecnologías web', 6, 1),
-    (10, 3, '2023-08-01', '2024-12-15', 7,  7, 1),
-    (10, 3, '2023-08-01', '2024-12-15', 8,  8, 1),
+    (2, 3, '2023-08-01', '2024-12-15', 7,  7, 1),
+    (2, 3, '2023-08-01', '2024-12-15', 8,  8, 1),
     (1, 3, '2023-08-01', '2024-12-15', 8,  9, 1),
 
     -- Cuatrimestre 3
-    (10,4, '2024-03-01', '2025-07-15', 2,  10, 1),
+    (3,4, '2024-03-01', '2025-07-15', 2,  10, 1),
     (1,3, '2024-03-01', '2025-07-15', 8,  11, 1),
-    (5,3, '2024-05-01', '2025-07-15', 9,  12, 1),
-    (10,3, '2025-03-01', '2025-07-15', 8,  13, 1),
+    (2,3, '2024-05-01', '2025-07-15', 9,  12, 1),
+    (3,3, '2025-03-01', '2025-07-15', 8,  13, 1),
     (null,2, '2024-05-01', '2025-07-15', null,  14, 1),
     (null,2, '2025-03-01', '2025-07-15', null,  15, 1),
 
 
 -- Martín
 -- Cuatrimestre 1
-     (10, 3,'2022-03-01', '2024-07-15', 8, 1, 4),
-    (5, 3, '2022-03-01', '2024-07-15', 7,  2, 4),
-    (6, 3, '2022-03-01', '2024-07-15', 9,  3, 4),
-    (7, 3, '2022-03-01', '2024-07-15', 5,  4, 4),
+     (3, 3,'2022-03-01', '2024-07-15', 8, 1, 4),
+    (2, 3, '2022-03-01', '2024-07-15', 7,  2, 4),
+    (2, 3, '2022-03-01', '2024-07-15', 9,  3, 4),
+    (2, 3, '2022-03-01', '2024-07-15', 5,  4, 4),
 
     -- Cuatrimestre 2
-    (4, 3, '2023-08-01', '2024-12-15', 9,  5, 4),
-    (10, 3, '2023-08-01', '2024-12-15', 8,  6, 4),
-    (7, 3, '2023-08-01', '2024-12-15', 8,  7, 4),
-    (4, 3, '2023-08-01', '2024-12-15', 9,  8, 4),
+    (2, 3, '2023-08-01', '2024-12-15', 9,  5, 4),
+    (3, 3, '2023-08-01', '2024-12-15', 8,  6, 4),
+    (2, 3, '2023-08-01', '2024-12-15', 8,  7, 4),
+    (1, 3, '2023-08-01', '2024-12-15', 9,  8, 4),
 
     -- Cuatrimestre 3
-    (8,3, '2024-03-01', '2025-07-15', 8,  10, 4),
-    (6,3, '2024-03-01', '2025-07-15', 8,  11, 4),
+    (3,3, '2024-03-01', '2025-07-15', 8,  10, 4),
+    (2,3, '2024-03-01', '2025-07-15', 8,  11, 4),
     (3,3, '2024-03-01', '2025-07-15', 10,  12, 4),
     (NULL, 2, '2023-08-01', '2024-12-15', NULL,  13, 4),
-    (NULL, 2, '2023-08-01', '2024-12-15', NULL,  16, 4),
+    (3, 4, '2023-08-01', '2024-12-15', 3,  16, 4),
     (NULL,2, '2024-05-01', '2025-07-15', NULL,  18, 4);
 
 
@@ -348,7 +348,7 @@ VALUES
 -- Usuarios de Licenciatura en Informática (carreraID = 2)
 INSERT INTO Usuario(id, email, password, rol, carreraID, nombre, apellido, telefono, situacionLaboral, disponibilidadHoraria, activo) VALUES
                                                                                                                                           (10, 'lucas.inf@unlam.edu.ar', '123', 'ALUMNO', 2, 'Lucas', 'Fernández', NULL, 'desempleado', 10, true),
-                                                                                                                                          (11, 'paula.inf@unlam.edu.ar', '123', 'ALUMNO', 2, 'Paula', 'Silva', NULL, 'freelance', 25, true);
+                                                                                                                                          (11, 'paula.inf@unlam.edu.ar', '123', 'ALUMNO', 2, 'Paula', 'Silva', NULL, 'desempleado', 25, true);
 
 -- Usuarios de Tec. en Marketing Digital (carreraID = 3)
 INSERT INTO Usuario(id, email, password, rol, carreraID, nombre, apellido, telefono, situacionLaboral, disponibilidadHoraria, activo) VALUES
@@ -358,7 +358,7 @@ INSERT INTO Usuario(id, email, password, rol, carreraID, nombre, apellido, telef
 -- Usuarios de Lic. en Abogacía (carreraID = 4)
 INSERT INTO Usuario(id, email, password, rol, carreraID, nombre, apellido, telefono, situacionLaboral, disponibilidadHoraria, activo) VALUES
                                                                                                                                           (14, 'martina.abo@unlam.edu.ar', '123', 'ALUMNO', 4, 'Martina', 'Soto', NULL, 'empleado', 15, true),
-                                                                                                                                          (15, 'jose.abo@unlam.edu.ar', '123', 'ALUMNO', 4, 'José', 'Alvarez', NULL, 'freelance', 30, true);
+                                                                                                                                          (15, 'jose.abo@unlam.edu.ar', '123', 'ALUMNO', 4, 'José', 'Alvarez', NULL, 'empleado', 30, true);
 -- Publicaciones de carreraID = 2 (Informática)
 INSERT INTO Publicacion(usuario_id, materia_id, titulo, descripcion, fechaCreacion, likes) VALUES
                                                                                                (10, 28, 'Problemas con listas en Java', '¿Cómo puedo implementar una lista enlazada desde cero?', '2025-06-10 15:00:00', 4),
@@ -373,3 +373,24 @@ INSERT INTO Publicacion(usuario_id, materia_id, titulo, descripcion, fechaCreaci
 INSERT INTO Publicacion(usuario_id, materia_id, titulo, descripcion, fechaCreacion, likes) VALUES
                                                                                                (14, 87, 'Diferencia entre dolo y culpa', 'Estoy confundida con los conceptos. ¿Alguien me lo explica fácil?', '2025-06-20 10:00:00', 4),
                                                                                                (15, 88, 'Casos famosos de Derecho Civil', '¿Conocen algún caso interesante que se haya dado en Argentina?', '2025-06-22 13:40:00', 3);
+-- ============================================================================
+-- EVENTOS PARA MARTÍN MEZA (usuario_id = 4) - 7 eventos adicionales
+-- ============================================================================
+
+INSERT INTO evento(activo, completado, descripcion, fecha_creacion, fecha_modificacion, fecha_inicio, fecha_fin, tipo, titulo, ubicacion, materia_id, usuario_id)
+VALUES
+-- Evento personal para hoy (gimnasio)
+(true, false, 'Rutina de piernas: sentadillas, peso muerto rumano, extensiones de cuádriceps y gemelos. Objetivo: 4 series de 12 reps cada ejercicio.', NOW(), NOW(), '2025-07-17 18:30:00', '2025-07-17 20:00:00', 'PERSONAL', 'Gimnasio - Día de Piernas', 'Smart Fit - Ramos Mejía', NULL, 4),
+
+-- Eventos académicos
+(true, false, 'Entrega del proyecto integrador: E-commerce completo con carrito de compras y pasarela de pago. Stack: React, Node.js, MySQL.', NOW(), NOW(), '2025-07-24 23:59:00', NULL, 'TAREA', 'TP Final - Taller Web I', 'Campus Virtual', 13, 4),
+
+(true, false, 'Segunda oportunidad para aprobar. Temas: modelo OSI, protocolos TCP/IP, configuración de VLANs, subnetting.', NOW(), NOW(), '2025-07-22 14:00:00', '2025-07-22 16:00:00', 'EXAMEN', 'Recuperatorio Tecnología de Redes', 'Aula 204, Sede Central', 16, 4),
+
+(true, false, 'Evaluación sobre vulnerabilidades OWASP Top 10, inyección SQL, XSS, CSRF y mejores prácticas de seguridad.', NOW(), NOW(), '2025-07-29 10:00:00', '2025-07-29 12:00:00', 'EXAMEN', 'Parcial Seguridad Web', 'Laboratorio 3', 18, 4),
+
+(true, false, 'Laboratorio práctico de testing con Jest para unit testing y Selenium para tests E2E. Traer laptop con ambiente configurado.', NOW(), NOW(), '2025-07-19 15:00:00', '2025-07-19 18:00:00', 'CLASE', 'Práctica de Testing - Seguridad Web', 'Laboratorio 2', 18, 4),
+
+(true, false, 'Es una presentacion comercial en el que deben presentar, en un máximo de 12 minutos, el trabajo en el que estuvieron trabajando todo el cuatrimestre.', NOW(), NOW(), '2025-07-17 18:30:00', '2025-07-17 20:00:00', 'EXAMEN', 'Presentación Proyecto - Taller Web I', 'Aula Magna', 13, 4),
+
+(true, false, 'Taller práctico de ethical hacking con Kali Linux y Burp Suite. Prácticas con DVWA y WebGoat.', NOW(), NOW(), '2025-08-02 14:00:00', '2025-08-02 18:00:00', 'ESTUDIO', 'Workshop de Pentesting', 'Laboratorio de Redes', 18, 4);
