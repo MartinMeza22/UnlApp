@@ -373,3 +373,24 @@ INSERT INTO Publicacion(usuario_id, materia_id, titulo, descripcion, fechaCreaci
 INSERT INTO Publicacion(usuario_id, materia_id, titulo, descripcion, fechaCreacion, likes) VALUES
                                                                                                (14, 87, 'Diferencia entre dolo y culpa', 'Estoy confundida con los conceptos. ¿Alguien me lo explica fácil?', '2025-06-20 10:00:00', 4),
                                                                                                (15, 88, 'Casos famosos de Derecho Civil', '¿Conocen algún caso interesante que se haya dado en Argentina?', '2025-06-22 13:40:00', 3);
+-- ============================================================================
+-- EVENTOS PARA MARTÍN MEZA (usuario_id = 4) - 7 eventos adicionales
+-- ============================================================================
+
+INSERT INTO evento(activo, completado, descripcion, fecha_creacion, fecha_modificacion, fecha_inicio, fecha_fin, tipo, titulo, ubicacion, materia_id, usuario_id)
+VALUES
+-- Evento personal para hoy (gimnasio)
+(true, false, 'Rutina de piernas: sentadillas, peso muerto rumano, extensiones de cuádriceps y gemelos. Objetivo: 4 series de 12 reps cada ejercicio.', NOW(), NOW(), '2025-07-17 18:30:00', '2025-07-17 20:00:00', 'PERSONAL', 'Gimnasio - Día de Piernas', 'Smart Fit - Ramos Mejía', NULL, 4),
+
+-- Eventos académicos
+(true, false, 'Entrega del proyecto integrador: E-commerce completo con carrito de compras y pasarela de pago. Stack: React, Node.js, MySQL.', NOW(), NOW(), '2025-07-24 23:59:00', NULL, 'TAREA', 'TP Final - Taller Web I', 'Campus Virtual', 13, 4),
+
+(true, false, 'Segunda oportunidad para aprobar. Temas: modelo OSI, protocolos TCP/IP, configuración de VLANs, subnetting.', NOW(), NOW(), '2025-07-22 14:00:00', '2025-07-22 16:00:00', 'EXAMEN', 'Recuperatorio Tecnología de Redes', 'Aula 204, Sede Central', 16, 4),
+
+(true, false, 'Evaluación sobre vulnerabilidades OWASP Top 10, inyección SQL, XSS, CSRF y mejores prácticas de seguridad.', NOW(), NOW(), '2025-07-29 10:00:00', '2025-07-29 12:00:00', 'EXAMEN', 'Parcial Seguridad Web', 'Laboratorio 3', 18, 4),
+
+(true, false, 'Laboratorio práctico de testing con Jest para unit testing y Selenium para tests E2E. Traer laptop con ambiente configurado.', NOW(), NOW(), '2025-07-19 15:00:00', '2025-07-19 18:00:00', 'CLASE', 'Práctica de Testing - Seguridad Web', 'Laboratorio 2', 18, 4),
+
+(true, false, 'Es una presentacion comercial en el que deben presentar, en un máximo de 12 minutos, el trabajo en el que estuvieron trabajando todo el cuatrimestre.', NOW(), NOW(), '2025-07-17 18:30:00', '2025-07-17 20:00:00', 'EXAMEN', 'Presentación Proyecto - Taller Web I', 'Aula Magna', 13, 4),
+
+(true, false, 'Taller práctico de ethical hacking con Kali Linux y Burp Suite. Prácticas con DVWA y WebGoat.', NOW(), NOW(), '2025-08-02 14:00:00', '2025-08-02 18:00:00', 'ESTUDIO', 'Workshop de Pentesting', 'Laboratorio de Redes', 18, 4);
