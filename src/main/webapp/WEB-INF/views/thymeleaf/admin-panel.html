@@ -9,7 +9,10 @@
 <body>
 <nav class="navbar navbar-expand-md navbar-dark bg-dark">
   <div class="container-fluid">
-    <a class="navbar-brand" th:href="@{/home}">UnlApp - Panel Admin</a>
+    <a class="navbar-brand d-flex align-items-center" th:href="@{/home}">
+        <img th:src="@{/uploads/UnlApp.png}" alt="UnlApp Logo" style="height: 35px; margin-right: 8px;">
+        UnlApp - Panel Admin
+    </a>
     <form th:action="@{/logout}" method="get">
       <button class="btn btn-outline-light" type="submit">Cerrar sesión</button>
     </form>
